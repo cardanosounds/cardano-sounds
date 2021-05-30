@@ -1,0 +1,62 @@
+.container {
+    min-height: 93vh;  
+    width: 100vw;
+    /* max-width: 60rem; */
+    padding: 0 0;
+    margin: 0;
+    /* border-top-color: #0033AD;
+    border-top-width: 1em; */
+  }
+  
+  .collections {
+    background-color: var(--chakra-colors-gray-50);
+  }
+
+  .header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  #navbar {
+    transition: top 0.3s; /* Transition effect when sliding down (and up) */
+  }
+  
+.stickyNav {
+  position: -webkit-sticky;
+}
+
+  .backToHome {
+    margin: 0 0 0;
+  }
+
+  .disableEvents {
+    pointer-events: none;
+  }
+
+  .rotate {
+    color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(255, 0, 0, 0.3);
+    opacity: 0.8;
+    margin: -80%;
+
+    transform: rotate(15deg);
+  
+    /* Legacy vendor prefixes that you probably don't need... */
+  
+    /* Safari */
+    -webkit-transform: rotate(15deg);
+  
+    /* Firefox */
+    -moz-transform: rotate(15deg);
+  
+    /* IE */
+    -ms-transform: rotate(15deg);
+  
+    /* Opera */
+    -o-transform: rotate(15deg);
+  
+    /* Internet Explorer */
+    /* filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3); */
+  
+  }
