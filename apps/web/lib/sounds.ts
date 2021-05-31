@@ -4,10 +4,11 @@ export function getSoundNFTData(id: string){
 
 }
 
-export async function getSoundsNFTData(query: string): Promise<SoundListData>{
-    const res = await fetch(`api/sounds${query}`)
+export async function getSoundsNFTData(collection: string, page: number): Promise<SoundListData>{
+    const res = await fetch(`http://localhost:3000/api/sounds/${collection}/${page}`)
 
-    const data = await res.json() as SoundListData
+    let data = await res.json() 
+    
 
     return data;
 }

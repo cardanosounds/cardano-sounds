@@ -35,6 +35,8 @@ export interface Sound {
 }
 
 export interface SoundListData {
-    nfts?: NFTData[]
+    nfts: NFTData[]
     last: boolean
+    collection: string
+    page: number
 }
