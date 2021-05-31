@@ -47,7 +47,7 @@ export default function Sale() {
 
     return (
     <>
-        <Layout home>
+        <Layout>
           <Head>
             <title>Cardano Sounds NFT Sale</title>
           </Head>
