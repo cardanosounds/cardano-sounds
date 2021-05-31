@@ -35,22 +35,29 @@ const useAudio = (url: string) => {
 export default function AudioPlayer({ url } : {url: string}) {
   const [playing, setPlaying] = useState<boolean>()
 
-  var audio = document.getElementById('a') as HTMLAudioElement;
+  var audio = typeof(document) === "undefined" ? null : document.getElementById('a') as HTMLAudioElement;
   
   function play() {
+    if(audio === null) {
+      audio = document.getElementById('a') as HTMLAudioElement;
+    }
     audio.play();
   }
 
   function pause() {
+    if(audio === null) {
+      audio = document.getElementById('a') as HTMLAudioElement;
+    }
     audio.pause();
   }
 
   useEffect(() => {
-      
-    audio.addEventListener('ended', () => setPlaying(false));
-    return () => {
-      audio.removeEventListener('ended', () => setPlaying(false));
-    };
+    if(audio !== null) {
+      audio.addEventListener('ended', () => setPlaying(false));
+      return () => {
+        audio.removeEventListener('ended', () => setPlaying(false));
+      };
+    }
   }, []);
 
 

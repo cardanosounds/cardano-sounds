@@ -8,13 +8,12 @@ import {
 } from '@chakra-ui/react'
 
 
-//export default function SoundNFT(soundNFTData: { soundNFTData: string } ) {
-export default function SoundNFT(soundNFTData: NFTData) {
+export default function SoundNFT(soundNFTData: { soundNFTData: NFTData } ) {
     return (
         <Flex
             display="column"
             align="center"
-            minH="80vh"
+            minH="60vh"
         >
            
                 <Box>
