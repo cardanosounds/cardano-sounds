@@ -8,8 +8,10 @@ import {
   Flex,
   Heading,
   Stack,
-  IconButton
+  IconButton,
+  Text
 } from "@chakra-ui/react"
+import SoundNFT from "./SoundNFT";
  
 export default function Footer() {
   return (
@@ -24,7 +26,7 @@ export default function Footer() {
             
             <Stack
 
-                w={{ base: "80%", md: "80%" }}
+                w="100%"
                   align="center" margin="auto"
                 >
                 <Flex 
@@ -56,6 +58,7 @@ export default function Footer() {
                     />
                     </NextChakraLink>
                 </Flex>
+                <Text fontSize="0.75rem" >All rights reserved ©CardanoSounds</Text>
             </Stack> 
                 
                 
