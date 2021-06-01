@@ -24,7 +24,7 @@ export default function Layout({
       direction="column"
      // align="top"
       w="100vw"
-      minH="100%"
+      //minH="100%"
       m="0 auto"
     >
       <div className={mainStyles.container}>

@@ -53,7 +53,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
               justify="center"
               wrap="wrap"
               id="navbar" 
-              transition="all 0.6s ease-out"
+              transition="all 0.3s ease-out"
 
             >
                 <Flex

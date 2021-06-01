@@ -20,18 +20,18 @@ export default function Footer() {
             display="column"
             align="center"
             justify="center"
-            minH="5vh"
-            mb="2vh"
+            height="10vh"
+            mb="5vh"
+            transition="all 0.3s ease-out"
         >
             
             <Stack
-
-                w="100%"
-                  align="center" margin="auto"
-                >
+              w="100%"
+              align="center" margin="auto"
+            >
                 <Flex 
-                    justify="center"
-                    align="center"
+                  justify="center"
+                  align="center"
                 >
                     <NextChakraLink href="https://twitter.com/CardanoSounds">
                     <IconButton

@@ -1,9 +1,10 @@
 .container {
-    min-height: 93vh;  
+    min-height: 85vh;
     width: 100vw;
     /* max-width: 60rem; */
     padding: 0 0;
     margin: 0;
+    transition: all 0.3s ease-out;
     /* border-top-color: #0033AD;
     border-top-width: 1em; */
   }
@@ -19,7 +20,7 @@
   }
   
   #navbar {
-    transition: top 0.3s; /* Transition effect when sliding down (and up) */
+    /*transition: top 0.3s;  Transition effect when sliding down (and up) */
   }
   
 .stickyNav {

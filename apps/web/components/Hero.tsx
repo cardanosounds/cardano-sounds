@@ -8,21 +8,26 @@ import {
   Heading,
   Stack,
   Text,
+  useColorMode,
 } from "@chakra-ui/react"
  
 export default function Hero() {
+  const { colorMode } = useColorMode()
+  const isDark = colorMode === 'dark'
+
   return (
 
         <Flex
           align="center"
           justify="center"
+          bgColor={isDark ? ("gray.900") : ("gray.50")}
           // justify={{ base: "center", md: "space-around", xl: "space-between" }}
           direction={{ base: "column-reverse", md: "row" }}
-          minH="100vh"
+          minH="85vh"
         >
           <Stack
             spacing={2}
-            w={{ base: "80%", md: "50%" }}
+            w={{ base: "80%", md: "40%" }}
             align={["center", "center", "flex-start", "flex-start"]}
           >
             <Heading
@@ -51,9 +56,12 @@ export default function Hero() {
                 >Get yours!</Button>
             </NextChakraLink>
           </Stack>
-
-          <Box w={{ base: "80%", sm: "60%", md: "40%" }} mb={{ base: 0, md: 0 }} mt={{ base: 6, md: 0 }}>
-            <Image src="/cardanosounds1.svg" size="100%" rounded="50%" shadow="2xl" />
+          {/*
+         
+          */}
+          <Box  w={{ base: "80%", sm: "60%", md: "50%" }} mb={{ base: 0, md: 0 }} mt={{ base: 6, md: 0 }}>
+           {/*<Image src="/new-logo.svg" size="100%" rounded="50%" shadow="2xl" /> */}
+           <Image src="/new-logo-big.svg" size="100%" />
           </Box>
 
         </Flex>

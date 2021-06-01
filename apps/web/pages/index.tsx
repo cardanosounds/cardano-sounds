@@ -94,7 +94,7 @@ export default function Home({
               <title>{siteTitle}</title>
             </Head>
             <Hero></Hero>
-            <Flex 
+            {/*<Flex 
               justify="center"
               id="collections" 
               bgColor={color}
@@ -106,7 +106,7 @@ export default function Home({
             id="contact" 
             >
               <ContactUs />
-            </Flex>
+            </Flex>*/}
           </Layout> 
         </Flex>
 
