@@ -3,17 +3,14 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace ScanLatestTransactions.Interfaces
+namespace ScanLatestTransactions.Models
 {
     public class Transaction
     {
-        [JsonPropertyName("tx_hash")]
-        public string TxHash { get; set; }
+        public string Tx_Hash { get; set; }
 
-        [JsonPropertyName("output_index")]
-        public int OutputIndex { get; set; }
+        public int Output_Index { get; set; }
 
-        [JsonPropertyName("amount")]
         public List<TokenValue> Amount { get; set; }
 
         public string SenderAddress { get; set; }

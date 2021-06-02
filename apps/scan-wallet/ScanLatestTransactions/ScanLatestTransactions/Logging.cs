@@ -10,5 +10,10 @@ namespace ScanLatestTransactions
         {
             Console.WriteLine(level + " : " + message);
         }
+
+        public static void Error(string message)
+        {
+            Log(message, 4);
+        }
     }
 }

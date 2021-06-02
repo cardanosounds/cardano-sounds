@@ -1,11 +1,12 @@
-﻿using ScanLatestTransactions.Interfaces;
+﻿using ScanLatestTransactions.Models;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text.Json;
 using System.Threading.Tasks;
 using System.Configuration;
+using System.IO;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ScanLatestTransactions
 {
@@ -30,7 +31,7 @@ namespace ScanLatestTransactions
             foreach (var tx in txs)
             {
                 //get sender's address
-                var sender = await GetSenderAddress(tx.TxHash);
+                var sender = await GetSenderAddress(tx.Tx_Hash);
 
                 tx.SenderAddress = sender;
             }
@@ -40,29 +41,45 @@ namespace ScanLatestTransactions
 
         private static async Task<List<Transaction>> GetTransactions()
         {
-            ReAuthenticate();
+            Authenticate();
+
+            var transactions = new List<Transaction>();
 
             //create request url and log
             var reqUrl = apiUrl + "addresses/" + addr + "/utxos?" + "count=" + count + "&page=" + pageCount + "&order=" + order;
             Logging.Log("Sending request to:" + Environment.NewLine + reqUrl);
 
-            var streamTask = client.GetStreamAsync(reqUrl);
-            var transactions = await JsonSerializer.DeserializeAsync<List<Transaction>>(await streamTask);
+            try
+            {
+                var streamTask = client.GetStreamAsync(reqUrl);
+                var txs = await streamTask;
+
+                //var reader = new StreamReader(txs);
+                var transactionsArr = (JArray)DeserializeFromStream(txs);
+
+                transactions = transactionsArr.ToObject<List<Transaction>>();
+            }
+            catch (Exception ex)
+            {
+
+                Logging.Error(ex.Message);
+            }
+
             return transactions;
         }
 
-        private static async Task<string> GetSenderAddress(string tx)
+        private static async Task<string> GetSenderAddress(string txhash)
         {
-            ReAuthenticate();
-
             //create request url and log
-            var reqUrl = apiUrl + "addresses/" + addr + "/utxos?" + "count=" + count + "&page=" + pageCount + "&order=" + order;
+            var reqUrl = apiUrl + "txs/" + txhash + "/utxos"; //? + "count=" + count + "&page=" + pageCount + "&order=" + order;
             Logging.Log("Sending request to:" + Environment.NewLine + reqUrl);
 
-            var streamTask = client.GetStreamAsync(reqUrl);
+            var stream = await client.GetStreamAsync(reqUrl);
 
             //get UtxOs for transaction
-            var utxos = await JsonSerializer.DeserializeAsync<UtxOs>(await streamTask);
+            var utxosArr = (JObject)DeserializeFromStream(stream);
+
+            var utxos = utxosArr.ToObject<UtxOs>();
 
             //use first input if there is more of them
             var frstInput = utxos.Inputs[0];
@@ -86,12 +103,24 @@ namespace ScanLatestTransactions
 
         }
 
-        private static void ReAuthenticate()
+        private static void Authenticate()
         {
             client.DefaultRequestHeaders.Accept.Clear();
 
             //authentication header
             client.DefaultRequestHeaders.Add("project_id", projectId);
+        }
+
+
+        private static object DeserializeFromStream(Stream stream)
+        {
+            using (var reader = new StreamReader(stream))
+            {
+                string value = reader.ReadToEnd();
+                var txs = JsonConvert.DeserializeObject(value);
+                return txs;
+            }
+
         }
     }
 }
