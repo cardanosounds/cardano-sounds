@@ -107,9 +107,8 @@ export default function Home({
             >
               <ContactUs />
             </Flex>*/}
-          </Layout> 
+          </Layout>
         </Flex>
-
       </Stack>
     </>
   )

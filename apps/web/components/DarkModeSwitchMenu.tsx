@@ -1,4 +1,4 @@
-import { useColorMode, Switch, Flex, Button, IconButton } from '@chakra-ui/react'
+import { useColorMode, Switch, Flex, Button, IconButton, Spacer } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
 import { CloseIcon, MoonIcon, SunIcon, HamburgerIcon } from '@chakra-ui/icons'
 import NextChakraLink from './NextChakraLink'
@@ -48,7 +48,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
               top="0px"
               left="0px"
               right="0px"
-              bgColor={isDark ? ("gray.900") : ("gray.50")}
+              //bgColor={isDark ? ("gray.900") : ("gray.50")}
               as="nav"
               justify="center"
               wrap="wrap"
@@ -60,62 +60,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                   align="center"
                   w="100vw"
                 >
-                  <Flex 
-                    justify={["center", "space-between", "flex-end", "flex-end"]}
-                    display={['none', 'none', 'flex', 'flex']}
-                  >
-                      <NextChakraLink href="/">
-                          <Button
-                            variant="ghost"
-                            aria-label="Home"
-                            my={5}
-                            w="100%"
-                          >Home</Button>
-                      </NextChakraLink>
-                      <NextChakraLink href={ home ? "#collections": "/#collections"}>
-                          <Button
-                            variant="ghost"
-                            aria-label="Collections"
-                            my={5}
-                            w="100%"
-                          >Collections</Button>
-                      </NextChakraLink>
-                      {/* <NextChakraLink href="/collections/mysticwave">
-                          <Button
-                            variant="ghost"
-                            aria-label="Mystic waves"
-                            my={5}
-                            w="100%"
-                          >Mystic waves</Button>
-                      </NextChakraLink> */}
-                      <NextChakraLink href={ home ? "#contact": "/#contact"}>
-                          <Button
-                            variant="ghost"
-                            aria-label="Contact"
-                            my={5}
-                            w="100%"
-                          >Contact</Button>
-                      </NextChakraLink>
-                      {/*className={mainStyles.disableEvents}>*/}
-                      <NextChakraLink href="/sale"> 
-                        <Flex
-                          align="center"
-                          display="flex"
-                        >
-                            <Button
-                              disabled
-                              variant="ghost"
-                              aria-label="Sale"
-                              my={5}
-                              w="100%"
-                            ><h1>Sale</h1></Button>
-                            <h2 className={mainStyles.rotate} >
-                              Coming Soon!
-                            </h2>
-                          </Flex>
-                      </NextChakraLink>
-                      
-                  </Flex>
+                
 
                   <IconButton 
                     margin="0.25em 0.5em"
@@ -123,22 +68,23 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                     variant="ghost"
                     size="lg"
                     icon={<HamburgerIcon />}
-                    display={['flex', 'flex', 'none', 'none']}
+                    display="flex"
                     onClick={ openMenu }
                   />
+                  <Spacer/>
                   <Flex right={0}>
-                    <IconButton 
+                    {/*<IconButton 
                       variant="ghost"
                       aria-label="Toggle Dark Switch"
                       icon={isDark ? <SunIcon/> : <MoonIcon/>}
                       onClick={toggleColorMode}
-                    />
-                    {/* <Switch
-                      margin="0.25em 0.5em"
-                      color="blue"
+                    />*/}
+                    <Switch
+                      margin="1em 1em"
+                      color="gray.50"
                       isChecked={isDark}
                       onChange={toggleColorMode}
-                    /> */}
+                    /> 
                   </Flex>
               </Flex>
             </Flex>
@@ -150,8 +96,8 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
               h="100vh"
               pos="relative"
               top="0"
-              left="0"
               display={display}
+              left="0"
               overflow="hidden"
               flexDir="column"
               as="nav"

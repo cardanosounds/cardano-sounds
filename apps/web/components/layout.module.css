@@ -1,5 +1,5 @@
 .container {
-    min-height: 85vh;
+    min-height: 100vh;
     width: 100vw;
     /* max-width: 60rem; */
     padding: 0 0;
@@ -19,9 +19,9 @@
     align-items: center;
   }
   
-  #navbar {
-    /*transition: top 0.3s;  Transition effect when sliding down (and up) */
-  }
+ /* #navbar {
+    transition: top 0.3s;  Transition effect when sliding down (and up) 
+  }*/
   
 .stickyNav {
   position: -webkit-sticky;

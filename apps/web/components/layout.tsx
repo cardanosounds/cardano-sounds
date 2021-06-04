@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head'
-import { Flex, useColorModeValue } from '@chakra-ui/react'
+import { Flex, useColorModeValue, Text } from '@chakra-ui/react'
 import Image from 'next/image'
 import mainStyles from './layout.module.css'
 import utilStyles from '../styles/utils.module.css'
@@ -24,6 +24,10 @@ export default function Layout({
       direction="column"
      // align="top"
       w="100vw"
+      minH="100vh"
+      //background="linear-gradient(90deg, rgba(26,32,44,1) 0%, rgba(45,55,72,1) 100%), linear-gradient(90deg, rgba(247,250,252,1) 0%, rgba(237,242,247,1) 100%)"
+      //backgroundPosition="top, bottom"
+     // backgroundSize="100vw 10vw, 100vw 80vw"
       //minH="100%"
       m="0 auto"
     >
@@ -47,19 +51,37 @@ export default function Layout({
           </StickyNav>
         </header>
           <main >{children}</main>
-        {!home && (
+          <Text 
+            left="0"
+            bottom={{ base: "3vh", md: "5vh"}}
+            position="fixed"
+            right="0"
+            textAlign="center" 
+            fontSize="0.75rem" 
+          >All rights reserved ©CardanoSounds</Text>
+
+        {/*  <Text 
+            right="1vw"
+            bottom="5vh"
+            position="fixed"
+            textAlign="center" 
+            fontSize="0.75rem" 
+            transform="rotate(-90deg)"
+            transformOrigin="0 0"
+          >All rights reserved ©CardanoSounds</Text>
+      {!home && (
           <div className={mainStyles.backToHome}>
             <Link href="/">
               <a>← Back to home</a>
             </Link>
           </div>
-        )}
+      )}*/}
 
       </div>
-      <Flex 
+       {/* <Flex 
         justify="center"
         align="bottom"
-        bgColor={color}
+        //bgColor={color}
         w="100vw"
         position="relative"
         bottom="0"
@@ -68,7 +90,7 @@ export default function Layout({
         z-index="0"
       >
         <Footer></Footer>
-      </Flex>
+      </Flex>*/}
 
     </Flex>
 

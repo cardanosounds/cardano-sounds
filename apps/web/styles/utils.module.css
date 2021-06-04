@@ -60,3 +60,9 @@
 .card:hover {
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.4);
 }
+
+.shadow:hover {
+
+   padding: 0; 
+   border-width: 0.5vh;
+}
