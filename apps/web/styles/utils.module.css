@@ -61,8 +61,19 @@
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.4);
 }
 
-.shadow:hover {
+.shadow {
 
    padding: 0; 
    border-width: 0.5vh;
+}
+.shadow:hover {
+
+   padding: 0; 
+   border-width: 0.75vh;
+}
+
+.a {
+  fill: none;
+  stroke: #fff;
+  stroke-miterlimit: 10;
 }

@@ -57,8 +57,9 @@ export default function Layout({
             position="fixed"
             right="0"
             textAlign="center" 
-            fontSize="0.75rem" 
-          >All rights reserved ©CardanoSounds</Text>
+            fontSize={{ base: "0.65rem", md: "1.125rem" }}
+            fontFamily="Share Tech Mono, monospace"
+          >ALL RIGHTS RESERVED ©CARDANOSOUNDS</Text>
 
         {/*  <Text 
             right="1vw"

@@ -34,28 +34,28 @@ export default function Footer() {
                   align="center"
                 >
                     <NextChakraLink href="https://twitter.com/CardanoSounds">
-                    <IconButton
-                      variant="ghost"
-                      mt={2}
-                      mr={2} 
-                      aria-label="Close Menu"
-                      size="lg"
-                      icon={
-                            <FaTwitter />
-                      }
-                    />
+                      <IconButton
+                        variant="ghost"
+                        mt={2}
+                        mr={2} 
+                        aria-label="Twitter Cardano Sounds"
+                        size="lg"
+                        icon={
+                              <FaTwitter />
+                        }
+                      />
                     </NextChakraLink>
                     <NextChakraLink href="https://github.com/zachyking/CardanoSounds">
-                    <IconButton
-                      variant="ghost"
-                      mt={2}
-                      mr={2} 
-                      aria-label="Close Menu"
-                      size="lg"
-                      icon={
-                            <FaGithub />
-                      }
-                    />
+                      <IconButton
+                        variant="ghost"
+                        mt={2}
+                        mr={2} 
+                        aria-label="Git Cardano Sounds"
+                        size="lg"
+                        icon={
+                              <FaGithub />
+                        }
+                      />
                     </NextChakraLink>
                 </Flex>
                 <Text fontSize="0.75rem" >All rights reserved ©CardanoSounds</Text>

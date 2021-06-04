@@ -1,8 +1,19 @@
-import { useColorMode, Switch, Flex, Button, IconButton, Spacer } from '@chakra-ui/react'
+import { useColorMode, Switch, Flex, Button, IconButton, Spacer, Heading, Image, Icon, useDisclosure } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
+import { FaChevronLeft } from 'react-icons/fa';
 import { CloseIcon, MoonIcon, SunIcon, HamburgerIcon } from '@chakra-ui/icons'
 import NextChakraLink from './NextChakraLink'
 import mainStyles from './layout.module.css'
+import Logo from './Logo'
+import {
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+} from "@chakra-ui/react"
 
 // import { MoonIcon, SunIcon } from '@chakra-ui/icons'
 
@@ -11,6 +22,8 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
     const { colorMode, toggleColorMode } = useColorMode()
     const isDark = colorMode === 'dark'
     const [display, changeDisplay] = useState('none')
+    const { isOpen, onOpen, onClose } = useDisclosure()
+
 
     const closeMenu = () => { 
       changeDisplay('none')
@@ -60,14 +73,25 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                   align="center"
                   w="100vw"
                 >
+                  <Drawer onClose={onClose} isOpen={isOpen}>
+                    <DrawerOverlay />
+                    <DrawerContent>
+                      <DrawerHeader borderBottomWidth="1px">Basic Drawer</DrawerHeader>
+                      <DrawerBody>
+                        <p>Some contents...</p>
+                        <p>Some contents...</p>
+                        <p>Some contents...</p>
+                      </DrawerBody>
+                    </DrawerContent>
+                  </Drawer>
                 
 
                   <IconButton 
-                    margin="0.25em 0.5em"
+                    margin={["2em 0.5em 0.25em 1.5em", "0.5em 0.5em 0.25em 3.25em", "4em 0.5em 0.25em 6em",  "4em 0.5em 0.25em 11em"]}
                     aria-label="Open Menu"
                     variant="ghost"
                     size="lg"
-                    icon={<HamburgerIcon />}
+                    icon={<Logo />}
                     display="flex"
                     onClick={ openMenu }
                   />
@@ -79,12 +103,47 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                       icon={isDark ? <SunIcon/> : <MoonIcon/>}
                       onClick={toggleColorMode}
                     />*/}
-                    <Switch
-                      margin="1em 1em"
-                      color="gray.50"
-                      isChecked={isDark}
-                      onChange={toggleColorMode}
-                    /> 
+                    <Flex direction="column">
+                      <Switch
+                        //margin={["1em 1em", "0em 1.5em 0em 0em", "1em 1em", "1em 1em"]}
+                        //margin-left={["0", "0", "2vw", "2vw"]}
+                        position="absolute"
+                        right="5vw"
+                        color="gray.50"
+                        isChecked={isDark}
+                        onChange={toggleColorMode}
+                      />
+                        <Flex height="10vh" width="10vw" position="absolute"
+                            top="15vh"
+                            right="0">
+                          <IconButton 
+                            //margin={["2em 0.5em 0.25em 1.5em", "0.5em 0.5em 0.25em 3.25em", "4em 0.5em 0.25em 6em",  "4em 0.5em 0.25em 10.5em"]}
+                            aria-label="Open Menu"
+                            variant="ghost"
+                            size="lg"
+                            icon={<FaChevronLeft />}
+                            //display="flex"
+                            onClick={ onOpen } 
+                            display={["flex", "flex", "flex", "flex"]} 
+                            position="absolute"
+                            right="5vw"                      
+                          />
+                        </Flex>
+                        <Heading 
+                          display={["none", "none", "none", "none"]} 
+                          size="lg" 
+                          as="h3"
+                          position="absolute"
+                          top="15vh"
+                          right="5vw"
+                          className={mainStyles.link}
+                          //writingMode="tb" 
+                          onClick={()=>{}}
+                        >MENU
+                        </Heading>
+                        
+                    </Flex>
+
                   </Flex>
               </Flex>
             </Flex>

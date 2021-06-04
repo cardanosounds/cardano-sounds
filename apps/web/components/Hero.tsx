@@ -4,6 +4,7 @@ import { FaChevronRight } from 'react-icons/fa';
 import utilStyles from '../styles/utils.module.css'
 import { FaGithub, FaTwitter, FaMediumM } from 'react-icons/fa';
 import { LinkBox, LinkOverlay } from "@chakra-ui/react"
+import mainStyles from './layout.module.css'
 import {
   Box,
   Button,
@@ -33,35 +34,35 @@ export default function Hero() {
           h="85vh"
         >
           <Stack
-            w={{ base: "80vw", md: "70vw" }}
+            w={{ base: "80vw", md: "75vw" }}
             align="left"
-            mt={{ base: "20vh", md: "15vh" }}
+            mt={{ base: "25vh", md: "30vh" }}
           >
             <Heading
               as="h2"
-              fontSize={{ base: "3.5rem", md: "8rem" }}
+              fontSize={[ "3.5rem", "3.5rem", "5.125rem", "9rem" ]}
               textAlign="left"
               fontWeight="normal"
               lineHeight="1"
             >
-              cardano
+              CARDANO
             </Heading>
             <Heading
               as="h2"
-              fontSize={{ base: "4.2rem", md: "9rem" }}
+              fontSize={[ "4.1rem", "4.1rem", "6rem", "10rem" ]}
               textAlign="left"
               fontWeight="normal"
               lineHeight="1"
             >
-              sounds
+              SOUNDS
             </Heading>
             <Flex
-              direction={{ base: "column", md: "row" }}
+              direction={["column", "row", "row", "row" ]}
               w="100%"
             >
               <Heading
                 as="h2"
-                fontSize={{ base: "6rem", md: "10rem" }} 
+                fontSize={[ "6rem", "6rem", "8rem", "11rem" ]}
                 textAlign="left"
                 fontWeight="normal"
                 lineHeight="1"
@@ -73,19 +74,23 @@ export default function Hero() {
               <LinkBox 
                 href="/"
                 borderColor="gray.600"
-                borderTopWidth={{ base: "0.5vh", md: "0" }}
-                borderLeftWidth={{ base: "0", md: "0.5vh" }}
+                //borderTopWidth={{ base: "0.5vh", md: "0" }}
+                //borderLeftWidth={{ base: "0", md: "0.5vh" }}
                 textAlign="center"
-                padding="0 0.5vh 0.5vh 0.5vh"
-                width={{ base: "80%", md: "40%" }}
-                mt="5vh"
+                //padding="0 0.5vh 0.5vh 0.5vh"
+                width={["80%", "25%", "25%", "25%" ]}
+                mt={["4vh", "4vh", "5vh"]}
+                height={["20vh", "20vh", "15vh", "15vh"]}
                 className={utilStyles.shadow}
+                position={["inherit", "absolute", "absolute", "absolute"]}
+                right="15vw"
+                bottom="15vh"
               >
                 <IconButton
                       variant="ghost"
-                      mt={{ base: "5vh", md: "4" }}
+                      //mt={{ base: "5vh", md: "4" }}
                       aria-label="Explore CardanoSounds"
-                      size="2xl"
+                      size="lg"
                       color="gray.600"
                       icon={
                             <FaChevronRight />
@@ -93,7 +98,7 @@ export default function Hero() {
                 
                 </IconButton>
                 <Text
-                  fontSize={{ base: "1.5rem", md: "2rem" }} 
+                  fontSize={["1.5rem", "1.5rem", "2rem", "2.125rem"]} 
                   textAlign="center"
                   fontWeight="normal"
                   lineHeight="1"
@@ -111,10 +116,41 @@ export default function Hero() {
             w={{ base: "5vw", md: "10vw" }}
             align="right"
             pos="absolute"
-            right="7vw"
-            bottom={{ base: "8vh", md: "10vh" }}
+            right={["7vw", "4vw", "5vw", "5vw"]}
+            bottom={{ base: "7vh", md: "15vh" }}
             //mt={{ base: "10vh", md: "15vh" }}
           >
+            <Flex display={{ base: "none", md: "flex"}} direction="column" h="40vh">
+              <Heading 
+                display={["none", "none", "flex", "flex"]} 
+                size="lg" 
+                as="h3"
+                className={mainStyles.link}
+                //writingMode="tb" 
+                onClick={()=>{}}
+              >TWITTER
+              </Heading>
+              <Spacer />
+              <Heading 
+                display={["none", "none", "flex", "flex"]} 
+                size="lg" 
+                as="h3"
+                className={mainStyles.link}
+                //writingMode="tb" 
+                onClick={()=>{}}
+              >GITHUB
+              </Heading>
+              <Spacer />
+              <Heading 
+                display={["none", "none", "flex", "flex"]} 
+                size="lg" 
+                as="h3"
+                className={mainStyles.link}
+                //writingMode="tb" 
+                onClick={()=>{}}
+              >MEDIUM
+              </Heading>
+            </Flex>
             <Flex 
               justify="center"
               align="center"

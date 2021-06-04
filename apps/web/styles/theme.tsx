@@ -3,8 +3,8 @@ import { createBreakpoints } from '@chakra-ui/theme-tools'
 
 const fonts = { 
     body: "Montserrat, Verdana",
-    heading: "Space Mono, monospace",
-    mono: "Space Mono, monospace"
+    heading: "Share Tech Mono, monospace",
+    mono: "Share Tech Mono, monospace"
 }
 
 

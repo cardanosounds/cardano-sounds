@@ -61,3 +61,10 @@
     /* filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3); */
   
   }
+.link {
+  writing-mode: tb;
+}
+
+.link:hover {
+  text-shadow: 1px 1px #000000;
+}

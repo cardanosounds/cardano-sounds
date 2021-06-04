@@ -2,7 +2,7 @@ import '../styles/global.css'
 import { AppProps } from 'next/app'
 import { ChakraProvider } from "@chakra-ui/react"
 import theme from '../styles/theme'
-import "@fontsource/space-mono"; 
+import "@fontsource/share-tech-mono";
 
 
 // const TIMEOUT: number = 400
