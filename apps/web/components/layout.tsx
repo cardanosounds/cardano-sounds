@@ -52,7 +52,7 @@ export default function Layout({
               <IconButton 
                     align="flex-start"
                     //50vw 5vh
-                    margin={["5vh 50vw 0 0", "7vh 60vw 0 0", "0em 0.5em 0.25em 3em", "2.5em 0.5em 0.25em 4em", "4em 0.5em 0.25em 6em",  "0em 0.5em 0.25em 11em"]}
+                    margin={["7vh 50vw 0 0", "7vh 60vw 0 0", "0em 0.5em 0.25em 3em", "2.5em 0.5em 0.25em 4em", "4em 0.5em 0.25em 6em",  "0em 0.5em 0.25em 11em"]}
                     aria-label="Cardano Sounds home"
                     variant="ghost"
                     size="lg"
