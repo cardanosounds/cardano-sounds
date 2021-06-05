@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head'
-import { Flex, useColorModeValue, Text } from '@chakra-ui/react'
+import { Flex, useColorModeValue, Text, IconButton } from '@chakra-ui/react'
 import Image from 'next/image'
 import mainStyles from './layout.module.css'
 import utilStyles from '../styles/utils.module.css'
 import Link from 'next/link'
 import DarkModeSwitch from './DarkModeSwitchMenu'
-import StickyNav from "react-sticky-nav";
+//import StickyNav from "react-sticky-nav";
 import Footer from './Footer';
+import Logo from './Logo';
 
 export const siteTitle = 'Cardano Sounds NFT'
 
@@ -46,9 +47,21 @@ export default function Layout({
           <meta name="twitter:card" content="summary_large_image" />
         </Head>
         <header  className={mainStyles.header}>
-          <StickyNav className={mainStyles.stickyNav}>
-            <DarkModeSwitch />
-          </StickyNav>
+          
+          <Flex direction="row" className={mainStyles.stickyNav}>
+              <IconButton 
+                    align="flex-start"
+                    //50vw 5vh
+                    margin={["5vh 50vw 0 0", "7vh 60vw 0 0", "0em 0.5em 0.25em 3em", "2.5em 0.5em 0.25em 4em", "4em 0.5em 0.25em 6em",  "0em 0.5em 0.25em 11em"]}
+                    aria-label="Cardano Sounds home"
+                    variant="ghost"
+                    size="lg"
+                    icon={<Logo />}
+                    display={["flex", "flex", "none", "none", "none", "none"]}
+                    onClick={ () => {} }
+                  />
+              <DarkModeSwitch />
+          </Flex>
         </header>
           <main >{children}</main>
           <Text 

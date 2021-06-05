@@ -2,15 +2,46 @@ import React from "react";
 import { Box } from "@chakra-ui/react";
 import utilStyles from "../styles/utils.module.css"
 
-export default function Logo() {
+export default function Logo({ color, size, pos, top, right, display } : {
+    color?: string | Array<string>
+    size?: string | Array<string>
+    pos?: "absolute" | "initial" | Array<"absolute" | "initial">
+    top?: string | Array<string>
+    right?: string | Array<string>
+    display?: "none" | "flex" | Array<"none" | "flex">
+}) {
+    { }
+    if(typeof(color) === "undefined") {
+        color = "#333"
+    }
+    if(typeof(size) === "undefined") {
+        size = "5em"
+    }
+    if(typeof(pos) === "undefined") {
+        pos = "initial"
+    }
+    if(typeof(top) === "undefined") {
+        top = "15vh"
+    }
+    if(typeof(right) === "undefined") {
+        right = "20vw"
+    }
+    if(typeof(display) === "undefined") {
+        display = "flex"
+    }
   return (
     <Box
       as="svg"
       role="img"
-      width="15vh"
-      height="15vh"
+      width={ size }
+      height={ size }
+      position={ pos }
+      right={ right }
+      top={ top }
+      display={ display }
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 590 555.8"
+      fill="#fff"
       //fill="#1f2127"
       //_hover={{
       //  fill: "brand.accent",

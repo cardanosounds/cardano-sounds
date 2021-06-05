@@ -1,10 +1,11 @@
 import React from "react"
 import NextChakraLink from './NextChakraLink'
-import { FaChevronRight } from 'react-icons/fa';
+import { FaChevronRight, FaFileExport } from 'react-icons/fa';
 import utilStyles from '../styles/utils.module.css'
 import { FaGithub, FaTwitter, FaMediumM } from 'react-icons/fa';
 import { LinkBox, LinkOverlay } from "@chakra-ui/react"
 import mainStyles from './layout.module.css'
+import { useState } from 'react'
 import {
   Box,
   Button,
@@ -18,10 +19,12 @@ import {
   IconButton,
   Spacer
 } from "@chakra-ui/react"
+import Logo from "./Logo";
  
 export default function Hero() {
   const { colorMode } = useColorMode()
   const isDark = colorMode === 'dark'
+  const [ exploring, explore ] = useState<boolean>(false);
 
   return (
 
@@ -31,101 +34,133 @@ export default function Hero() {
           // bgColor={isDark ? ("gray.900") : ("gray.50")}
           // justify={{ base: "center", md: "space-around", xl: "space-between" }}
           direction={{ base: "column-reverse", md: "row" }}
-          h="85vh"
+          h={["60vh", "60vh", "60vh","70vh", "75vh", "80vh"]}
         >
+          { !exploring ? 
           <Stack
             w={{ base: "80vw", md: "75vw" }}
             align="left"
-            mt={{ base: "25vh", md: "30vh" }}
+            mt={["0vh", "0vh", "35vh", "35vh", "15vh", "15vh"]}  
+            transition="all 0.6s ease-in-out"         
           >
-            <Heading
-              as="h2"
-              fontSize={[ "3.5rem", "3.5rem", "5.125rem", "9rem" ]}
-              textAlign="left"
-              fontWeight="normal"
-              lineHeight="1"
-            >
-              CARDANO
-            </Heading>
-            <Heading
-              as="h2"
-              fontSize={[ "4.1rem", "4.1rem", "6rem", "10rem" ]}
-              textAlign="left"
-              fontWeight="normal"
-              lineHeight="1"
-            >
-              SOUNDS
-            </Heading>
+            <Flex w="100%" direction="row">
+              <Flex direction="column">
+                <Heading
+                  as="h2"
+                  fontSize={[ "3.5rem", "3.5rem", "3.75rem", "4.25rem", "5.125rem", "9rem" ]}
+                  textAlign="left"
+                  fontWeight="normal"
+                  lineHeight="1"
+                >
+                  CARDANO
+                </Heading>
+                <Heading
+                  as="h2"
+                  fontSize={[ "4.1rem", "4.1rem", "4.5rem", "5rem", "6rem", "10.5rem" ]}
+                  textAlign="left"
+                  fontWeight="normal"
+                  lineHeight="1"
+                >
+                  SOUNDS
+                </Heading>
+              </Flex>
+              <Spacer />
+              <Logo
+                size={[null, null, "10em", "10em", "15em", "18em"]}
+                color="#fff"
+                pos="absolute"
+                top={[null, null, "10vh", "20vh", "15vh", "15vh"]} 
+                right={[null, null, "15vw", "20vw", "20vw", "20vw"]}
+                display={["none", "none", "flex", "flex", "flex", "flex"]}
+              />
+            </Flex>
             <Flex
               direction={["column", "row", "row", "row" ]}
               w="100%"
             >
               <Heading
                 as="h2"
-                fontSize={[ "6rem", "6rem", "8rem", "11rem" ]}
+                fontSize={[ "6rem", "6rem", "6rem", "6.75rem", "8rem", "11rem" ]}
                 textAlign="left"
                 fontWeight="normal"
                 lineHeight="1"
               >
                 NFT
               </Heading>
+              
               <Spacer />
 
-              <LinkBox 
-                href="/"
-                borderColor="gray.600"
+              <Button 
+                //href="/"
+                variant="ghost"
+                //borderColor="gray.600"
                 //borderTopWidth={{ base: "0.5vh", md: "0" }}
                 //borderLeftWidth={{ base: "0", md: "0.5vh" }}
                 textAlign="center"
+                onClick={ () => explore(true) }
                 //padding="0 0.5vh 0.5vh 0.5vh"
-                width={["80%", "25%", "25%", "25%" ]}
+                width={["70%", "70%", "25%", "25%", "25%", "25%" ]}
                 mt={["4vh", "4vh", "5vh"]}
-                height={["20vh", "20vh", "15vh", "15vh"]}
+                height={["17vh", "15vh", "15vh", "15vh", "15vh", "15vh"]}
                 className={utilStyles.shadow}
-                position={["inherit", "absolute", "absolute", "absolute"]}
-                right="15vw"
-                bottom="15vh"
+                position= "absolute"//{["inherit", "absolute", "absolute", "absolute"]}
+                right={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}
+                bottom={["10vh", "10vh", "15vh", "15vh", "15vh", "15vh"]}
               >
-                <IconButton
-                      variant="ghost"
-                      //mt={{ base: "5vh", md: "4" }}
-                      aria-label="Explore CardanoSounds"
-                      size="lg"
-                      color="gray.600"
-                      icon={
-                            <FaChevronRight />
-                      } >
-                
-                </IconButton>
-                <Text
-                  fontSize={["1.5rem", "1.5rem", "2rem", "2.125rem"]} 
+                <FaChevronRight
+                    //mt={{ base: "5vh", md: "4" }}
+                  height="40%"
+                  aria-label="Explore CardanoSounds"
+                  //size="lg"
+                  fill="#4A5568"
+                  //color="gray.600"
+                >
+                </FaChevronRight>
+                <Heading
+                  as="h3"
+                  fontSize={["1rem", "1.125rem", "1.125rem", "1.5rem", "1.25rem", "1.5rem"]} 
                   textAlign="center"
                   fontWeight="normal"
                   lineHeight="1"
                   textColor="gray.600"
-                  my={4}
-                  mx={4}
+                  //my={4}
+                  //mx={4}
                   textDecoration="none"
                 >
-                  explore
-                </Text>
-              </LinkBox>
+                  EXPLORE
+                </Heading>
+              </Button>
+            </Flex>
+          </Stack> 
+          : 
+          <>
+          <Stack
+            w={{ base: "80vw", md: "75vw" }}
+            align="left"
+            mt={["15vh", "15vh", "25vh", "30vh", "30vh"]}            
+          >
+            <Flex className={utilStyles.equalizer}>
+              <Stack className={utilStyles.eq1}></Stack>
+              <Stack className={utilStyles.eq2}></Stack>
+              <Stack className={utilStyles.eq3}></Stack>
             </Flex>
           </Stack>
+          </> 
+         }
         <Stack 
             w={{ base: "5vw", md: "10vw" }}
             align="right"
             pos="absolute"
             right={["7vw", "4vw", "5vw", "5vw"]}
-            bottom={{ base: "7vh", md: "15vh" }}
+            bottom={[ "7vh", "10vh", "10vh", "15vh", "15vh", "15vh" ]}
             //mt={{ base: "10vh", md: "15vh" }}
           >
-            <Flex display={{ base: "none", md: "flex"}} direction="column" h="40vh">
+            <Flex display={{ base: "none", md: "flex"}} direction="column" h="50vh">
               <Heading 
                 display={["none", "none", "flex", "flex"]} 
                 size="lg" 
                 as="h3"
-                className={mainStyles.link}
+                className={ isDark ? mainStyles.linkLight : mainStyles.link}
                 //writingMode="tb" 
                 onClick={()=>{}}
               >TWITTER
@@ -135,20 +170,20 @@ export default function Hero() {
                 display={["none", "none", "flex", "flex"]} 
                 size="lg" 
                 as="h3"
-                className={mainStyles.link}
+                className={ isDark ? mainStyles.linkLight : mainStyles.link}
                 //writingMode="tb" 
                 onClick={()=>{}}
-              >GITHUB
+              > GITHUB
               </Heading>
               <Spacer />
               <Heading 
                 display={["none", "none", "flex", "flex"]} 
                 size="lg" 
                 as="h3"
-                className={mainStyles.link}
+                className={ isDark ? mainStyles.linkLight : mainStyles.link}
                 //writingMode="tb" 
                 onClick={()=>{}}
-              >MEDIUM
+              > MEDIUM
               </Heading>
             </Flex>
             <Flex 

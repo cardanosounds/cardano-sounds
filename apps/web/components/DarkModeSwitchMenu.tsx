@@ -1,7 +1,8 @@
 import { useColorMode, Switch, Flex, Button, IconButton, Spacer, Heading, Image, Icon, useDisclosure } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
 import { FaChevronLeft } from 'react-icons/fa';
-import { CloseIcon, MoonIcon, SunIcon, HamburgerIcon } from '@chakra-ui/icons'
+import { AiOutlineMenuFold } from 'react-icons/ai'
+import { CloseIcon, MoonIcon, SunIcon, HamburgerIcon, ChevronLeftIcon } from '@chakra-ui/icons'
 import NextChakraLink from './NextChakraLink'
 import mainStyles from './layout.module.css'
 import Logo from './Logo'
@@ -51,13 +52,13 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
     return (
         <Flex
           flexDir="column"
-          align="center"
+          align="flex-end"
           margin="0"
         >
             <Flex
               pos="fixed"
               align="center"
-              w="100vw"
+              //w="100vw"
               top="0px"
               left="0px"
               right="0px"
@@ -83,18 +84,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                         <p>Some contents...</p>
                       </DrawerBody>
                     </DrawerContent>
-                  </Drawer>
-                
-
-                  <IconButton 
-                    margin={["2em 0.5em 0.25em 1.5em", "0.5em 0.5em 0.25em 3.25em", "4em 0.5em 0.25em 6em",  "4em 0.5em 0.25em 11em"]}
-                    aria-label="Open Menu"
-                    variant="ghost"
-                    size="lg"
-                    icon={<Logo />}
-                    display="flex"
-                    onClick={ openMenu }
-                  />
+                  </Drawer>   
                   <Spacer/>
                   <Flex right={0}>
                     {/*<IconButton 
@@ -108,7 +98,8 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                         //margin={["1em 1em", "0em 1.5em 0em 0em", "1em 1em", "1em 1em"]}
                         //margin-left={["0", "0", "2vw", "2vw"]}
                         position="absolute"
-                        right="5vw"
+                        right={["8vw", "6vw", "5vw", "5vw"]}
+                        top="5vh"
                         color="gray.50"
                         isChecked={isDark}
                         onChange={toggleColorMode}
@@ -121,26 +112,14 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                             aria-label="Open Menu"
                             variant="ghost"
                             size="lg"
-                            icon={<FaChevronLeft />}
+                            icon={<FaChevronLeft/>}  
                             //display="flex"
                             onClick={ onOpen } 
                             display={["flex", "flex", "flex", "flex"]} 
                             position="absolute"
-                            right="5vw"                      
+                            right={["6vw", "5vw", "5vw", "5vw"]}                      
                           />
                         </Flex>
-                        <Heading 
-                          display={["none", "none", "none", "none"]} 
-                          size="lg" 
-                          as="h3"
-                          position="absolute"
-                          top="15vh"
-                          right="5vw"
-                          className={mainStyles.link}
-                          //writingMode="tb" 
-                          onClick={()=>{}}
-                        >MENU
-                        </Heading>
                         
                     </Flex>
 
