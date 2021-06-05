@@ -77,11 +77,27 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                   <Drawer onClose={onClose} isOpen={isOpen}>
                     <DrawerOverlay />
                     <DrawerContent>
-                      <DrawerHeader borderBottomWidth="1px">Basic Drawer</DrawerHeader>
+                      <DrawerHeader borderBottomWidth="1px">
+                        <DrawerCloseButton />
+                        <Logo size={["2em", "3em", "2em", "5em", "5em", "5em"]} color={ isDark ? "gray.50" : "gray.900" }/>
+                      </DrawerHeader>
                       <DrawerBody>
-                        <p>Some contents...</p>
-                        <p>Some contents...</p>
-                        <p>Some contents...</p>
+                        <NextChakraLink href="/sale" className={mainStyles.disableEvents}>
+                            <Heading size="lg" as="h4">BUY</Heading>
+                        </NextChakraLink>
+                        <NextChakraLink href="/">
+                            <Heading size="lg" as="h4">HOME</Heading>
+                        </NextChakraLink>
+                        <NextChakraLink href="/">
+                            <Heading size="lg" as="h4">ABOUT</Heading>
+                        </NextChakraLink>
+                        <NextChakraLink href="/sounds/all/1">
+                            <Heading size="lg" as="h4">SOUNDS</Heading>
+                        </NextChakraLink>
+                        <NextChakraLink href="/">
+                            <Heading size="lg" as="h4">COLLECTIONS</Heading>
+                        </NextChakraLink>
+                        
                       </DrawerBody>
                     </DrawerContent>
                   </Drawer>   

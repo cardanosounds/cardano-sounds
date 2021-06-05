@@ -1,6 +1,6 @@
 import React from "react"
 import NextChakraLink from './NextChakraLink'
-import { FaChevronRight, FaFileExport } from 'react-icons/fa';
+import { FaChevronRight, FaChevronLeft } from 'react-icons/fa';
 import utilStyles from '../styles/utils.module.css'
 import { FaGithub, FaTwitter, FaMediumM } from 'react-icons/fa';
 import { LinkBox, LinkOverlay } from "@chakra-ui/react"
@@ -36,14 +36,14 @@ export default function Hero() {
           direction={{ base: "column-reverse", md: "row" }}
           h={["60vh", "60vh", "60vh","70vh", "75vh", "80vh"]}
         >
-          { !exploring ? 
           <Stack
             w={{ base: "80vw", md: "75vw" }}
             align="left"
             mt={["0vh", "0vh", "35vh", "35vh", "15vh", "15vh"]}  
-            transition="all 0.6s ease-in-out"         
+                    
           >
-            <Flex w="100%" direction="row">
+             { !exploring ?
+             <Flex w="100%" direction="row">
               <Flex direction="column">
                 <Heading
                   as="h2"
@@ -51,6 +51,7 @@ export default function Hero() {
                   textAlign="left"
                   fontWeight="normal"
                   lineHeight="1"
+                  transition="all 0.3s ease-in-out" 
                 >
                   CARDANO
                 </Heading>
@@ -60,6 +61,7 @@ export default function Hero() {
                   textAlign="left"
                   fontWeight="normal"
                   lineHeight="1"
+                  transition="all 0.4s ease-in-out" 
                 >
                   SOUNDS
                 </Heading>
@@ -67,13 +69,13 @@ export default function Hero() {
               <Spacer />
               <Logo
                 size={[null, null, "10em", "10em", "15em", "18em"]}
-                color="#fff"
+                color={isDark ? "gray.50" : "gray.900"}
                 pos="absolute"
                 top={[null, null, "10vh", "20vh", "15vh", "15vh"]} 
-                right={[null, null, "15vw", "20vw", "20vw", "20vw"]}
+                right={[null, null, "15vw", "18vw", "18vw", "18vw"]}
                 display={["none", "none", "flex", "flex", "flex", "flex"]}
               />
-            </Flex>
+            </Flex> : <></>}
             <Flex
               direction={["column", "row", "row", "row" ]}
               w="100%"
@@ -84,6 +86,8 @@ export default function Hero() {
                 textAlign="left"
                 fontWeight="normal"
                 lineHeight="1"
+                display={exploring ? "none" : "initial"}
+                transition="all 0.5s ease-in-out"
               >
                 NFT
               </Heading>
@@ -93,11 +97,8 @@ export default function Hero() {
               <Button 
                 //href="/"
                 variant="ghost"
-                //borderColor="gray.600"
-                //borderTopWidth={{ base: "0.5vh", md: "0" }}
-                //borderLeftWidth={{ base: "0", md: "0.5vh" }}
                 textAlign="center"
-                onClick={ () => explore(true) }
+                onClick={ () => explore(!exploring) }
                 //padding="0 0.5vh 0.5vh 0.5vh"
                 width={["70%", "70%", "25%", "25%", "25%", "25%" ]}
                 mt={["4vh", "4vh", "5vh"]}
@@ -106,7 +107,10 @@ export default function Hero() {
                 position= "absolute"//{["inherit", "absolute", "absolute", "absolute"]}
                 right={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}
                 bottom={["10vh", "10vh", "15vh", "15vh", "15vh", "15vh"]}
+                transition="all 0.3s ease-in-out"
               >
+                {!exploring ?
+                <>
                 <FaChevronRight
                     //mt={{ base: "5vh", md: "4" }}
                   height="40%"
@@ -126,33 +130,48 @@ export default function Hero() {
                   //my={4}
                   //mx={4}
                   textDecoration="none"
+                  transition="all 0.3s ease-in-out"
                 >
                   EXPLORE
                 </Heading>
+                </> 
+                : 
+                <>
+                  <FaChevronLeft
+                      //mt={{ base: "5vh", md: "4" }}
+                    height="40%"
+                    aria-label="Explore CardanoSounds"
+                    //size="lg"
+                    fill="#4A5568"
+                    //color="gray.600"
+                  >
+                  </FaChevronLeft>
+                  <Heading
+                    as="h3"
+                    fontSize={["1rem", "1.125rem", "1.125rem", "1.5rem", "1.25rem", "1.5rem"]} 
+                    textAlign="center"
+                    fontWeight="normal"
+                    lineHeight="1"
+                    textColor="gray.600"
+                    //my={4}
+                    //mx={4}
+                    textDecoration="none"
+                    transition="all 0.3s ease-in-out"
+                  >
+                    BACK
+                  </Heading>
+                </>
+                }
               </Button>
             </Flex>
-          </Stack> 
-          : 
-          <>
-          <Stack
-            w={{ base: "80vw", md: "75vw" }}
-            align="left"
-            mt={["15vh", "15vh", "25vh", "30vh", "30vh"]}            
-          >
-            <Flex className={utilStyles.equalizer}>
-              <Stack className={utilStyles.eq1}></Stack>
-              <Stack className={utilStyles.eq2}></Stack>
-              <Stack className={utilStyles.eq3}></Stack>
-            </Flex>
-          </Stack>
-          </> 
-         }
+          </Stack>          
         <Stack 
             w={{ base: "5vw", md: "10vw" }}
             align="right"
             pos="absolute"
             right={["7vw", "4vw", "5vw", "5vw"]}
             bottom={[ "7vh", "10vh", "10vh", "15vh", "15vh", "15vh" ]}
+            transition="all 0.3s ease-in-out"
             //mt={{ base: "10vh", md: "15vh" }}
           >
             <Flex display={{ base: "none", md: "flex"}} direction="column" h="50vh">

@@ -1,13 +1,7 @@
-import React, { useState, useEffect } from 'react';
 import Head from 'next/head'
 import { Flex, useColorModeValue, Text, IconButton } from '@chakra-ui/react'
-import Image from 'next/image'
 import mainStyles from './layout.module.css'
-import utilStyles from '../styles/utils.module.css'
-import Link from 'next/link'
 import DarkModeSwitch from './DarkModeSwitchMenu'
-//import StickyNav from "react-sticky-nav";
-import Footer from './Footer';
 import Logo from './Logo';
 
 export const siteTitle = 'Cardano Sounds NFT'
@@ -19,7 +13,7 @@ export default function Layout({
   children: React.ReactNode
   home?: boolean
 }) {
-  const color = useColorModeValue("gray.50", "gray.900")
+  const color = useColorModeValue("gray.900", "gray.50")
   return (
     <Flex
       direction="column"
@@ -56,9 +50,10 @@ export default function Layout({
                     aria-label="Cardano Sounds home"
                     variant="ghost"
                     size="lg"
-                    icon={<Logo />}
+                    icon={<Logo color={ color } />}
                     display={["flex", "flex", "none", "none", "none", "none"]}
                     onClick={ () => {} }
+                    transition="all 0.3s ease-in-out"
                   />
               <DarkModeSwitch />
           </Flex>
@@ -72,40 +67,10 @@ export default function Layout({
             textAlign="center" 
             fontSize={{ base: "0.65rem", md: "1.125rem" }}
             fontFamily="Share Tech Mono, monospace"
-          >ALL RIGHTS RESERVED ©CARDANOSOUNDS</Text>
-
-        {/*  <Text 
-            right="1vw"
-            bottom="5vh"
-            position="fixed"
-            textAlign="center" 
-            fontSize="0.75rem" 
-            transform="rotate(-90deg)"
-            transformOrigin="0 0"
-          >All rights reserved ©CardanoSounds</Text>
-      {!home && (
-          <div className={mainStyles.backToHome}>
-            <Link href="/">
-              <a>← Back to home</a>
-            </Link>
-          </div>
-      )}*/}
-
+            transition="all 0.3s ease-in-out"
+          >ALL RIGHTS RESERVED ©CARDANOSOUNDS
+          </Text>
       </div>
-       {/* <Flex 
-        justify="center"
-        align="bottom"
-        //bgColor={color}
-        w="100vw"
-        position="relative"
-        bottom="0"
-        left="0"
-        right="0"
-        z-index="0"
-      >
-        <Footer></Footer>
-      </Flex>*/}
-
     </Flex>
 
   )

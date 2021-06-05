@@ -3,16 +3,16 @@ import { Box } from "@chakra-ui/react";
 import utilStyles from "../styles/utils.module.css"
 
 export default function Logo({ color, size, pos, top, right, display } : {
-    color?: string | Array<string>
-    size?: string | Array<string>
-    pos?: "absolute" | "initial" | Array<"absolute" | "initial">
-    top?: string | Array<string>
-    right?: string | Array<string>
-    display?: "none" | "flex" | Array<"none" | "flex">
+    color?: string | Array<string | null>
+    size?: string | Array<string | null>
+    pos?: "absolute" | "initial" | Array<"absolute" | "initial" | null>
+    top?: string | Array<string | null>
+    right?: string | Array<string | null>
+    display?: "none" | "flex" | Array<"none" | "flex"| null>
 }) {
     { }
     if(typeof(color) === "undefined") {
-        color = "#333"
+        color = "#fff"
     }
     if(typeof(size) === "undefined") {
         size = "5em"
@@ -41,7 +41,8 @@ export default function Logo({ color, size, pos, top, right, display } : {
       display={ display }
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 590 555.8"
-      fill="#fff"
+      fill={ color }
+      transition="all 0.6s ease-in-out" 
       //fill="#1f2127"
       //_hover={{
       //  fill: "brand.accent",

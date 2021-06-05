@@ -74,7 +74,7 @@
 
 .a {
   fill: none;
-  stroke: #fff;
+  /*stroke: #fff;*/
   stroke-miterlimit: 10;
 }
 
