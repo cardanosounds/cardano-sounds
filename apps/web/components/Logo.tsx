@@ -1,14 +1,16 @@
 import React from "react";
 import { Box } from "@chakra-ui/react";
 import utilStyles from "../styles/utils.module.css"
+import { MouseEventHandler } from "react";
 
-export default function Logo({ color, size, pos, top, right, display } : {
+export default function Logo({ color, size, pos, top, right, display, onclick } : {
     color?: string | Array<string | null>
     size?: string | Array<string | null>
     pos?: "absolute" | "initial" | Array<"absolute" | "initial" | null>
     top?: string | Array<string | null>
     right?: string | Array<string | null>
     display?: "none" | "flex" | Array<"none" | "flex"| null>
+    onclick?: Function
 }) {
     { }
     if(typeof(color) === "undefined") {
@@ -43,6 +45,7 @@ export default function Logo({ color, size, pos, top, right, display } : {
       viewBox="0 0 590 555.8"
       fill={ color }
       transition="all 0.6s ease-in-out" 
+      onClick= { onclick as MouseEventHandler<HTMLDivElement> & MouseEventHandler<SVGSVGElement> }
       //fill="#1f2127"
       //_hover={{
       //  fill: "brand.accent",

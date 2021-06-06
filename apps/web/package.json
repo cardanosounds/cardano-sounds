@@ -26,7 +26,8 @@
     "react-icons": "^4.2.0",
     "react-sticky-nav": "^4.0.6",
     "remark": "^13.0.0",
-    "remark-html": "^13.0.1"
+    "remark-html": "^13.0.1",
+    "use-sound": "^4.0.0"
   },
   "devDependencies": {
     "@types/node": "^15.0.2",
