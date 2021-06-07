@@ -75,32 +75,6 @@ export default function Hero() {
       sweep: [20000,781.3832199546482]
     }
   })
-  /*sound.on('end', function( soundId: any ) {
-    console.log(sound)
-    switch(sound.nodeById( soundId ).sprite) {
-      case "futuristicbasshit" : {
-        // h2
-        h2play(false)
-        break
-      }
-      case "drumbasshit" : {
-        // h1
-        h1play(false)
-        break
-      }
-      case "shortbasshit" : {
-        // h3
-        h3play(false)
-        break
-      }
-      case "retrogamenotif" : {
-        // logo
-        logoplay(false)
-        break
-      }
-      default: break
-    }
-  })*/
   return (
 
         <Flex
@@ -127,6 +101,7 @@ export default function Hero() {
                   fontWeight="normal"
                   lineHeight="1"
                   transition="all 0.3s ease-in-out" 
+                  className={utilStyles.pointerOnHover}
                   onClick={ 
                     !h1playing ? 
                       () => {
@@ -149,6 +124,7 @@ export default function Hero() {
                   fontWeight="normal"
                   lineHeight="1"
                   transition="all 0.4s ease-in-out" 
+                  className={utilStyles.pointerOnHover}
                   onClick={ 
                   !h2playing ? 
                     () => {
@@ -198,6 +174,7 @@ export default function Hero() {
                 fontWeight="normal"
                 lineHeight="1"
                 display={exploring ? "none" : "initial"}
+                className={utilStyles.pointerOnHover}
                 transition="all 0.5s ease-in-out"
                 onClick={ 
                   !h3playing ? 

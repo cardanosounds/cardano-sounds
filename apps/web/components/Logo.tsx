@@ -45,6 +45,7 @@ export default function Logo({ color, size, pos, top, right, display, onclick } 
       viewBox="0 0 590 555.8"
       fill={ color }
       transition="all 0.6s ease-in-out" 
+      className={utilStyles.pointerOnHover}
       onClick= { onclick as MouseEventHandler<HTMLDivElement> & MouseEventHandler<SVGSVGElement> }
       //fill="#1f2127"
       //_hover={{

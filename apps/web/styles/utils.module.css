@@ -164,3 +164,6 @@
   animation-delay: 0.34s;
 }
 
+.pointerOnHover:hover {
+  cursor: pointer;
+}
