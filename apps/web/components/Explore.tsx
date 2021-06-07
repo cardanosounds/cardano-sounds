@@ -17,19 +17,26 @@ export default function Explore() {
         <>
             <Flex w="100%" direction="row">
                 
-                <Flex direction="column" w="45vw" fontSize="1.75rem" textAlign="left" minH="50vh" mb="5vh">
+                <Flex 
+                    direction="column" 
+                    w={["45vw", "45vw", "46vw", "46vw", "45vw", "45vw"]} 
+                    fontSize={["0.625rem", "0.75rem", "0.85rem", "1rem", "1.5rem", "1.75rem"]} 
+                    textAlign="left" 
+                    minH="50vh"
+                    mb="5vh"
+                >
                   <Flex>
-                    <Text size="lg">
+                    <Text>
                       WE ARE BRINGING AUDIO NFTS CREATED BY YOU / YOUR TRANSACTION
                     </Text>
                    
                   </Flex>
                   <Spacer/>
-                  <Text size="xl">
+                  <Text>
                     TRACKS ARE ALGORITHMICALLY PUT TOGETHER WITH OUR ORIGINAL SOUNDS
                   </Text>
                   <Spacer/>
-                  <Text size="2xl">
+                  <Text>
                     WHICH MAKES EACH TRACK UNIQUE AND YOURS
                   </Text>
                   <Spacer/> 

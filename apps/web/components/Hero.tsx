@@ -91,7 +91,7 @@ export default function Hero() {
           <Stack
             w={{ base: "80vw", md: "75vw" }}
             align="left"
-            mt={["0vh", "0vh", "35vh", "35vh", "0vh", "0vh"]}  
+            mt={["0vh", "0vh", "15vh", "15vh", "0vh", "0vh"]}  
                     
           >
              { !exploring ?
@@ -149,7 +149,7 @@ export default function Hero() {
                 size={ logoplaying ?  [null, null, "11em", "11em", "16em", "19em"] : [null, null, "10em", "10em", "15em", "18em"]}
                 color={isDark ? "gray.50" : "gray.900"}
                 pos="absolute"
-                top={[null, null, "10vh", "20vh", "15vh", "15vh"]} 
+                top={[null, null, "15vh", "15vh", "15vh", "15vh"]} 
                 right={[null, null, "15vw", "18vw", "18vw", "18vw"]}
                 display={["none", "none", "flex", "flex", "flex", "flex"]}
                 onclick={ 

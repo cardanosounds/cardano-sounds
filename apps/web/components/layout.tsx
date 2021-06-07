@@ -1,8 +1,8 @@
 import Head from 'next/head'
 import { Flex, useColorModeValue, Text, IconButton } from '@chakra-ui/react'
 import mainStyles from './layout.module.css'
-import DarkModeSwitch from './DarkModeSwitchMenu'
 import Logo from './Logo';
+import DarkModeSwitchMenu from './DarkModeSwitchMenu';
 
 export const siteTitle = 'Cardano Sounds NFT'
 
@@ -55,7 +55,7 @@ export default function Layout({
                     onClick={ () => {} }
                     transition="all 0.3s ease-in-out"
                   />
-              <DarkModeSwitch />
+              <DarkModeSwitchMenu />
           </Flex>
         </header>
           <main >{children}</main>
