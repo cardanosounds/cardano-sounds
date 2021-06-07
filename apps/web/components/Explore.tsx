@@ -1,7 +1,7 @@
 import React from "react"
 import { Flex, Text, Spacer, IconButton, Button, Heading, useColorMode } from "@chakra-ui/react"
 import {  Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverHeader } from "@chakra-ui/react"
-import { QuestionIcon } from "@chakra-ui/icons"
+import { InfoIcon, QuestionIcon } from "@chakra-ui/icons"
 import Logo from "./Logo"
 import NextChakraLink from "./NextChakraLink"
 import { FaChevronRight } from 'react-icons/fa';
@@ -52,7 +52,7 @@ export default function Explore() {
                         left={["2vw", "2vw", "12vw", "12vw", "12vw", "12vw"]}
                         bottom={["10vh", "10vh", "15vh", "15vh", "15vh", "15vh"]}
                         color="gray.600"
-                        icon={<QuestionIcon />}/>
+                        icon={<InfoIcon />}/>
                     </PopoverTrigger>
                     <PopoverContent>
                       <PopoverArrow />
