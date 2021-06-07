@@ -4,7 +4,7 @@ import { FaChevronRight, FaChevronLeft } from 'react-icons/fa';
 import utilStyles from '../styles/utils.module.css'
 import { FaGithub, FaTwitter, FaMediumM } from 'react-icons/fa';
 import useSound from 'use-sound';
-import { LinkBox, LinkOverlay } from "@chakra-ui/react"
+import { Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader, PopoverTrigger } from "@chakra-ui/react"
 import mainStyles from './layout.module.css'
 import { useState } from 'react'
 import {
@@ -21,6 +21,9 @@ import {
   Spacer
 } from "@chakra-ui/react"
 import Logo from "./Logo";
+import { QuestionIcon } from "@chakra-ui/icons";
+import Explore from "./Explore";
+import VerticalSocialLinks from "./VerticalSocialLinks";
  
 export default function Hero() {
   const { colorMode } = useColorMode()
@@ -36,8 +39,8 @@ export default function Hero() {
 
   }
 
-  const [play, { stop, sound }] = useSound("/sounds/landingSprite.mp3", {
-     onend: function( soundId: any ) {
+  const [play, { stop }] = useSound("/sounds/landingSprite.mp3", {
+     onend: function() {
         console.log(this)
         const self = this
         switch(self._sounds[0]._sprite) {
@@ -83,12 +86,12 @@ export default function Hero() {
           // bgColor={isDark ? ("gray.900") : ("gray.50")}
           // justify={{ base: "center", md: "space-around", xl: "space-between" }}
           direction={{ base: "column-reverse", md: "row" }}
-          h={["60vh", "60vh", "60vh","70vh", "75vh", "80vh"]}
+          minH={["60vh", "60vh", "60vh", "70vh", "100vh", "100vh"]}
         >
           <Stack
             w={{ base: "80vw", md: "75vw" }}
             align="left"
-            mt={["0vh", "0vh", "35vh", "35vh", "15vh", "15vh"]}  
+            mt={["0vh", "0vh", "35vh", "35vh", "0vh", "0vh"]}  
                     
           >
              { !exploring ?
@@ -162,14 +165,19 @@ export default function Hero() {
                     }
                 }
               />
-            </Flex> : <></>}
+            </Flex> 
+            : 
+            <>
+              <Explore />
+            </>
+            }
             <Flex
               direction={["column", "row", "row", "row" ]}
               w="100%"
             >
               <Heading
                 as="h2"
-                fontSize={ h3playing ? [ "6.125rem", "6.25rem", "6.3rem", "7.25rem", "9rem", "12rem" ]: [ "6rem", "6rem", "6rem", "6.75rem", "8rem", "11rem" ]} 
+                fontSize={ h3playing ? [ "6.125rem", "6.25rem", "6.3rem", "7.25rem", "9rem", "12rem" ] : [ "6rem", "6rem", "6rem", "6.75rem", "8rem", "11rem" ]} 
                 textAlign="left"
                 fontWeight="normal"
                 lineHeight="1"
@@ -238,7 +246,7 @@ export default function Hero() {
                 : 
                 <>
                   <FaChevronLeft
-                      //mt={{ base: "5vh", md: "4" }}
+                    //mt={{ base: "5vh", md: "4" }}
                     height="40%"
                     aria-label="Explore CardanoSounds"
                     //size="lg"
@@ -264,113 +272,11 @@ export default function Hero() {
                 }
               </Button>
             </Flex>
-          </Stack>          
-        <Stack 
-            w={{ base: "5vw", md: "10vw" }}
-            align="right"
-            pos="absolute"
-            right={["7vw", "4vw", "5vw", "5vw"]}
-            bottom={[ "7vh", "10vh", "10vh", "15vh", "15vh", "15vh" ]}
-            transition="all 0.3s ease-in-out"
-            //mt={{ base: "10vh", md: "15vh" }}
-          >
-            <Flex display={{ base: "none", md: "flex"}} direction="column" h="50vh">
-              <Heading 
-                display={["none", "none", "flex", "flex"]} 
-                size="lg" 
-                as="h3"
-                className={ isDark ? mainStyles.linkLight : mainStyles.link}
-                //writingMode="tb" 
-                onClick={()=>{}}
-              >TWITTER
-              </Heading>
-              <Spacer />
-              <Heading 
-                display={["none", "none", "flex", "flex"]} 
-                size="lg" 
-                as="h3"
-                className={ isDark ? mainStyles.linkLight : mainStyles.link}
-                //writingMode="tb" 
-                onClick={()=>{}}
-              > GITHUB
-              </Heading>
-              <Spacer />
-              <Heading 
-                display={["none", "none", "flex", "flex"]} 
-                size="lg" 
-                as="h3"
-                className={ isDark ? mainStyles.linkLight : mainStyles.link}
-                //writingMode="tb" 
-                onClick={()=>{}}
-              > MEDIUM
-              </Heading>
-            </Flex>
-            <Flex 
-              justify="center"
-              align="center"
-              direction="column"
-              display={{ base: "flex", md: "none"}}
-            >
-                <NextChakraLink href="https://twitter.com/CardanoSounds">
-                  <IconButton
-                    variant="ghost"
-                    mt={2}
-                    mr={2} 
-                    aria-label="Twitter Cardano Sounds"
-                    size="lg"
-                    icon={
-                          <FaTwitter />
-                    }
-                  />
-                </NextChakraLink>
-                <NextChakraLink href="https://github.com/zachyking/CardanoSounds">
-                  <IconButton
-                    variant="ghost"
-                    mt={2}
-                    mr={2} 
-                    aria-label="Git Cardano Sounds"
-                    size="lg"
-                    icon={
-                          <FaGithub />
-                    }
-                  />
-                </NextChakraLink>
-                 <NextChakraLink href="https://cardanosounds.medium.com">
-                  <IconButton
-                    variant="ghost"
-                    mt={2}
-                    mr={2} 
-                    aria-label="Medium Cardano Sounds"
-                    size="lg"
-                    icon={
-                          <FaMediumM />
-                    }
-                  />
-                </NextChakraLink>
-            </Flex>
+          </Stack>   
 
-          </Stack> 
-          
-         {/*  
-            >
-                <Button
-                  borderRadius="8px"
-                  py={4}
-                  lineHeight={0.75}
-                  size="md"
-                  aria-label="Get NFT"
-                >Explore</Button>
-            </NextChakraLink>
-         
-          
-         
-          */}
-         {/* <Box  w={{ base: "80%", sm: "60%", md: "50%" }} mb={{ base: 0, md: 0 }} mt={{ base: 6, md: 0 }}>
-           <Image src="/new-logo.svg" size="100%" rounded="50%" shadow="2xl" /> 
-           <Image src="/new-logo-big.svg" size="100%" />
-          </Box>*/}
+          <VerticalSocialLinks />
 
-        </Flex>
+      </Flex>
 
   )
 }
