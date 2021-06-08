@@ -35,9 +35,10 @@ export default function Hero() {
   const [ logoplaying, logoplay ]= useState<boolean>(false)
 
 
-  const playSound = (id: string) => {
-
+  const goBackFunc = () => {
+      explore(false)
   }
+
 
   const [play, { stop }] = useSound("/sounds/landingSprite.mp3", {
      onend: function() {
@@ -168,7 +169,7 @@ export default function Hero() {
             </Flex> 
             : 
             <>
-              <Explore />
+              <Explore goBackFunc={  goBackFunc } />
             </>
             }
             <Flex
@@ -216,6 +217,7 @@ export default function Hero() {
                 right={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}
                 bottom={["10vh", "10vh", "15vh", "15vh", "15vh", "15vh"]}
                 transition="all 0.3s ease-in-out"
+                display={ exploring ? ["none", "none", "flex"] : "flex"}
               >
                 {!exploring ?
                 <>

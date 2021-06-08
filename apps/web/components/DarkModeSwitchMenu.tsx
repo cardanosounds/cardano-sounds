@@ -91,28 +91,21 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                         <NextChakraLink href="/">
                             <Heading size="lg" as="h4">ABOUT</Heading>
                         </NextChakraLink>
+                        <NextChakraLink href="/">
+                            <Heading size="lg" as="h4">NFTS</Heading>
+                        </NextChakraLink>
                         <NextChakraLink href="/sounds/all/1">
                             <Heading size="lg" as="h4">SOUNDS</Heading>
                         </NextChakraLink>
-                        <NextChakraLink href="/">
-                            <Heading size="lg" as="h4">COLLECTIONS</Heading>
-                        </NextChakraLink>
+                        
                         
                       </DrawerBody>
                     </DrawerContent>
                   </Drawer>   
                   <Spacer/>
                   <Flex right={0}>
-                    {/*<IconButton 
-                      variant="ghost"
-                      aria-label="Toggle Dark Switch"
-                      icon={isDark ? <SunIcon/> : <MoonIcon/>}
-                      onClick={toggleColorMode}
-                    />*/}
                     <Flex direction="column">
                       <Switch
-                        //margin={["1em 1em", "0em 1.5em 0em 0em", "1em 1em", "1em 1em"]}
-                        //margin-left={["0", "0", "2vw", "2vw"]}
                         position="absolute"
                         right={["8vw", "6vw", "5vw", "5vw"]}
                         top="5vh"
@@ -124,12 +117,10 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                             top="15vh"
                             right="0">
                           <IconButton 
-                            //margin={["2em 0.5em 0.25em 1.5em", "0.5em 0.5em 0.25em 3.25em", "4em 0.5em 0.25em 6em",  "4em 0.5em 0.25em 10.5em"]}
                             aria-label="Open Menu"
                             variant="ghost"
                             size="lg"
                             icon={<FaChevronLeft/>}  
-                            //display="flex"
                             onClick={ onOpen } 
                             display={["flex", "flex", "flex", "flex"]} 
                             position="absolute"
@@ -141,102 +132,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
 
                   </Flex>
               </Flex>
-            </Flex>
-            
-            <Flex
-              w="100vw"
-              bgColor={isDark ? ("gray.900") : ("gray.50")}
-              zIndex="dropdown"
-              h="100vh"
-              pos="relative"
-              top="0"
-              display={display}
-              left="0"
-              overflow="hidden"
-              flexDir="column"
-              as="nav"
-            >
-                <Flex justify="flex-end"
-                >
-                    <IconButton
-                      variant="ghost"
-                      mt={2}
-                      mr={2} 
-                      aria-label="Close Menu"
-                      size="lg"
-                      icon={
-                          <CloseIcon />
-                      }
-                      onClick={closeMenu}
-                    />
-                </Flex>
-                <Flex
-                  flexDir="column"
-                  align="center"
-                >
-                    <NextChakraLink href="/">
-                        <Button
-                          variant="ghost"
-                          aria-label="Home"
-                          my={5}
-                          w="100%"
-                          onClick={closeMenu}
-                        >Home</Button>
-                    </NextChakraLink>
-                    <NextChakraLink  href="#collections">
-                        <Button
-                          variant="ghost"
-                          aria-label="Collections"
-                          my={5}
-                          w="100%"
-                          onClick={closeMenu}
-                        >Collections</Button>
-                    </NextChakraLink>
-                    {/* <NextChakraLink href="/collections/mysticwave">
-                        <Button
-                          variant="ghost"
-                          aria-label="Mystic waves"
-                          my={5}
-                          w="100%"
-                          onClick={ () => changeDisplay('none')}
-                        >Mystic waves</Button> 
-                    </NextChakraLink>*/}
-                    <NextChakraLink href="#contact">
-                        <Button
-                          variant="ghost"
-                          aria-label="Contact"
-                          my={5}
-                          w="100%"
-                          onClick={ closeMenu }
-                        >Contact</Button>
-                    </NextChakraLink>
-                    <NextChakraLink href="/sale" className={mainStyles.disableEvents}>
-                      <Flex
-                        align="center"
-                        display="flex"
-                      >
-                        <Button
-                            disabled
-                            variant="ghost"
-                            aria-label="Sale"
-                            my={5}
-                            w="100%"
-                            onClick={ closeMenu}
-                        >Sale</Button>
-                        <h2 className={mainStyles.rotate} >
-                          Coming Soon!
-                        </h2>
-                      </Flex>
-                    </NextChakraLink>
-                </Flex>
-                
-            </Flex>
-            
+            </Flex>           
         </Flex>
     )
-    // <IconButton 
-        //     aria-label="Toggle Dark Switch"
-        //     icon={colorMode === 'dark' ? <SunIcon/> : <MoonIcon/>}
-        //     onClick={toggleColorMode}
-        // />
 }
