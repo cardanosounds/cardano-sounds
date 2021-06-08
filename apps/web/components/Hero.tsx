@@ -87,16 +87,16 @@ export default function Hero() {
           // bgColor={isDark ? ("gray.900") : ("gray.50")}
           // justify={{ base: "center", md: "space-around", xl: "space-between" }}
           direction={{ base: "column-reverse", md: "row" }}
-          minH={["60vh", "60vh", "60vh", "70vh", "100vh", "100vh"]}
+          minH={["60vh", "60vh", "60vh", "80vh", "100vh", "100vh"]}
         >
           <Stack
             w={{ base: "80vw", md: "75vw" }}
             align="left"
-            mt={["0vh", "0vh", "15vh", "15vh", "0vh", "0vh"]}  
-                    
           >
              { !exploring ?
-             <Flex w="100%" direction="row">
+             <Flex w="100%" direction="row"
+              mt={["25vh", "25vh", "12vh", "15vh", "0vh", "0vh"]} 
+             >
               <Flex direction="column">
                 <Heading
                   as="h2"
@@ -215,7 +215,7 @@ export default function Hero() {
                 className={utilStyles.shadow}
                 position= "absolute"//{["inherit", "absolute", "absolute", "absolute"]}
                 right={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}
-                bottom={["10vh", "10vh", "15vh", "15vh", "15vh", "15vh"]}
+                bottom={["12vh", "12vh", "15vh", "15vh", "15vh", "15vh"]}
                 transition="all 0.3s ease-in-out"
                 display={ exploring ? ["none", "none", "flex"] : "flex"}
               >

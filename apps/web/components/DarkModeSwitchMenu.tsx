@@ -101,7 +101,24 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                         
                       </DrawerBody>
                     </DrawerContent>
-                  </Drawer>   
+                  </Drawer>
+                  <IconButton 
+                    align="flex-start"
+                    //50vw 5vh
+                    margin={["7vh 0 0 8vw", "7vh 0 0 8vw", "7vh 0.5em 0.25em 3em", "7vh 0.5em 0.25em 4em", "5vh 0.5em 0.25em 6em",  "5vh 0.5em 0.25em 11em"]}
+                    aria-label="Cardano Sounds home"
+                    variant="ghost"
+                    size="lg"
+                    icon={
+                      <Logo 
+                        size={["4em", "4em", "4em", "4em", "5em" ]}
+                        color={isDark ? ("gray.50") : ("gray.900")} 
+                      />
+                    }
+                    display={ home ? ["flex", "flex", "none"] : "flex"}
+                    onClick={ () => {} }
+                    transition="all 0.3s ease-in-out"
+                  />   
                   <Spacer/>
                   <Flex right={0}>
                     <Flex direction="column">

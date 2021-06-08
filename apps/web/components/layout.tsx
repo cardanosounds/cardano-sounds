@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { Flex, useColorModeValue, Text, IconButton } from '@chakra-ui/react'
+import { Flex, useColorModeValue, Text, IconButton, Spacer } from '@chakra-ui/react'
 import mainStyles from './layout.module.css'
 import Logo from './Logo';
 import DarkModeSwitchMenu from './DarkModeSwitchMenu';
@@ -43,26 +43,17 @@ export default function Layout({
         <header  className={mainStyles.header}>
           
           <Flex direction="row" className={mainStyles.stickyNav}>
-              <IconButton 
-                    align="flex-start"
-                    //50vw 5vh
-                    margin={["7vh 50vw 0 0", "7vh 60vw 0 0", "0em 0.5em 0.25em 3em", "2.5em 0.5em 0.25em 4em", "4em 0.5em 0.25em 6em",  "0em 0.5em 0.25em 11em"]}
-                    aria-label="Cardano Sounds home"
-                    variant="ghost"
-                    size="lg"
-                    icon={<Logo color={ color } />}
-                    display={["flex", "flex", "none", "none", "none", "none"]}
-                    onClick={ () => {} }
-                    transition="all 0.3s ease-in-out"
-                  />
-              <DarkModeSwitchMenu />
+              
+              <DarkModeSwitchMenu home={home} />
           </Flex>
         </header>
           <main >{children}</main>
+          <Spacer />
           <Text 
             left="0"
             bottom={{ base: "3vh", md: "5vh"}}
-            position="fixed"
+            position={home ? "fixed" : ["initial", "initial", "initial", "initial", "fixed"]}
+            my="5vh"
             right="0"
             textAlign="center" 
             fontSize={{ base: "0.65rem", md: "1.125rem" }}
