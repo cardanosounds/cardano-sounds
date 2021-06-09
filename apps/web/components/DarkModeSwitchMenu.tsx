@@ -44,7 +44,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
      if (prevScrollpos > currentScrollPos) {
        document.getElementById("navbar").style.marginTop = "0px";
      } else {
-       document.getElementById("navbar").style.marginTop = "-100px";
+       document.getElementById("navbar").style.marginTop = "-30vh";
      }
      prevScrollpos = currentScrollPos;
    }}, [])
@@ -67,7 +67,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
               justify="center"
               wrap="wrap"
               id="navbar" 
-              transition="all 0.3s ease-out"
+              transition="all 0.3s ease-in-out"
 
             >
                 <Flex

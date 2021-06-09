@@ -20,7 +20,7 @@ export default function Explore({ goBackFunc } : { goBackFunc : Function }) {
                 <Flex 
                     direction="column" 
                     w={["80vw", "80vw", "46vw", "46vw", "45vw", "45vw"]} 
-                    fontSize={["0.625rem", "0.75rem", "0.8rem", "0.9rem", "1.25rem", "1.75rem"]} 
+                    fontSize={["0.725rem", "0.825rem", "0.9rem", "0.9rem", "1.25rem", "1.75rem"]} 
                     textAlign="left" 
                     minH={["20vh", "20vh", "50vh"]}
                     mb={["0vh", "0vh", "0vh", "0vh", "5vh"]}
@@ -28,16 +28,16 @@ export default function Explore({ goBackFunc } : { goBackFunc : Function }) {
                 >
                   <Flex>
                     <Text>
-                      WE ARE BRINGING AUDIO NFTS CREATED BY YOU / YOUR TRANSACTION
+                      We are bringing audio NFTs created by you / your transaction
                     </Text>
                   </Flex>
                   <Spacer/>
                   <Text>
-                    WHEN WE RECEIVE TRANSACTION, MUSIC CLIP IS ALGORITHMICALLY PUT TOGETHER WITH OUR ORIGINAL SOUNDS, MINTED AND SENT TO YOU
+                    When we receive transaction, music clip is algorithmically put together with our original sounds, minted and sent to you
                   </Text>
                   <Spacer/>
                   <Text>
-                    WHICH MAKES EACH TRACK UNIQUE AND YOURS
+                    Which makes each track unique and <strong>yours</strong>
                   </Text>
                   <Spacer/> 
                 </Flex>

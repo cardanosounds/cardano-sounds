@@ -95,12 +95,12 @@ export default function Hero() {
           >
              { !exploring ?
              <Flex w="100%" direction="row"
-              mt={["25vh", "25vh", "12vh", "15vh", "0vh", "0vh"]} 
+              mt={["25vh", "28vh", "12vh", "15vh", "0vh", "0vh"]} 
              >
               <Flex direction="column">
                 <Heading
                   as="h2"
-                  fontSize={ h1playing ? [ "3.75rem", "3.75rem", "4rem", "4.75rem", "6rem", "10rem" ] : [ "3.5rem", "3.5rem", "3.75rem", "4.25rem", "5.125rem", "9rem" ]}
+                  fontSize={ h1playing ? [ "3.75rem", "4.25rem", "4rem", "4.75rem", "6rem", "10rem" ] : [ "3.5rem", "4rem", "3.75rem", "4.25rem", "5.125rem", "9rem" ]}
                   textAlign="left"
                   fontWeight="normal"
                   lineHeight="1"
@@ -123,7 +123,7 @@ export default function Hero() {
                 </Heading>
                 <Heading
                   as="h2"
-                  fontSize={ h2playing ? [ "4.3rem", "4.4rem", "5rem", "5.75rem", "6.5rem", "11.5rem" ] : [ "4.1rem", "4.1rem", "4.5rem", "5rem", "6rem", "10.5rem" ]}
+                  fontSize={ h2playing ? [ "4.3rem", "5rem", "5rem", "5.75rem", "6.5rem", "11.5rem" ] : [ "4.1rem", "4.75rem", "4.5rem", "5rem", "6rem", "10.5rem" ]}
                   textAlign="left"
                   fontWeight="normal"
                   lineHeight="1"
@@ -178,7 +178,7 @@ export default function Hero() {
             >
               <Heading
                 as="h2"
-                fontSize={ h3playing ? [ "6.125rem", "6.25rem", "6.3rem", "7.25rem", "9rem", "12rem" ] : [ "6rem", "6rem", "6rem", "6.75rem", "8rem", "11rem" ]} 
+                fontSize={ h3playing ? [ "6.125rem", "9rem", "6.3rem", "7.25rem", "9rem", "12rem" ] : [ "6rem", "8rem", "6rem", "6.75rem", "8rem", "11rem" ]} 
                 textAlign="left"
                 fontWeight="normal"
                 lineHeight="1"
