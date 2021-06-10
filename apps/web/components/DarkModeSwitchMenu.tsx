@@ -1,4 +1,4 @@
-import { useColorMode, Switch, Flex, Button, IconButton, Spacer, Heading, Image, Icon, useDisclosure } from '@chakra-ui/react'
+import { useColorMode, Switch, Flex, Button, IconButton, Spacer, Heading, Box, Image, Icon, useDisclosure } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
 import { FaChevronLeft } from 'react-icons/fa';
 import { AiOutlineMenuFold } from 'react-icons/ai'
@@ -82,7 +82,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                         <Logo size={["2em", "3em", "2em", "5em", "5em", "5em"]} color={ isDark ? "gray.50" : "gray.900" }/>
                       </DrawerHeader>
                       <DrawerBody>
-                        <NextChakraLink href="/sale" className={mainStyles.disableEvents}>
+                        <NextChakraLink href="/prebuy" className={mainStyles.disableEvents}>
                             <Heading size="lg" as="h4">BUY</Heading>
                         </NextChakraLink>
                         <NextChakraLink href="/">
@@ -94,31 +94,32 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                         <NextChakraLink href="/">
                             <Heading size="lg" as="h4">NFTS</Heading>
                         </NextChakraLink>
-                        <NextChakraLink href="/sounds/all/1">
+                        {/*<NextChakraLink href="/sounds/all/1">
                             <Heading size="lg" as="h4">SOUNDS</Heading>
-                        </NextChakraLink>
+                        </NextChakraLink>*/}
                         
                         
                       </DrawerBody>
                     </DrawerContent>
                   </Drawer>
-                  <IconButton 
-                    align="flex-start"
-                    //50vw 5vh
-                    margin={["7vh 0 0 8vw", "7vh 0 0 8vw", "7vh 0.5em 0.25em 3em", "7vh 0.5em 0.25em 4em", "5vh 0.5em 0.25em 6em",  "5vh 0.5em 0.25em 11em"]}
-                    aria-label="Cardano Sounds home"
-                    variant="ghost"
-                    size="lg"
-                    icon={
+                  <NextChakraLink href="/">
+                    <Box 
+                      align="flex-start"
+                      //50vw 5vh
+                      margin={["7vh 0 0 8vw", "7vh 0 0 8vw", "7vh 0.5em 0.25em 3em", "7vh 0.5em 0.25em 4em", "5vh 0.5em 0.25em 6em",  "5vh 0.5em 0.25em 11em"]}
+                      aria-label="Cardano Sounds home"
+                      variant="ghost"
+                      size="lg"
+                      display={ home ? ["flex", "flex", "none"] : "flex"}
+                      onClick={ () => {} }
+                      transition="all 0.3s ease-in-out"
+                    >
                       <Logo 
-                        size={["4em", "4em", "4em", "4em", "5em" ]}
-                        color={isDark ? ("gray.50") : ("gray.900")} 
+                          size={["4em", "4em", "4em", "4em", "5em" ]}
+                          color={isDark ? ("gray.50") : ("gray.900")} 
                       />
-                    }
-                    display={ home ? ["flex", "flex", "none"] : "flex"}
-                    onClick={ () => {} }
-                    transition="all 0.3s ease-in-out"
-                  />   
+                    </Box>
+                  </NextChakraLink>
                   <Spacer/>
                   <Flex right={0}>
                     <Flex direction="column">
