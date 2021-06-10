@@ -42,6 +42,7 @@ export default function PreBuy() {
                                         ml="2vw"
                                         onMouseEnter={() => setIsTooltipOpen(true)}
                                         onMouseLeave={() => setIsTooltipOpen(false)}
+                                        onClick={() => setIsTooltipOpen}
                                     />
                                 </Tooltip>
                         </ListItem>
@@ -70,7 +71,7 @@ export default function PreBuy() {
                     <Flex direction={["column", "column", "row", "row"]} w={["100%", "100%", "100%", "100%", "100%", "90%"]}>
                         <NextChakraLink href="/">
                             <Button 
-                              width={["70vw", "70vw", "25vw", "25vw", "25vw", "25vw" ]}
+                              width={["80vw", "80vw", "25vw", "25vw", "25vw", "25vw" ]}
                               mt={["1vh", "1vh", "5vh"]}
                               height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]}
                               variant="ghost"
@@ -89,7 +90,7 @@ export default function PreBuy() {
                           <Spacer/>
                           <NextChakraLink href="/buy">
                             <Button 
-                              width={["70vw", "70vw", "25vw", "25vw", "25vw", "25vw" ]}
+                              width={["80vw", "80vw", "25vw", "25vw", "25vw", "25vw" ]}
                               mt={["1vh", "1vh", "5vh"]}
                               height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]}
                               variant="ghost"

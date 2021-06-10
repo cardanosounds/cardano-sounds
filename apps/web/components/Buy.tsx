@@ -44,24 +44,25 @@ export default function Buy(){
                 align="center"
                 margin="auto"
                 maxW="80vw"
-                mt={["25vh", "25vh", "25vh", "25vh", "20vh", "20vh"]}
+                mt={["25vh", "25vh", "30vh", "30vh", "20vh", "20vh"]}
                 direction="column"
-                minH="60vh"
+                minH="65vh"
             >   
                 <Heading
                     as="h1"
                     size="xl"
-                    textAlign={["left", "left", "left", "left", "center", "center"]}
+                    textAlign={["left", "left", "left", "center", "center", "center"]}
                     w="100%"
-                    mb={["unset", "unset", "5vh"]}
+                    mb={["unset", "unset", "unset", "unset", "5vh"]}
+                    mt={["unset"]}
                 >
                     BUY CARDANO SOUNDS NFT
                 </Heading>
-                <Stack spacing={9} w={["100%", "100%", "70vw"]} direction={["column", "column", "row"]}>
+                <Stack spacing={9} w={["100%", "100%", "100%", "70vw"]} direction={["column", "column", "column", "column", "row"]}>
                     
                     <InputGroup 
-                        mt={["5vh", "5vh", "unset"]}
-                        display={mobileTxSearch ? "display" : ["none", "none", "display"]}
+                        mt={["5vh", "5vh", "5vh", "5vh", "unset"]}
+                        display={txStatus ? "none" : mobileTxSearch ? "flex" : "none"}
                     >
                         <Input 
                             placeholder="Check status for txid" 
@@ -73,12 +74,18 @@ export default function Buy(){
                         <InputRightElement onClick={ search } children={<SearchIcon color="gray.600" />} />
                     </InputGroup>
                     
-                    <Flex direction="column"> 
+                    <Flex direction="column"
+                        //position={mobileTxSearch ? ["unset", "unset", "absolute"] : "unset"}
+                        bottom="15vh"
+                        left="10vw"
+                        maxW={["unset", "unset", "unset", "unset", "60vw"]}
+
+                    > 
                         {txStatus ? 
                         <Transaction id={searchValue} />
                         : mobileTxSearch ? <></> :
                         <>  
-                            <List spacing={9} ml="0" marginInlineEnd="auto" mt={["3vh", "2vh", "5vh"]} >
+                            <List spacing={9} ml="0" marginInlineEnd="auto" mt={["3vh", "2vh", "3vh", "5vh"]} >
                                 <ListItem>
                                     <ListIcon as={IoMdPricetag} color="yellow.400" />
                                         Price 50ADA
@@ -96,8 +103,8 @@ export default function Buy(){
                         </>
                         }
                         <Button 
-                           width={["80vw", "80vw", "25vw", "25vw", "25vw", "25vw" ]}
-                           mt={["1vh", "1vh", "5vh"]}
+                           width={["80vw", "80vw", "80vw", "70vw", "25vw", "25vw"]}
+                           mt={["1vh", "1vh", "1vh", "1vh", "1vh", "5vh"]}
                            height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]}
                            variant="ghost"
                            className={utilStyles.shadow}
@@ -113,13 +120,13 @@ export default function Buy(){
                            </Heading>  
                         </Button>
                         <Button 
-                           width={["80vw", "80vw", null]}
-                           mt={["1vh", "1vh", null]}
-                           height={["8vh", "7vh", null]}
+                           width={["80vw", "80vw", "80vw", "70vw"]}
+                           mt={["1vh", "1vh", "1vh"]}
+                           height={["8vh", "7vh", "15vh"]}
                            variant="ghost"
                            className={utilStyles.shadow}
                            transition="all 0.3s ease-in-out"
-                           display={mobileTxSearch ? "none" : ["flex", "flex", "none"]}
+                           display={mobileTxSearch ? "none" : ["flex", "flex", "flex", "flex", "none"]}
                            onClick={onOpen}
                         >
                             <IoIosWallet fill="#4A5568"/>
@@ -131,31 +138,37 @@ export default function Buy(){
                         </Button>
                         
                         <Button 
-                           width={["80vw", "80vw", null]}
-                           mt={["1vh", "1vh", null]}
-                           height={["8vh", "7vh", null]}
+                           width={["80vw", "80vw", "80vw", "70vw", "25vw", "25vw"]}
+                           mt={["1vh", "1vh", "1vh", "1vh", "1vh", "5vh"]}
+                           height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]}
                            variant="ghost"
                            className={utilStyles.shadow}
                            transition="all 0.3s ease-in-out"
                            display={txStatus ? "flex" : "none"}
+                           position= {["inherit", "inherit", "inherit", "inherit", "absolute"]}
+                           right={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}
+                           bottom={["10vh", "10vh", "15vh", "15vh", "15vh", "15vh"]}
                            onClick={ () => showTxStatus(false) }
                         >
-                           <SearchIcon color="gray.600"/>
-                           <Heading fontSize="1.5rem" as="h4" textColor="gray.600"
+                            <SearchIcon color="gray.600"/>
+                            <Heading fontSize="1.5rem" as="h4" textColor="gray.600"
                                fontWeight="normal"
-                           >
+                            >
                                LOOKUP ANOTHER
-                           </Heading>  
+                            </Heading>  
                         </Button>
                         <NextChakraLink href="/buy">
                             <Button 
-                                width={["80vw", "80vw", "25vw", "25vw", "25vw", "25vw"]}
-                                mt={["1vh", "1vh", "5vh"]}
+                                width={["80vw", "80vw", "80vw", "70vw", "25vw", "25vw"]}
+                                mt={["1vh", "1vh", "1vh", "1vh", "5vh"]}
                                 height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]}
                                 variant="ghost"
-                                display={mobileTxSearch ? "flex" : ["none", "none", "none"]}
+                                display={mobileTxSearch ? "flex" : "none"}
                                 className={utilStyles.shadow}
                                 transition="all 0.3s ease-in-out"
+                                position= {["inherit", "inherit", "inherit", "inherit", "absolute"]}
+                                left={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}
+                                bottom={["10vh", "10vh", "15vh", "15vh", "15vh", "15vh"]}
                                 onClick={ () => { 
                                     showMobileTxSearch(!mobileTxSearch) 
                                     showTxStatus(false)
@@ -171,7 +184,7 @@ export default function Buy(){
                             </Button>
                         </NextChakraLink>
                     </Flex>
-                    <Address display={mobileAddress ? "flex" : ["none", "none", "flex"]} />
+                    <Address display={mobileTxSearch ? "none" : mobileAddress ? "flex" : ["none", "none", "none", "none", "flex"]} />
                 </Stack>
             </Flex>
             <Modal isOpen={isOpen} onClose={onClose}>

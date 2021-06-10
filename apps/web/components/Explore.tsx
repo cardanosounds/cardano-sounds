@@ -64,7 +64,7 @@ export default function Explore({ goBackFunc } : { goBackFunc : Function }) {
                       <PopoverBody><Text fontSize={["0.8em", "0.85em", "1em" ]}> By getting our NFT you are supporting development of Cardano Sounds platform</Text></PopoverBody>
                     </PopoverContent>
                   </Popover>
-                  <NextChakraLink href="/buy">
+                  <NextChakraLink href="/prebuy">
                     <Button 
                       width={["70vw", "70vw", "25vw", "25vw", "25vw", "25vw" ]}
                       mt={["1vh", "1vh", "5vh"]}

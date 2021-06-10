@@ -52,7 +52,7 @@ export default function Layout({
           <Text 
             left="0"
             bottom="0vh"
-            position={home ? "fixed" : ["initial", "initial", "initial", "initial", "fixed"]}
+            position={home ? "fixed" : "initial"}
             my="5vh"
             right="0"
             textAlign="center" 

@@ -2,7 +2,7 @@ import React from "react"
 import { Flex, Box, Image, InputGroup, Input, InputRightElement, useToast } from "@chakra-ui/react"
 import { CopyIcon } from "@chakra-ui/icons"
 
-export default function Address( { display } : { display?: "flex" | "none" | Array <"flex" | "none">}   ) {
+export default function Address( { display } : { display?: "flex" | "none" | Array <"flex" | "none"> }   ) {
 
     const toast = useToast()
 
@@ -22,10 +22,12 @@ export default function Address( { display } : { display?: "flex" | "none" | Arr
                     ml={["5vw", "5vw", "unset"]} 
                     w={["70vw", "70vw", "20vw"]} 
                     h={["70vw", "70vw", "20vw"]}
+                    mt={["unset", "unset", "5vh"]}
                 />
             </Box>
             <InputGroup 
                 mt={["5vh", "5vh", "5vh"]}
+                w={["85vw", "85vw", "20vw", "20vw", "20vw", "20vw"]}
             >
                 <Input 
                     placeholder="addr115659556363454rsdfgb363454rsd9556363454rsdfgb363454r" 
