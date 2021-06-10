@@ -45,7 +45,7 @@ export default function Transaction({ id } : {id: string}) {
             display="column"
             align="center"
             justify="center"
-            minH="50vh"
+            //minH="50vh"
         >
             <Stack
               spacing={6}
@@ -53,20 +53,6 @@ export default function Transaction({ id } : {id: string}) {
               margin="auto"
             >
 
-                <Heading
-                    as="h1"
-                    size="xl"
-                    textAlign={["center", "center", "left", "left"]}
-                >
-                    Mystical Waves
-                </Heading>
-                <Heading
-                    as="h2"
-                    size="lg"
-                    textAlign={["center", "center", "left", "left"]}
-                >
-                    limited NFT collection sale
-                </Heading>
                 <p>{data}</p>
 
                 {/*<div dangerouslySetInnerHTML={{ __html: data.iconFrom }} /> */}

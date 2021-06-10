@@ -1,7 +1,8 @@
+import { useState, useEffect } from 'react'
 import Head from 'next/head'
-import Layout from '../components/layout'
+import Layout, { siteTitle } from '../components/layout'
 import React from "react"
-import BuyComp from '../components/Buy'
+import PreBuy from '../components/PreBuy'
 
 export default function Buy(){
     
@@ -11,10 +12,10 @@ export default function Buy(){
             <Layout>
 
                 <Head>
-                    <title>Buy Cardano Sounds NFT</title>
+                    <title>How to buy Cardano Sounds NFT</title>
                 </Head>
                 
-                <BuyComp />
+                <PreBuy/>
 
             </Layout>
         

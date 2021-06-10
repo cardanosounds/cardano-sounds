@@ -51,7 +51,7 @@ export default function Layout({
           <Spacer />
           <Text 
             left="0"
-            bottom={{ base: "3vh", md: "5vh"}}
+            bottom="0vh"
             position={home ? "fixed" : ["initial", "initial", "initial", "initial", "fixed"]}
             my="5vh"
             right="0"

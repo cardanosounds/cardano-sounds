@@ -1,7 +1,5 @@
 import React, { useState } from "react"
 import { Button, Heading, List, ListIcon, ListItem, Stack, Spacer, Tooltip, Flex } from "@chakra-ui/react"
-import Head from "next/head"
-import Layout from "./layout"
 import utilStyles from "../styles/utils.module.css"
 import { FaChevronRight, FaChevronLeft } from 'react-icons/fa';
 import { InfoIcon } from "@chakra-ui/icons";
@@ -81,7 +79,7 @@ export default function PreBuy() {
                             >
                               {/* chakra color var doesn't work here */}
                               <FaChevronLeft fill="#4A5568" />
-                              <Heading as="h4" fontSize="1.5rem" textColor="gray.600"
+                              <Heading className={utilStyles.noHovDecor} as="h4" fontSize="1.5rem" textColor="gray.600"
                                 fontWeight="normal"
                               >
                                 HOME
@@ -89,7 +87,7 @@ export default function PreBuy() {
                             </Button>
                           </NextChakraLink>
                           <Spacer/>
-                          <NextChakraLink href="/">
+                          <NextChakraLink href="/buy">
                             <Button 
                               width={["70vw", "70vw", "25vw", "25vw", "25vw", "25vw" ]}
                               mt={["1vh", "1vh", "5vh"]}
@@ -103,7 +101,7 @@ export default function PreBuy() {
                                 <Heading fontSize="1.5rem" as="h4" textColor="gray.600"
                                     fontWeight="normal"
                                 >
-                                    ABOUT
+                                    BUY
                                 </Heading>  
                             </Button>
                         </NextChakraLink>
