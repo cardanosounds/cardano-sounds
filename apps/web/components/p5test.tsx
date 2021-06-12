@@ -28,7 +28,8 @@ export default function Sounds() {
 		p.createCanvas(p.windowWidth, p.windowHeight);
 		p.angleMode(p.DEGREES)
 		p.imageMode(p.CENTER)
-		fft = new FFT()
+		p.rectMode(p.CENTER)
+		fft = new FFT(0.3)
 
 		img.filter(p.BLUR, 3)
 
@@ -37,22 +38,30 @@ export default function Sounds() {
     
 	p.draw = () => {
 		p.background(0)
-		p.stroke(255)
-		p.noFill()
 
 		p.translate(p.width / 2, p.height / 2)
+
+		fft.analyze()
+		amp = fft.getEnergy(20, 200)
 
 		p.push()
 		if(amp > 225) {
 			p.rotate(p.random(-0.5, 0.5))
 		}
 
-		p.image(img, 0, 0, p.width, p.height)
+		p.image(img, 0, 0, p.width * 1.1 , p.height * 1.1)
 		p.pop()
 
-		fft.analyze()
-		amp = fft.getEnergy(20, 200)
+		let alpha = p.map(amp, 0, 255, 180, 150)
+		p.fill(0, alpha)
+		p.noStroke()
+		p.rect(0, 0, p.width, p.height)
 
+		p.stroke(255)
+		p.strokeWeight(3)
+		p.noFill()
+
+		
 		let wave = fft.waveform()
 
 		for (let t = -1; t <= 1; t += 2) {
@@ -83,6 +92,8 @@ export default function Sounds() {
 				particles.splice(i, 1)
 			}
 		}
+
+		if(!song.isPlaying()) particles = []
 				
 	}
 
