@@ -1,4 +1,4 @@
-import { useColorMode, Switch, Flex, Button, IconButton, Spacer, Heading, Box, Image, Icon, useDisclosure } from '@chakra-ui/react'
+import { useColorMode, Switch, Flex, Button, IconButton, Spacer, Heading, Box, Text, Stack, useDisclosure } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
 import { FaChevronLeft } from 'react-icons/fa';
 import { AiOutlineMenuFold } from 'react-icons/ai'
@@ -112,12 +112,15 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                       size="lg"
                       display={ home ? ["flex", "flex", "none"] : "flex"}
                       onClick={ () => {} }
-                      transition="all 0.3s ease-in-out"
+                      transition="all 0.3s ease-in-out"                      
                     >
+                      <Stack direction="row">
                       <Logo 
                           size={["4em", "4em", "4em", "4em", "5em" ]}
                           color={isDark ? ("gray.50") : ("gray.900")} 
                       />
+                      <Heading size="md" as="h1">CARDANO SOUNDS</Heading>
+                      </Stack>
                     </Box>
                   </NextChakraLink>
                   <Spacer/>

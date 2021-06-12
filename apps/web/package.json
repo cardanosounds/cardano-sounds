@@ -19,6 +19,7 @@
     "fs": "*",
     "gray-matter": "^4.0.3",
     "next": "^10.0.0",
+    "p5": "^0.9.0",
     "qs-stringify": "^1.2.1",
     "query-string": "^7.0.0",
     "react": "17.0.1",
@@ -31,6 +32,7 @@
   },
   "devDependencies": {
     "@types/node": "^15.0.2",
+    "@types/p5": "^0.9.1",
     "@types/react": "^17.0.5",
     "typescript": "^4.2.4"
   }

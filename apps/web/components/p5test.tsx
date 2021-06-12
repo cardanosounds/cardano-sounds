@@ -1,35 +1,160 @@
 import React, { useEffect, useRef } from 'react'
-import AudioPlayer from '../components/AudioPlayer'
-import SoundNFT from '../components/SoundNFT'
-import { NFTData } from '../interfaces/interfaces'
-import p5 from 'p5'
+import p5, { FFT, Image, SoundFile, Vector } from 'p5'
+import "../p5.sound.js"
 
 
 export default function Sounds() {
-    let myP5: p5;
+    let myP5: p5
+    let song: SoundFile
+    let fft: FFT
+    let particles: Particle[] = []
+    let amp: number
+    let img: Image
+
     const myRef = useRef()
 
     useEffect(() => {
-        myP5 = new p5(Sketch, myRef.current)
+	myP5 = new p5(Sketch, myRef.current)
     }, [])
-
-    const Sketch = (p) => {
-        p.setup = () => {
-         p.background("#ff0000");
-        }
     
-        p.draw = () => {
-       
-       }
+    const Sketch = (p) => {
+
+	p.preload = () => {
+		song = p.loadSound('/sounds/teaser.flac')
+		img = p.loadImage('/images/background1.png')
+	}
+
+	p.setup = () => {
+		p.createCanvas(p.windowWidth, p.windowHeight);
+		p.angleMode(p.DEGREES)
+		p.imageMode(p.CENTER)
+		fft = new FFT()
+
+		img.filter(p.BLUR, 3)
+
+		p.noLoop()
+	}
+    
+	p.draw = () => {
+		p.background(0)
+		p.stroke(255)
+		p.noFill()
+
+		p.translate(p.width / 2, p.height / 2)
+
+		p.push()
+		if(amp > 225) {
+			p.rotate(p.random(-0.5, 0.5))
+		}
+
+		p.image(img, 0, 0, p.width, p.height)
+		p.pop()
+
+		fft.analyze()
+		amp = fft.getEnergy(20, 200)
+
+		let wave = fft.waveform()
+
+		for (let t = -1; t <= 1; t += 2) {
+			p.beginShape()
+			for(let i = 0; i <= 180; i += 0.5){
+				let index = p.floor(p.map(i, 0, 180, 0, wave.length - 1))
+
+				let r = p.map(wave[index], -1, 1, 150, 350)
+
+				let x = r * p.sin(i) * t
+				let y = r * p.cos(i)
+				p.vertex(x, y)
+
+			}
+			p.endShape()
+		}
+
+		let particle: Particle = new Particle(p)
+
+		particles.push(particle)
+		for(let i = particles.length - 1; i >= 0; i--) {
+			const prtcl = particles[i]
+
+			if(!prtcl.edges(p)){
+				prtcl.update(amp > 225)
+				prtcl.show(p)
+			} else{
+				particles.splice(i, 1)
+			}
+		}
+				
+	}
+
+	p.mouseClicked = () => {
+		if(song.isPlaying()) {
+			song.pause()
+			p.noLoop()
+		} else {
+			song.play()
+			p.loop()
+		}
+	}
+
     }
 
     return (
         <>
-           {/* <SoundNFT soundNFTData="https://filesamples.com/samples/audio/flac/sample3.flac" />
-            <AudioPlayer url={soundNFTData.media} />*/}
-        <div ref={myRef}>
+		<div ref={myRef}>
 
-        </div>
+		</div>
         </>
     )
+}
+
+class Particle {
+	//position
+	pos: Vector
+	//velocity
+	vel: Vector
+	//acceleration
+	acc: Vector
+	//width of the particle
+	w: number
+	//particle color
+	color: number[]
+
+	constructor(p: p5){
+		this.pos = Vector.random2D().mult(250)
+		this.vel = p.createVector(0, 0)
+		this.acc = this.pos.copy().mult(p.random(0.0001, 0.00001))
+		this.color = [p.random(200, 255), p.random(200, 255), p.random(200, 255)]
+		this.w = p.random(3, 5)
+	}
+
+	update(isAmpOverLim: boolean) {
+		this.vel.add(this.acc)
+		this.pos.add(this.vel)
+		if(isAmpOverLim){
+			this.pos.add(this.vel)
+			this.pos.add(this.vel)
+			this.pos.add(this.vel)
+
+		}
+	}
+
+	edges(p: p5){
+		if(this.pos.x < -p.width / 2 
+			|| this.pos.x > p.width / 2
+			|| this.pos.y < -p.height / 2
+			|| this.pos.y > p.height / 2){
+				return true
+		} else {
+			return false
+		}
+	}
+
+	show(p: p5){
+		p.noStroke()
+		p.fill(this.color)
+		p.ellipse(this.pos.x, this.pos.y, this.w)
+	}
+
+
+
 }
