@@ -20,12 +20,12 @@ export default function Sounds() {
     const Sketch = (p) => {
 
 	p.preload = () => {
-		song = p.loadSound('/sounds/teaser.flac')
+		song = p.loadSound('/sounds/teaser.mp3')
 		img = p.loadImage('/images/background1.png')
 	}
 
 	p.setup = () => {
-		p.createCanvas(p.windowWidth, p.windowHeight);
+		p.createCanvas(p.windowWidth, p.windowHeight)
 		p.angleMode(p.DEGREES)
 		p.imageMode(p.CENTER)
 		p.rectMode(p.CENTER)
