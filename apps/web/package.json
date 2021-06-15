@@ -15,6 +15,7 @@
     "@fontsource/share-tech-mono": "^4.4.2",
     "@fontsource/space-mono": "^4.4.2",
     "date-fns": "^2.21.2",
+    "font-awesome": "^4.7.0",
     "framer-motion": "^4.1.11",
     "fs": "*",
     "gray-matter": "^4.0.3",
