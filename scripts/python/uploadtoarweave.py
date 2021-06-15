@@ -34,4 +34,5 @@ with open(f_n2 + '.txt', 'rb') as bin_data_file:
     
     transaction = Transaction(wallet, data=bin_data)
     transaction.sign()
-    transaction.send()
+    tx = transaction.send()
+    print(transaction.id)
