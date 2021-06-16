@@ -1,4 +1,4 @@
-import { useColorMode, Switch, Flex, Button, IconButton, Spacer, Heading, Box, Text, Stack, useDisclosure } from '@chakra-ui/react'
+import { useColorMode, Switch, Flex, Button, IconButton, Spacer, Heading, Box, Text, Stack, useDisclosure, useColorModeValue } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
 import { FaChevronLeft } from 'react-icons/fa';
 import { AiOutlineMenuFold } from 'react-icons/ai'
@@ -24,6 +24,8 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
     const isDark = colorMode === 'dark'
     const [display, changeDisplay] = useState('none')
     const { isOpen, onOpen, onClose } = useDisclosure()
+    
+    const gradColor = useColorModeValue("linear-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 0))", "linear-gradient(rgba(26, 32, 44, 1), rgba(26, 32, 44, 0))")
 
 
     const closeMenu = () => { 
@@ -62,7 +64,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
               top="0px"
               left="0px"
               right="0px"
-              //bgColor={isDark ? ("gray.900") : ("gray.50")}
+              bgColor={isDark ? "gray.800" : "white"}
               as="nav"
               justify="center"
               wrap="wrap"
@@ -106,10 +108,10 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                     <Box 
                       align="flex-start"
                       //50vw 5vh
-                      margin={["7vh 0 0 8vw", "7vh 0 0 8vw", "7vh 0.5em 0.25em 3em", "7vh 0.5em 0.25em 4em", "5vh 0.5em 0.25em 6em",  "5vh 0.5em 0.25em 11em"]}
+                      margin={["3vh 0 2vh 8vw", "3vh 0 2vh 8vw", "4vh 0.5em 0.25em 3em", "7vh 0.5em 0.25em 4em", "5vh 0.5em 0.25em 6em",  "5vh 0.5em 0.25em 11em"]}
                       aria-label="Cardano Sounds home"
                       variant="ghost"
-                      size="lg"
+                      
                       display={ home ? ["flex", "flex", "none"] : "flex"}
                       onClick={ () => {} }
                       transition="all 0.3s ease-in-out"                      
@@ -119,7 +121,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                           size={["4em", "4em", "4em", "4em", "5em" ]}
                           color={isDark ? ("gray.50") : ("gray.900")} 
                       />
-                      <Heading size="md" as="h1">CARDANO SOUNDS</Heading>
+                      <Heading display={["none", "none", "flex"]} fontSize="3xl" pt="2.5vh">CARDANO SOUNDS</Heading>
                       </Stack>
                     </Box>
                   </NextChakraLink>
@@ -140,6 +142,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                           <IconButton 
                             aria-label="Open Menu"
                             variant="ghost"
+                            bgColor={isDark ? "rgba(26, 32, 44, 0.6)" : "rgba(255, 255, 255, 0.6)"}
                             size="lg"
                             icon={<FaChevronLeft/>}  
                             onClick={ onOpen } 
@@ -153,6 +156,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
 
                   </Flex>
               </Flex>
+              <Flex w="100%" h="0.5vh" background={gradColor}></Flex>
             </Flex>           
         </Flex>
     )
