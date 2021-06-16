@@ -13,17 +13,16 @@ export default function Layout({
   children: React.ReactNode
   home?: boolean
 }) {
-  const color = useColorModeValue("gray.900", "gray.50")
+
+  const currentDate = new Date(); 
+  const currentYear = currentDate.getFullYear(); 
+
   return (
     <Flex
       direction="column"
      // align="top"
       w="100vw"
       minH="100vh"
-      //background="linear-gradient(90deg, rgba(26,32,44,1) 0%, rgba(45,55,72,1) 100%), linear-gradient(90deg, rgba(247,250,252,1) 0%, rgba(237,242,247,1) 100%)"
-      //backgroundPosition="top, bottom"
-     // backgroundSize="100vw 10vw, 100vw 80vw"
-      //minH="100%"
       m="0 auto"
     >
       <div className={mainStyles.container}>
@@ -42,7 +41,7 @@ export default function Layout({
         </Head>
         <header  className={mainStyles.header}>
           
-          <Flex direction="row" className={mainStyles.stickyNav}>
+          <Flex direction="column" className={mainStyles.stickyNav}>
               
               <DarkModeSwitchMenu home={home} />
           </Flex>
@@ -56,10 +55,10 @@ export default function Layout({
             my="5vh"
             right="0"
             textAlign="center" 
-            fontSize={{ base: "0.65rem", md: "1.125rem" }}
+            fontSize={{ base: "0.5rem", md: "0.65rem" }}
             fontFamily="Share Tech Mono, monospace"
             transition="all 0.3s ease-in-out"
-          >ALL RIGHTS RESERVED ©CARDANOSOUNDS
+          >{currentYear} &copy;CARDANOSOUNDS, ALL RIGHTS RESERVED
           </Text>
       </div>
     </Flex>
