@@ -22,12 +22,20 @@ export default function Layout({
       direction="column"
      // align="top"
       w="100vw"
-      minH="100vh"
+      h="100vh"
       m="0 auto"
     >
       <div className={mainStyles.container}>
         <Head >
-          <link rel="icon" href="/card-wave2.svg" />
+          <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+          <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
+          <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />
+          <link rel="manifest" href="/manifest.json" />
+          <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="#1a202c" />
+          <meta name="apple-mobile-web-app-title" content="Cardano Sounds"/>
+          <meta name="application-name" content="Cardano Sounds" />
+          <meta name="msapplication-TileColor" content="#1a202c" />
+          <meta name="theme-color" content="#f7fafc"></meta>
           <meta
             name="description"
             content="Get music clip NFT with original sound on Cardano blockchain!"
@@ -51,7 +59,7 @@ export default function Layout({
           <Text 
             left="0"
             bottom="0vh"
-            position={home ? "fixed" : "initial"}
+            //position={home ? "fixed" : "initial"}
             my="5vh"
             right="0"
             textAlign="center" 

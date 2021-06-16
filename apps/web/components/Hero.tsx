@@ -1,27 +1,17 @@
 import React from "react"
-import NextChakraLink from './NextChakraLink'
 import { FaChevronRight, FaChevronLeft } from 'react-icons/fa';
 import utilStyles from '../styles/utils.module.css'
-import { FaGithub, FaTwitter, FaMediumM } from 'react-icons/fa';
 import useSound from 'use-sound';
-import { Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader, PopoverTrigger } from "@chakra-ui/react"
-import mainStyles from './layout.module.css'
 import { useState } from 'react'
 import {
-  Box,
   Button,
   Flex,
-  Image,
   Heading,
   Stack,
-  Text,
   useColorMode,
-  Icon,
-  IconButton,
   Spacer
 } from "@chakra-ui/react"
 import Logo from "./Logo";
-import { QuestionIcon } from "@chakra-ui/icons";
 import Explore from "./Explore";
 import VerticalSocialLinks from "./VerticalSocialLinks";
  
@@ -87,7 +77,7 @@ export default function Hero() {
           // bgColor={isDark ? ("gray.900") : ("gray.50")}
           // justify={{ base: "center", md: "space-around", xl: "space-between" }}
           direction={{ base: "column-reverse", md: "row" }}
-          minH={["60vh", "60vh", "60vh", "80vh", "100vh", "100vh"]}
+          minH={["60vh", "60vh", "60vh", "80vh", "90vh", "90vh"]}
         >
           <Stack
             w={{ base: "80vw", md: "75vw" }}
@@ -173,7 +163,7 @@ export default function Hero() {
             </>
             }
             <Flex
-              direction={["column", "row", "row", "row" ]}
+              direction={["column", "column", "row", "row" ]}
               w="100%"
             >
               <Heading
@@ -213,7 +203,7 @@ export default function Hero() {
                 mt={["4vh", "4vh", "5vh"]}
                 height={["17vh", "15vh", "15vh", "15vh", "15vh", "15vh"]}
                 className={utilStyles.shadow}
-                position= "absolute"//{["inherit", "absolute", "absolute", "absolute"]}
+                position= {["inherit", "inherit", "absolute", "absolute", "absolute", "absolute"]}
                 right={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}
                 bottom={["12vh", "12vh", "15vh", "15vh", "15vh", "15vh"]}
                 transition="all 0.3s ease-in-out"
