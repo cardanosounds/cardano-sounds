@@ -6,7 +6,7 @@ import { NFTData } from '../interfaces/interfaces'
 import dynamic from "next/dynamic";
 import { Flex } from '@chakra-ui/react';
 
-const P5Comp = dynamic(() => import("../components/player1"),
+const P5Comp = dynamic(() => import("../components/player2"),
   { ssr: false }
 );
 
