@@ -3,7 +3,7 @@ let t = 0
 function preload() {
 		
 	//fa = p.loadFont('/fontawesome.ttf');
-	song = loadSound('http://localhost:3000/music.mp3')
+	song = loadSound('https://5qivp3uhdkmad6mndrvlhcqd6s4eu7bizg47zkuhbe544z5f65lq.arweave.net/7BFX7ocamAH5jRxqs4oD9LhKfCjJufyqhwk7zmel91c')
 }
 
 function setup() {
