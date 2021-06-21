@@ -4,21 +4,26 @@ import SoundNFT from '../components/SoundNFT'
 import { NFTData } from '../interfaces/interfaces'
 //import p5 from 'p5'
 import dynamic from "next/dynamic";
-import { Flex } from '@chakra-ui/react';
+import { Flex, useColorMode } from '@chakra-ui/react';
+import Layout from '../components/layout';
 
-const P5Comp = dynamic(() => import("../components/player2"),
+const P5Comp = dynamic(() => import("../components/playerGlitch"),
   { ssr: false }
 );
 
 const size = { width: 800, height: 800 }
 
 export default function Sounds() {
+    const { colorMode } = useColorMode()
+    const isDark = colorMode === 'dark'
     
     return (
-        <Flex align="center" justify="center" w="100vw" h="100vh">
-           {/* <SoundNFT soundNFTData="https://filesamples.com/samples/audio/flac/sample3.flac" />
-            <AudioPlayer url={soundNFTData.media} />*/}
-            <P5Comp size={size}/>
-        </Flex>
+        <Layout>
+            <Flex align="center" justify="center" w="100vw">
+               {/* <SoundNFT soundNFTData="https://filesamples.com/samples/audio/flac/sample3.flac" />
+                <AudioPlayer url={soundNFTData.media} />*/}
+                <P5Comp size={size} isDark={isDark} />
+            </Flex>
+        </Layout>
     )
 }
