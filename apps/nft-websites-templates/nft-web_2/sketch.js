@@ -98,7 +98,7 @@ function draw() {
 		t+= map(amp === 0 ? 0 : amp, 0, 250, 0, 0.8)
 	}
 
-	//if(!song.isPlaying()) noLoop();
+	if(!song.isPlaying()) song.play()
 			
 }
 
