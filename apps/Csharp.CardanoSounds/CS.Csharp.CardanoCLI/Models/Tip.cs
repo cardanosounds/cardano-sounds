@@ -26,12 +26,12 @@ namespace CS.Csharp.CardanoCLI.Models
 
 	public partial class Tip
 	{
-		public static Tip FromJson(string json) => JsonConvert.DeserializeObject<Tip>(json, QuickType.Converter.Settings);
+		public static Tip FromJson(string json) => JsonConvert.DeserializeObject<Tip>(json, Converter.Settings);
 	}
 
 	public static class Serialize
 	{
-		public static string ToJson(this Tip self) => JsonConvert.SerializeObject(self, QuickType.Converter.Settings);
+		public static string ToJson(this Tip self) => JsonConvert.SerializeObject(self, Converter.Settings);
 	}
 
 	internal static class Converter
