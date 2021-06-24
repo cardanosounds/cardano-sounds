@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CS.DB.Cosmos", "CS.DB.Cosmos\CS.DB.Cosmos.csproj", "{244CC2BC-5FEE-4147-8391-79054715D801}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CS.DB.Cosmos", "CS.DB.Cosmos\CS.DB.Cosmos.csproj", "{244CC2BC-5FEE-4147-8391-79054715D801}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CS.Models", "CS.Models\CS.Models.csproj", "{A9D1B396-EEAE-44A1-BE83-93F10EE871A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CS.Models", "CS.Models\CS.Models.csproj", "{A9D1B396-EEAE-44A1-BE83-93F10EE871A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CS.ScanTransactionsForAddress", "CS.ScanTransactionsForAddress\CS.ScanTransactionsForAddress.csproj", "{CAD3C7C2-1001-4CE0-9B1D-711F4A22445A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CS.ScanTransactionsForAddress", "CS.ScanTransactionsForAddress\CS.ScanTransactionsForAddress.csproj", "{CAD3C7C2-1001-4CE0-9B1D-711F4A22445A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CS.Utilities", "CS.Utilities\CS.Utilities.csproj", "{E47A02F8-E885-4915-80D2-96F2B3EA4518}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CS.Utilities", "CS.Utilities\CS.Utilities.csproj", "{E47A02F8-E885-4915-80D2-96F2B3EA4518}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CS.Csharp.CardanoCLI", "CS.Csharp.CardanoCLI\CS.Csharp.CardanoCLI.csproj", "{BB065018-1F22-4FDA-8C32-67BCB794A6C9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{E47A02F8-E885-4915-80D2-96F2B3EA4518}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E47A02F8-E885-4915-80D2-96F2B3EA4518}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E47A02F8-E885-4915-80D2-96F2B3EA4518}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB065018-1F22-4FDA-8C32-67BCB794A6C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB065018-1F22-4FDA-8C32-67BCB794A6C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB065018-1F22-4FDA-8C32-67BCB794A6C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB065018-1F22-4FDA-8C32-67BCB794A6C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
