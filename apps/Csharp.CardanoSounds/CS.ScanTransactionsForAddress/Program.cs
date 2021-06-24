@@ -1,5 +1,4 @@
-﻿using ScanLatestTransactions.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -7,8 +6,11 @@ using System.Configuration;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using CS.Utilities;
+using CS.Models;
+using NLog.Internal;
 
-namespace ScanLatestTransactions
+namespace CS.ScanTransactionsForAddress
 {
     class Program
     {
@@ -34,6 +36,7 @@ namespace ScanLatestTransactions
                 var sender = await GetSenderAddress(tx.Tx_Hash);
 
                 tx.SenderAddress = sender;
+                Console.WriteLine(sender);
             }
 
             Console.ReadLine();

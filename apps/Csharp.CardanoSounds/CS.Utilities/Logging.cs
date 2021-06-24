@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ScanLatestTransactions
+namespace CS.Utilities
 {
     public static class Logging
     {
