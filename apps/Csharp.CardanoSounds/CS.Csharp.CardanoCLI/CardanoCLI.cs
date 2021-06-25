@@ -16,7 +16,7 @@ namespace CS.Csharp.CardanoCLI
 
         static void Main(string[] args)
         {
-            var cli = new CardanoCLI();
+            //var cli = new CardanoCLI();
             //cli.QueryTip();
 
             var initialAda = 1000;
@@ -34,27 +34,30 @@ namespace CS.Csharp.CardanoCLI
                 TxInIx = 0
             };
 
-            var ttl = cli.QueryTip().Slot + 100;
-            var f = cli.PrepareTransaction(txParams, ttl);
+            var ttl = QueryTip().Slot + 100;
+
+            var transactions = new Transactions(incmd_newline, network, signing_key);
+            
+            var f = transactions.PrepareTransaction(txParams, ttl);
             Console.WriteLine(f);
             if (!f.StartsWith("CS.Error"))
             {
-                var protocolParams = cli.SetProtocolParamaters();
-                if (!cli.HasError(protocolParams))
+                var protocolParams = SetProtocolParamaters();
+                if (!HasError(protocolParams))
                 {
-                    var minFee = cli.CalculateMinFee(txParams, ttl);
-                    if (!cli.HasError(minFee))
+                    var minFee = transactions.CalculateMinFee(txParams, ttl);
+                    if (!HasError(minFee))
                     {
                         Console.WriteLine(minFee);
-                        var buildTx = cli.BuildTransaction(txParams, (long)Convert.ToInt64(minFee.Replace(" Lovelace", "")), ttl);
-                        if (!cli.HasError(buildTx))
+                        var buildTx = transactions.BuildTransaction(txParams, (long)Convert.ToInt64(minFee.Replace(" Lovelace", "")), ttl);
+                        if (!HasError(buildTx))
                         {
-                            var signTx = cli.SignTransaction(txParams);
-                            if (!cli.HasError(signTx))
+                            var signTx = transactions.SignTransaction(txParams);
+                            if (!HasError(signTx))
                             {
-                                var submit = cli.SubmitTransaction(txParams);
+                                var submit = transactions.SubmitTransaction(txParams);
                                 Console.WriteLine(submit);
-                                if (!cli.HasError(submit))
+                                if (!HasError(submit))
                                 {
                                     Console.WriteLine("Success!");
                                 }
@@ -81,12 +84,12 @@ namespace CS.Csharp.CardanoCLI
             }
         }
 
-        private bool HasError(string output)
+        private static bool HasError(string output)
         {
             return output.StartsWith("CS.Error");
         }
 
-        public string RunCLICommand(string cmd)
+        public static string RunCLICommand(string cmd)
         {
             try
             {
@@ -116,7 +119,7 @@ namespace CS.Csharp.CardanoCLI
             }
         }
 
-        public Tip QueryTip()
+        public static Tip QueryTip()
         {
             string cmd = $"query tip {network}";
             var output = RunCLICommand(cmd);
@@ -126,47 +129,7 @@ namespace CS.Csharp.CardanoCLI
             return Tip.FromJson(output);
         }
 
-        public void SendADA(TransactionParams txParams)
-        {
-            var ttl = QueryTip().Slot + 100;
-            string txFile = PrepareTransaction(txParams, ttl);
-        }
-
-        public string PrepareTransaction(TransactionParams txParams, long ttl)
-        {
-            var cmd = @"transaction build-raw";
-            cmd += incmd_newline;
-
-            //tx in
-            cmd += $"--tx-in {txParams.TxInHash}#{txParams.TxInIx}";
-            cmd += incmd_newline;
-
-            //1ADA = 1 000 000
-            var lovelaceValue = txParams.AdaValue * 1000000;
-
-            //send to - tx out
-            cmd += $"--tx-out {txParams.SendToAddress}+{lovelaceValue}";
-            cmd += incmd_newline;
-
-            //return change
-            if (!txParams.SendAllTxInAda)
-            {
-                cmd += $"--tx-out {txParams.SenderAddress}+{lovelaceValue}";
-                cmd += incmd_newline;
-            }
-
-            cmd += $"--ttl {ttl}";
-            cmd += incmd_newline;
-
-            cmd += "--fee 170000";
-            cmd += incmd_newline;
-
-            cmd += $"--out-file {txParams.TxFileName}.raw";
-
-            return RunCLICommand(cmd);
-        }
-
-        public string SetProtocolParamaters()
+        public static string SetProtocolParamaters()
         {
             var cmd = @"query protocol-parameters";
             cmd += incmd_newline;
@@ -179,99 +142,5 @@ namespace CS.Csharp.CardanoCLI
             return RunCLICommand(cmd);
         }
 
-        public string CalculateMinFee(TransactionParams txParams, long ttl)
-        {
-            var cmd = @"transaction calculate-min-fee";
-            cmd += incmd_newline;
-
-            cmd += "--tx-in-count 1";
-            cmd += incmd_newline;
-
-            var outCount = txParams.SendAllTxInAda ? 1 : 2;
-            cmd += $"--tx-out-count {outCount}";
-            cmd += incmd_newline;
-
-            cmd += network;
-            cmd += incmd_newline;
-
-            cmd += $"--tx-body-file {txParams.TxFileName}.raw";
-            cmd += incmd_newline;
-
-            cmd += "--witness-count 1";
-            cmd += incmd_newline;
-
-            cmd += "--protocol-params-file protocol.json";
-
-            return RunCLICommand(cmd);
-        }
-
-        public string BuildTransaction(TransactionParams txParams, long minFee, long ttl)
-        {
-            var cmd = @"transaction build-raw";
-            cmd += incmd_newline;
-
-            //tx in
-            cmd += $"--tx-in {txParams.TxInHash}#{txParams.TxInIx}";
-            cmd += incmd_newline;
-
-            //1ADA = 1 000 000
-            long lovelaceValue = txParams.AdaValue * 1000000;
-            lovelaceValue = txParams.SendAllTxInAda ? lovelaceValue - minFee : lovelaceValue;
-
-            //send to - tx out - fee is subtracted from all value
-            cmd += $"--tx-out {txParams.SendToAddress}+{lovelaceValue}";
-            cmd += incmd_newline;
-
-            //return change - fee pays sender
-            if (!txParams.SendAllTxInAda)
-            {
-                var txInputLovelace = txParams.TxInAdaValue * 1000000;
-                cmd += $"--tx-out {txParams.SenderAddress}+{txInputLovelace - lovelaceValue - minFee}";
-                cmd += incmd_newline;
-            }
-
-            cmd += $"--ttl {ttl}";
-            cmd += incmd_newline;
-
-            cmd += $"--fee {minFee}";
-            cmd += incmd_newline;
-
-            cmd += $"--out-file {txParams.TxFileName}.raw";
-
-            return RunCLICommand(cmd);
-        }
-
-        public string SignTransaction(TransactionParams txParams)
-        {
-            var cmd = @"transaction sign";
-            cmd += incmd_newline;
-
-            cmd += $"--tx-body-file {txParams.TxFileName}.raw";
-            cmd += incmd_newline;
-
-            cmd += $"--signing-key-file {signing_key}";
-            cmd += incmd_newline;
-
-            cmd += network;
-            cmd += incmd_newline;
-
-            cmd += $"--out-file {txParams.TxFileName}.signed";
-
-            return RunCLICommand(cmd);
-        }
-
-        public string SubmitTransaction(TransactionParams txParams)
-        {
-            var cmd = @"transaction submit";
-            cmd += incmd_newline;
-
-            cmd += $"--tx-file {txParams.TxFileName}.signed";
-            cmd += incmd_newline;
-
-            cmd += network;
-
-            return RunCLICommand(cmd);
-
-        }
     }
 }
