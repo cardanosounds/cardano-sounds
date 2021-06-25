@@ -27,11 +27,11 @@ namespace CS.Csharp.CardanoCLI
                 TxFileName = $"tx2",
                 LovelaceValue = 5000000,
                 SendAllTxInAda = false,
-                SenderAddress = "addr_test1vpl22c6vml7p7n5vv4n2mjf6sfw9kcse5c7jjk3uxc9dllcvvvj8q",
-                SendToAddress = "addr_test1vrw3r08naaq8wrtemegjk7p3e9zp7a2ceul9rd84pd3nckcynl6xq",
+                SenderAddress = "addr_test1vrw3r08naaq8wrtemegjk7p3e9zp7a2ceul9rd84pd3nckcynl6xq",
+                SendToAddress = "addr_test1vpl22c6vml7p7n5vv4n2mjf6sfw9kcse5c7jjk3uxc9dllcvvvj8q",
                 TxInLovelaceValue = initialAda,
                 TxInHash = "7b8b5e3141b1239bf69e7513e599babc02a204602952abcac2fea226563712ab",
-                TxInIx = 0
+                TxInIx = 1
             };
 
             var ttl = QueryTip().Slot + 100;
@@ -82,7 +82,12 @@ namespace CS.Csharp.CardanoCLI
                     Console.WriteLine("PROTOCOL PARAMS ERROR: " + protocolParams);
                 }
             }
+            else 
+            {
+                Console.WriteLine("PREPARE ERROR: " + f);
+            }
         }
+        
 
         private static bool HasError(string output)
         {
