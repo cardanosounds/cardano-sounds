@@ -7,10 +7,12 @@ namespace CS.Csharp.CardanoCLI
     public class CardanoCLI
     {
         private static readonly string network = "--testnet-magic 1097911063"; //--mainnet
-        private static readonly string cardano_cli_location = $"/home/azureuser/cardano-node-1.27.0/cardano-cli";
-        private static readonly string working_directory = "/home/azureuser/cardano-node-1.27.0";
+        private static readonly string cardano_cli_location = $"/home/azureuser/cardano-node-1.27.0/cardano-cli"; //.exe for windows
+        private static readonly string working_directory = "/home/azureuser/cardano-node-1.27.0"; 
 
-        private static readonly string incmd_newline = @" \";
+        private static readonly string signing_key = @"signing-key";
+
+        private static readonly string incmd_newline = @" ";
 
         static void Main(string[] args)
         {
@@ -20,21 +22,10 @@ namespace CS.Csharp.CardanoCLI
             var initialAda = 1000;
             //for(var i = 1; i <= 20; i++)
             //{
-            //    var txParams = new TransactionParams()
-            //    {
-            //        TxFileName = $"tx{i}.raw",
-            //        AdaValue = 5,
-            //        SendAllTxInAda = false,
-            //        SenderAddress = "",
-            //        SendToAddress = "",
-            //        TxInAdaValue = initialAda,
-            //        TxInHash = "",
-            //        TxInIx = 0
-            //    };
             //}
             var txParams = new TransactionParams()
             {
-                TxFileName = $"tx0.raw",
+                TxFileName = "tx0",
                 AdaValue = 5,
                 SendAllTxInAda = false,
                 SenderAddress = "addr_test1vrw3r08naaq8wrtemegjk7p3e9zp7a2ceul9rd84pd3nckcynl6xq",
@@ -49,7 +40,7 @@ namespace CS.Csharp.CardanoCLI
             Console.WriteLine(f);
         }
 
-        public string RunCLICommand(string command)
+        public string RunCLICommand(string cmd)
         {
             try
             {
@@ -58,8 +49,8 @@ namespace CS.Csharp.CardanoCLI
                 {
                     WindowStyle = ProcessWindowStyle.Hidden,
                     FileName = cardano_cli_location,
-                    WorkingDirectory = working_directory, 
-                    Arguments = command,
+                    WorkingDirectory = working_directory,
+                    Arguments = cmd,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false
@@ -81,14 +72,13 @@ namespace CS.Csharp.CardanoCLI
 
         public Tip QueryTip()
         {
-            string command = $"query tip {network}";
-            var output = RunCLICommand(command);
-            
-            if(output.StartsWith("CS.Error")) return new Tip();
+            string cmd = $"query tip {network}";
+            var output = RunCLICommand(cmd);
 
-            return Tip.FromJson(output); 
+            if (output.StartsWith("CS.Error")) return new Tip();
+
+            return Tip.FromJson(output);
         }
-
 
         public void SendADA(TransactionParams txParams)
         {
@@ -96,41 +86,144 @@ namespace CS.Csharp.CardanoCLI
             string txFile = PrepareTransaction(txParams, ttl);
         }
 
-        private string PrepareTransaction(TransactionParams txParams, long ttl)
+        public string PrepareTransaction(TransactionParams txParams, long ttl)
         {
-            var command = @"transaction build-raw";
-            command += incmd_newline;
+            var cmd = @"transaction build-raw";
+            cmd += incmd_newline;
 
             //tx in
-            command += $"--tx-in {txParams.TxInHash}#{txParams.TxInIx}";
-            command += incmd_newline;
+            cmd += $"--tx-in {txParams.TxInHash}#{txParams.TxInIx}";
+            cmd += incmd_newline;
 
             //1ADA = 1 000 000
             var lovelaceValue = txParams.AdaValue * 1000000;
 
             //send to - tx out
-            command += $"--tx-out {txParams.SendToAddress}+{lovelaceValue}";
-            command += incmd_newline;
+            cmd += $"--tx-out {txParams.SendToAddress}+{lovelaceValue}";
+            cmd += incmd_newline;
 
             //return change
             if (!txParams.SendAllTxInAda)
             {
-                command += $"--tx-out {txParams.SenderAddress}+{lovelaceValue}";
-                command += incmd_newline;
+                cmd += $"--tx-out {txParams.SenderAddress}+{lovelaceValue}";
+                cmd += incmd_newline;
             }
 
+            cmd += $"--ttl {ttl}";
+            cmd += incmd_newline;
 
-            command += $"--ttl {ttl}";
-            command += incmd_newline;
+            cmd += "--fee 170000";
+            cmd += incmd_newline;
 
-            command += "--fee 170000";
-            command += incmd_newline;
+            cmd += $"--out-file {txParams.TxFileName}.raw";
 
-            command += $"--out-file {txParams.TxFileName}";
+            return RunCLICommand(cmd);
+        }
 
-            RunCLICommand(command);
+        public string SetProtocolParamaters()
+        {
+            var cmd = @"query protocol-paramaters";
+            cmd += incmd_newline;
 
-            return txParams.TxFileName;
+            cmd += network;
+            cmd += incmd_newline;
+
+            cmd += "--out-file protocol.json";
+
+            return RunCLICommand(cmd);
+        }
+
+        public string CalculateMinFee(TransactionParams txParams, long ttl)
+        {
+            var cmd = @"transaction calculate-min-fee";
+            cmd += incmd_newline;
+
+            cmd += "--tx-in-count 1";
+            cmd += incmd_newline;
+
+            var outCount = txParams.SendAllTxInAda ? 1 : 2;
+            cmd += $"--tx-out-count {outCount}";
+            cmd += incmd_newline;
+
+            cmd += $"--ttl {ttl}";
+
+            cmd += network;
+            cmd += incmd_newline;
+
+            cmd += $"--signing-key-file {signing_key}";
+            cmd += incmd_newline;
+
+            cmd += "--protocol-params-file protocol.json";
+
+            return RunCLICommand(cmd);
+        }
+
+        public string BuildTransaction(TransactionParams txParams, long minFee, long ttl)
+        {
+            var cmd = @"transaction build-raw";
+            cmd += incmd_newline;
+
+            cmd = $"--tx-in {txParams.TxInHash}#{txParams.TxInIx}";
+            cmd += incmd_newline;
+
+            //1ADA = 1 000 000
+            long lovelaceValue = txParams.AdaValue * 1000000;
+            lovelaceValue = txParams.SendAllTxInAda ? lovelaceValue - minFee : lovelaceValue;
+
+            //send to - tx out - fee is subtracted from all value
+            cmd += $"--tx-out {txParams.SendToAddress}+{lovelaceValue}";
+            cmd += incmd_newline;
+
+            //return change - fee pays sender
+            if (!txParams.SendAllTxInAda)
+            {
+                var txInputLovelace = txParams.TxInAdaValue * 1000000;
+                cmd += $"--tx-out {txParams.SenderAddress}+{txInputLovelace - lovelaceValue - minFee}";
+                cmd += incmd_newline;
+            }
+
+            cmd += $"--ttl {ttl}";
+            cmd += incmd_newline;
+
+            cmd += $"--fee {minFee}";
+            cmd += incmd_newline;
+
+            cmd += $"--out-file {txParams.TxFileName}.raw";
+
+            return RunCLICommand(cmd);
+        }
+
+        public string SignTransaction(TransactionParams txParams)
+        {
+            var cmd = @"transaction sign";
+            cmd += incmd_newline;
+
+            cmd += $"--tx-body-file {txParams.TxFileName}.raw";
+            cmd += incmd_newline;
+
+            cmd += $"--signing-key-file {signing_key}";
+            cmd += incmd_newline;
+
+            cmd += network;
+            cmd += incmd_newline;
+
+            cmd += $"--out-file {txParams.TxFileName}.signed";
+
+            return RunCLICommand(cmd);
+        }
+
+        public string SubmitTransaction(TransactionParams txParams)
+        {
+            var cmd = @"transaction submit";
+            cmd += incmd_newline;
+
+            cmd += $"--tx-file {txParams.TxFileName}.signed";
+            cmd += incmd_newline;
+
+            cmd += network;
+
+            return RunCLICommand(cmd);
+
         }
     }
 }
