@@ -95,7 +95,7 @@ namespace CS.Csharp.CardanoCLI
     if (pParams.TimeLimited) script += @",
         {
         ""type"": ""before"",
-        ""slot"": ""SLOT""
+        ""slot"": SLOT
         }";
     script += @"
     ]
@@ -109,7 +109,6 @@ namespace CS.Csharp.CardanoCLI
             {
                 script = script.Replace("SLOT", (currentSlot + (pParams.ValidForMinutes * 60)).ToString());
             }
-            Console.Write(script);
             try
             {   
                 System.IO.File.WriteAllText($"{_working_dir}/{pParams.PolicyName}.script", script);

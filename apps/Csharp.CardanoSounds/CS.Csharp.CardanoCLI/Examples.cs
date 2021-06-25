@@ -24,7 +24,7 @@ namespace CS.Csharp.CardanoCLI
         }
 
 
-        private static void TestMintTokens()
+        public void TestMintTokens()
         {
             var mintParams = new MintParams
             {
@@ -58,7 +58,7 @@ namespace CS.Csharp.CardanoCLI
 
         }
 
-        private static void TestCreatePolicy()
+        public void TestCreatePolicy()
         {
             Policies policies = new Policies(_network, _working_dir);
 
@@ -81,7 +81,7 @@ namespace CS.Csharp.CardanoCLI
             }
         }
 
-        private static void TestTransaction()
+        public void TestTransaction()
         {
             var initialAda = 994825039;
 

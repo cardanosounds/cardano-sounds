@@ -20,13 +20,12 @@ namespace CS.Csharp.CardanoCLI
             //cli.QueryTip();
 
             //TestTransaction();
-            TestCreatePolicy();
+            //TestCreatePolicy();
+            var examples = new Examples(network, signing_key, working_directory);
+
+            examples.TestMintTokens();
 
         }
-
-       
-
-       
 
         public static bool HasError(string output)
         {
