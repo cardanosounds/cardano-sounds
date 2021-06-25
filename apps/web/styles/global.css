@@ -68,3 +68,20 @@ img {
 	.st14{fill:#264120;}
 	.st15{fill:#330066;}
 	.st16{fill:#4D20FF;}
+
+
+.play-alt a:before {
+    left:2px;
+    border:8px solid transparent;
+    border-width:8px 12px;
+    border-left-color:#c55500;
+    margin-top:-8px;
+    background:transparent;
+}
+
+.play-alt a:hover:before,
+.play-alt a:focus:before,
+.play-alt a:active:before {
+    border-left-color:#730800;
+    background:transparent;
+}
