@@ -97,7 +97,7 @@ namespace CS.Csharp.CardanoCLI
             cmd += $"--tx-body-file {txParams.TxFileName}.raw";
             cmd += _incmd_newline;
 
-            cmd += "--witness-count 1";
+            cmd += "--witness-count 0";
             cmd += _incmd_newline;
 
             cmd += "--protocol-params-file protocol.json";

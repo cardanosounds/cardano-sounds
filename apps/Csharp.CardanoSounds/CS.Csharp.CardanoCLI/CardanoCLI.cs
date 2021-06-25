@@ -10,7 +10,7 @@ namespace CS.Csharp.CardanoCLI
         private static readonly string cardano_cli_location = $"/home/azureuser/cardano-node-1.27.0/cardano-cli"; //.exe for windows
         private static readonly string working_directory = "/home/azureuser/cardano-node-1.27.0";
 
-        private static readonly string signing_key = @"signing-key";
+        //private static readonly string signing_key = @"signing-key";
 
         private static readonly string incmd_newline = @" ";
 
@@ -21,7 +21,7 @@ namespace CS.Csharp.CardanoCLI
 
             //TestTransaction();
             //TestCreatePolicy();
-            var examples = new Examples(network, signing_key, working_directory);
+            var examples = new Examples(network, working_directory);
 
             examples.TestMintTokens();
 

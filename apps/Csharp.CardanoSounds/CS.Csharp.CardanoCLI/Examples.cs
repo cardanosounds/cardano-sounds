@@ -11,13 +11,11 @@ namespace CS.Csharp.CardanoCLI
     {
         private static string _network;
         private static string _incmd_newline;
-        private static string _signing_key;
         private static string _working_dir;
 
 
-        public Examples(string network, string signing_key, string working_dir, string incmd_newline = " ")
+        public Examples(string network, string working_dir, string incmd_newline = " ")
         {
-            _signing_key = signing_key;
             _network = network;
             _incmd_newline = incmd_newline;
             _working_dir = working_dir;
@@ -42,7 +40,7 @@ namespace CS.Csharp.CardanoCLI
 
             var txParams = new TransactionParams()
             {
-                TxFileName = $"testmint-tx",
+                TxFileName = $"testpolicy",
                 LovelaceValue = 5000000,
                 SendAllTxInAda = false,
                 SenderAddress = "addr_test1vrw3r08naaq8wrtemegjk7p3e9zp7a2ceul9rd84pd3nckcynl6xq",
@@ -100,7 +98,7 @@ namespace CS.Csharp.CardanoCLI
 
             var ttl = CardanoCLI.QueryTip().Slot + 100;
 
-            var transactions = new Transactions(_incmd_newline, _network, _signing_key);
+            var transactions = new Transactions(_incmd_newline, _network);
 
             var f = transactions.PrepareTransaction(txParams, ttl);
             Console.WriteLine(f);
