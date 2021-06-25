@@ -8,7 +8,7 @@ namespace CS.Csharp.CardanoCLI
     {
         private static readonly string network = "--testnet-magic 1097911063"; //--mainnet
         private static readonly string cardano_cli_location = $"/home/azureuser/cardano-node-1.27.0/cardano-cli"; //.exe for windows
-        private static readonly string working_directory = "/home/azureuser/cardano-node-1.27.0"; 
+        private static readonly string working_directory = "/home/azureuser/cardano-node-1.27.0";
 
         private static readonly string signing_key = @"signing-key";
 
@@ -17,15 +17,14 @@ namespace CS.Csharp.CardanoCLI
         static void Main(string[] args)
         {
             var cli = new CardanoCLI();
-            cli.QueryTip();
+            //cli.QueryTip();
 
             var initialAda = 1000;
-            //for(var i = 1; i <= 20; i++)
-            //{
-            //}
+
+
             var txParams = new TransactionParams()
             {
-                TxFileName = "tx0",
+                TxFileName = $"tx1",
                 AdaValue = 5,
                 SendAllTxInAda = false,
                 SenderAddress = "addr_test1vrw3r08naaq8wrtemegjk7p3e9zp7a2ceul9rd84pd3nckcynl6xq",
@@ -38,6 +37,53 @@ namespace CS.Csharp.CardanoCLI
             var ttl = cli.QueryTip().Slot + 100;
             var f = cli.PrepareTransaction(txParams, ttl);
             Console.WriteLine(f);
+            if (!f.StartsWith("CS.Error"))
+            {
+                var protocolParams = cli.SetProtocolParamaters();
+                if (!cli.HasError(protocolParams))
+                {
+                    var minFee = cli.CalculateMinFee(txParams, ttl);
+                    if (!cli.HasError(minFee))
+                    {
+                        Console.WriteLine(minFee);
+                        var buildTx = cli.BuildTransaction(txParams, (long)Convert.ToInt64(minFee.Replace(" Lovelace", "")), ttl);
+                        if (!cli.HasError(buildTx))
+                        {
+                            var signTx = cli.SignTransaction(txParams);
+                            if (!cli.HasError(signTx))
+                            {
+                                var submit = cli.SubmitTransaction(txParams);
+                                Console.WriteLine(submit);
+                                if (!cli.HasError(submit))
+                                {
+                                    Console.WriteLine("Success!");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("SIGN ERROR: " + signTx);
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("BUILD ERROR: " + buildTx);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("FEE CALC ERROR: " + minFee);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("PROTOCOL PARAMS ERROR: " + protocolParams);
+                }
+            }
+        }
+
+        private bool HasError(string output)
+        {
+            return output.StartsWith("CS.Error");
         }
 
         public string RunCLICommand(string cmd)
@@ -53,7 +99,7 @@ namespace CS.Csharp.CardanoCLI
                     Arguments = cmd,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
-                    UseShellExecute = false
+                    UseShellExecute = false,
                 };
                 process.StartInfo = processStartInfo;
                 process.Start();
@@ -122,7 +168,7 @@ namespace CS.Csharp.CardanoCLI
 
         public string SetProtocolParamaters()
         {
-            var cmd = @"query protocol-paramaters";
+            var cmd = @"query protocol-parameters";
             cmd += incmd_newline;
 
             cmd += network;
@@ -145,12 +191,13 @@ namespace CS.Csharp.CardanoCLI
             cmd += $"--tx-out-count {outCount}";
             cmd += incmd_newline;
 
-            cmd += $"--ttl {ttl}";
-
             cmd += network;
             cmd += incmd_newline;
 
-            cmd += $"--signing-key-file {signing_key}";
+            cmd += $"--tx-body-file {txParams.TxFileName}.raw";
+            cmd += incmd_newline;
+
+            cmd += "--witness-count 1";
             cmd += incmd_newline;
 
             cmd += "--protocol-params-file protocol.json";
@@ -163,7 +210,8 @@ namespace CS.Csharp.CardanoCLI
             var cmd = @"transaction build-raw";
             cmd += incmd_newline;
 
-            cmd = $"--tx-in {txParams.TxInHash}#{txParams.TxInIx}";
+            //tx in
+            cmd += $"--tx-in {txParams.TxInHash}#{txParams.TxInIx}";
             cmd += incmd_newline;
 
             //1ADA = 1 000 000

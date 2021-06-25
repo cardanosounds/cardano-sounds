@@ -105,5 +105,5 @@ $NETWORK_ID \
 --tx-body-file matx"$transactionHash".raw \
 --out-file matx"$transactionHash".signed
 
-#send to MAINNET
+#send to MAINNET / TESTNET
 ./cardano-cli transaction submit --tx-file  matx"$transactionHash".signed $NETWORK_ID

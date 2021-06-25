@@ -3,7 +3,6 @@
     "short_name": "CSNFT",
     "display": "standalone",
     "orientation": "portrait",
-    "scope": "/",
     "start_url": "/",
     "icons": [
         {
