@@ -19,6 +19,36 @@ namespace CS.Csharp.CardanoCLI
             //var cli = new CardanoCLI();
             //cli.QueryTip();
 
+            //TestTransaction();
+            TestCreatePolicy();
+
+        }
+
+        private static void TestCreatePolicy()
+        {
+            Policies policies = new Policies(network, working_directory);
+
+            var policyParams = new PolicyParams
+            {
+                PolicyName = "testpolicy1",
+                TimeLimited = true,
+                ValidForMinutes = 20
+            };
+
+            var policy = policies.CreatePolicy(policyParams);
+
+            if (policy == new Policy())
+            {
+                Console.WriteLine("error");
+            }
+            else
+            { 
+                Console.WriteLine("success");
+            }
+        }
+
+        private static void TestTransaction()
+        {
             var initialAda = 994825039;
 
 
@@ -37,7 +67,7 @@ namespace CS.Csharp.CardanoCLI
             var ttl = QueryTip().Slot + 100;
 
             var transactions = new Transactions(incmd_newline, network, signing_key);
-            
+
             var f = transactions.PrepareTransaction(txParams, ttl);
             Console.WriteLine(f);
             if (!f.StartsWith("CS.Error"))
@@ -82,12 +112,11 @@ namespace CS.Csharp.CardanoCLI
                     Console.WriteLine("PROTOCOL PARAMS ERROR: " + protocolParams);
                 }
             }
-            else 
+            else
             {
                 Console.WriteLine("PREPARE ERROR: " + f);
             }
         }
-        
 
         public static bool HasError(string output)
         {

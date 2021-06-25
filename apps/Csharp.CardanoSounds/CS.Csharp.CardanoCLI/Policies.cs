@@ -30,6 +30,7 @@ namespace CS.Csharp.CardanoCLI
             if(CardanoCLI.HasError(generateKeys))
             {
                 error = generateKeys; 
+                Console.WriteLine(error);
                 return policy;
             }
 
@@ -38,6 +39,7 @@ namespace CS.Csharp.CardanoCLI
             if (CardanoCLI.HasError(policyKeyHash))
             {
                 error = policyKeyHash;
+                Console.WriteLine(error);
                 return policy;
             }
 
@@ -46,6 +48,7 @@ namespace CS.Csharp.CardanoCLI
             if (CardanoCLI.HasError(policyScriptFile))
             {
                 error = policyScriptFile;
+                Console.WriteLine(error);
                 return policy;
             }
 
