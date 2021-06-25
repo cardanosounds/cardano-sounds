@@ -9,9 +9,9 @@ namespace CS.Csharp.CardanoCLI
 {
     public class Transactions
     {
-        private static string _network = "--testnet-magic 1097911063"; //--mainnet
-        private static string _incmd_newline = @" ";
-        private static string _signing_key = @"signing-key";
+        private static string _network;
+        private static string _incmd_newline;
+        private static string _signing_key;
 
         public Transactions(string incmd_newline, string network, string signning_key)
         {
@@ -29,17 +29,14 @@ namespace CS.Csharp.CardanoCLI
             cmd += $"--tx-in {txParams.TxInHash}#{txParams.TxInIx}";
             cmd += _incmd_newline;
 
-            //1ADA = 1 000 000
-            var lovelaceValue = txParams.AdaValue * 1000000;
-
             //send to - tx out
-            cmd += $"--tx-out {txParams.SendToAddress}+{lovelaceValue}";
+            cmd += $"--tx-out {txParams.SendToAddress}+{txParams.LovelaceValue}";
             cmd += _incmd_newline;
 
             //return change
             if (!txParams.SendAllTxInAda)
             {
-                cmd += $"--tx-out {txParams.SenderAddress}+{lovelaceValue}";
+                cmd += $"--tx-out {txParams.SenderAddress}+{txParams.TxInLovelaceValue - txParams.LovelaceValue}";
                 cmd += _incmd_newline;
             }
 
@@ -90,19 +87,17 @@ namespace CS.Csharp.CardanoCLI
             cmd += $"--tx-in {txParams.TxInHash}#{txParams.TxInIx}";
             cmd += _incmd_newline;
 
-            //1ADA = 1 000 000
-            long lovelaceValue = txParams.AdaValue * 1000000;
-            lovelaceValue = txParams.SendAllTxInAda ? lovelaceValue - minFee : lovelaceValue;
+            
+            long lovelaceVal = txParams.SendAllTxInAda ? txParams.LovelaceValue - minFee : txParams.LovelaceValue;
 
-            //send to - tx out - fee is subtracted from all value
-            cmd += $"--tx-out {txParams.SendToAddress}+{lovelaceValue}";
+            //send to - tx out 
+            cmd += $"--tx-out {txParams.SendToAddress}+{lovelaceVal}";
             cmd += _incmd_newline;
 
             //return change - fee pays sender
             if (!txParams.SendAllTxInAda)
             {
-                var txInputLovelace = txParams.TxInAdaValue * 1000000;
-                cmd += $"--tx-out {txParams.SenderAddress}+{txInputLovelace - lovelaceValue - minFee}";
+                cmd += $"--tx-out {txParams.SenderAddress}+{txParams.TxInLovelaceValue - txParams.LovelaceValue - minFee}";
                 cmd += _incmd_newline;
             }
 

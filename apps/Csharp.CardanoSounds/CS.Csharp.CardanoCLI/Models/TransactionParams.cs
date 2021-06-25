@@ -11,11 +11,11 @@ namespace CS.Csharp.CardanoCLI.Models
 
         public string TxInHash { get; set; }
 
-        public int TxInAdaValue { get; set; }
+        public int TxInLovelaceValue { get; set; }
 
         public int TxInIx { get; set; }
 
-        public int AdaValue { get; set; }
+        public int LovelaceValue { get; set; }
 
         public string SenderAddress { get; set; }
 
