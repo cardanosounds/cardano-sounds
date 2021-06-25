@@ -23,5 +23,7 @@ namespace CS.Csharp.CardanoCLI.Models
 
         public string TxFileName { get; set; }
 
+        public string MetadataFileName { get; set; }
+
     }
 }

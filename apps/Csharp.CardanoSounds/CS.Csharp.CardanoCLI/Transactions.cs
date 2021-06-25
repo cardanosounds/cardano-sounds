@@ -20,7 +20,7 @@ namespace CS.Csharp.CardanoCLI
             _incmd_newline = incmd_newline;
         }
 
-        public string PrepareTransaction(TransactionParams txParams, long ttl)
+        public string PrepareTransaction(TransactionParams txParams, long ttl, MintParams mintParams = null)
         {
             var cmd = @"transaction build-raw";
             cmd += _incmd_newline;
@@ -29,14 +29,36 @@ namespace CS.Csharp.CardanoCLI
             cmd += $"--tx-in {txParams.TxInHash}#{txParams.TxInIx}";
             cmd += _incmd_newline;
 
-            //send to - tx out
-            cmd += $"--tx-out {txParams.SendToAddress}+{txParams.LovelaceValue}";
-            cmd += _incmd_newline;
-
-            //return change
-            if (!txParams.SendAllTxInAda)
+            if (mintParams == null)
             {
-                cmd += $"--tx-out {txParams.SenderAddress}+{txParams.TxInLovelaceValue - txParams.LovelaceValue}";
+                //send to - tx out
+                cmd += $"--tx-out {txParams.SendToAddress}+{txParams.LovelaceValue}";
+                cmd += _incmd_newline;
+                
+                //return change
+                if (!txParams.SendAllTxInAda)
+                {
+                    cmd += $"--tx-out {txParams.SenderAddress}+{txParams.TxInLovelaceValue - txParams.LovelaceValue}";
+                    cmd += _incmd_newline;
+                }
+            }
+            else
+            {
+                var policyId = Policies.GeneratePolicyId(mintParams.PolicyName);
+
+                cmd += $"--tx-out {txParams.SenderAddress}+{txParams.TxInLovelaceValue}";
+                cmd += _incmd_newline;
+
+                cmd += $"+{mintParams.TokenAmount} {policyId}.{mintParams.TokenName}";
+                cmd += _incmd_newline;
+
+                cmd += $"--mint={mintParams.TokenAmount} {policyId}.{mintParams.TokenName}";
+                cmd += _incmd_newline;
+            }
+
+            if(!String.IsNullOrEmpty(txParams.MetadataFileName))
+            {
+                cmd += $"--metadata-json-file {txParams.MetadataFileName}";
                 cmd += _incmd_newline;
             }
 
@@ -78,7 +100,7 @@ namespace CS.Csharp.CardanoCLI
             return CardanoCLI.RunCLICommand(cmd);
         }
 
-        public string BuildTransaction(TransactionParams txParams, long minFee, long ttl)
+        public string BuildTransaction(TransactionParams txParams, long minFee, long ttl, MintParams mintParams = null)
         {
             var cmd = @"transaction build-raw";
             cmd += _incmd_newline;
@@ -87,17 +109,38 @@ namespace CS.Csharp.CardanoCLI
             cmd += $"--tx-in {txParams.TxInHash}#{txParams.TxInIx}";
             cmd += _incmd_newline;
 
-            
-            long lovelaceVal = txParams.SendAllTxInAda ? txParams.LovelaceValue - minFee : txParams.LovelaceValue;
+            long lovelaceVal = txParams.SendAllTxInAda ? txParams.TxInLovelaceValue - minFee : txParams.LovelaceValue;
 
-            //send to - tx out 
-            cmd += $"--tx-out {txParams.SendToAddress}+{lovelaceVal}";
-            cmd += _incmd_newline;
-
-            //return change - fee pays sender
-            if (!txParams.SendAllTxInAda)
+            if (mintParams == null)
             {
-                cmd += $"--tx-out {txParams.SenderAddress}+{txParams.TxInLovelaceValue - txParams.LovelaceValue - minFee}";
+                //send to - tx out 
+                cmd += $"--tx-out {txParams.SendToAddress}+{lovelaceVal}";
+                cmd += _incmd_newline;
+
+                //return change - fee pays sender
+                if (!txParams.SendAllTxInAda)
+                {
+                    cmd += $"--tx-out {txParams.SenderAddress}+{txParams.TxInLovelaceValue - txParams.LovelaceValue - minFee}";
+                    cmd += _incmd_newline;
+                }
+            }
+            else
+            {
+                var policyId = Policies.GeneratePolicyId(mintParams.PolicyName);
+
+                cmd += $"--tx-out {txParams.SenderAddress}+{txParams.TxInLovelaceValue}";
+                cmd += _incmd_newline;
+
+                cmd += $"+{mintParams.TokenAmount} {policyId}.{mintParams.TokenName}";
+                cmd += _incmd_newline;
+
+                cmd += $"--mint={mintParams.TokenAmount} {policyId}.{mintParams.TokenName}";
+                cmd += _incmd_newline;
+            }
+
+            if (!String.IsNullOrEmpty(txParams.MetadataFileName))
+            {
+                cmd += $"--metadata-json-file {txParams.MetadataFileName}";
                 cmd += _incmd_newline;
             }
 
