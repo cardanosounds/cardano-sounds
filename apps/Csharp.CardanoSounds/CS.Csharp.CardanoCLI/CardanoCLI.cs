@@ -89,7 +89,7 @@ namespace CS.Csharp.CardanoCLI
         }
         
 
-        private static bool HasError(string output)
+        public static bool HasError(string output)
         {
             return output.StartsWith("CS.Error");
         }

@@ -13,7 +13,7 @@ namespace CS.Csharp.CardanoCLI
         private static string _incmd_newline;
         private static string _signing_key;
 
-        public Transactions(string incmd_newline, string network, string signning_key)
+        public Transactions(string network, string signning_key, string incmd_newline = " ")
         {
             _signing_key = signning_key;
             _network = network;
