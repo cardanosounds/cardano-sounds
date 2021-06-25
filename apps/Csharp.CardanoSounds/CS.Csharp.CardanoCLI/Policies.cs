@@ -26,14 +26,6 @@ namespace CS.Csharp.CardanoCLI
             Policy policy = new Policy();
             var error = "";
 
-            var generateKeys = this.GeneratePolicySigningKeys(pParams);
-
-            if(CardanoCLI.HasError(generateKeys))
-            {
-                error = generateKeys; 
-                Console.WriteLine(error);
-                return policy;
-            }
 
             var policyKeyHash = this.GeneratePolicyKeyHash(pParams);
 
@@ -55,8 +47,8 @@ namespace CS.Csharp.CardanoCLI
 
             policy.PolicyKeyHash = policyKeyHash;
             policy.PolicyScriptFile = $"{pParams.PolicyName}.script";
-            policy.SigningKeyFile = $"{pParams.PolicyName}.skey";
-            policy.VerificationKeyFile = $"{pParams.PolicyName}.vkey";
+            policy.SigningKeyFile = pParams.SigningKeyFile;
+            policy.VerificationKeyFile = pParams.VerificationKeyFile;
 
             return policy;
         }
@@ -76,7 +68,7 @@ namespace CS.Csharp.CardanoCLI
 
         public string GeneratePolicyKeyHash(PolicyParams pParams)
         {
-            var cmd = $"address key-hash --payment-verification-key-file {pParams.PolicyName}.vkey";
+            var cmd = $"address key-hash --payment-verification-key-file {pParams.VerificationKeyFile}";
             var output = CardanoCLI.RunCLICommand(cmd);
             
             return Regex.Replace(output, @"\s", "");

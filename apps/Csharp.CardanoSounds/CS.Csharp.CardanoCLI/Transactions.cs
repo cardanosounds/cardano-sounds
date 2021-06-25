@@ -172,8 +172,7 @@ namespace CS.Csharp.CardanoCLI
             cmd += $"--tx-body-file {txParams.TxFileName}.raw";
             cmd += _incmd_newline;
             
-            var signature = signingKeyFile == "" ? _signing_key : signingKeyFile;
-            cmd += $"--signing-key-file {signature}";
+            cmd += $"--signing-key-file {_signing_key}";
             cmd += _incmd_newline;
 
             cmd += _network;

@@ -35,7 +35,9 @@ namespace CS.Csharp.CardanoCLI
             {
                 PolicyName = "testpolicy",
                 TimeLimited = true,
-                ValidForMinutes = 20
+                ValidForMinutes = 20,
+                SigningKeyFile = "signing-key",
+                VerificationKeyFile = "verification-key"
             };
 
             var txParams = new TransactionParams()

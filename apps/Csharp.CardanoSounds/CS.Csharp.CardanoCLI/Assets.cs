@@ -28,7 +28,7 @@ namespace CS.Csharp.CardanoCLI
             var policy = policies.Create(pParams);
             if (string.IsNullOrEmpty(policy.PolicyKeyHash)) { return "Error policy: " + policy; }
 
-            Transactions transactions = new Transactions(_network, $"{pParams.PolicyName}.skey");
+            Transactions transactions = new Transactions(_network, pParams.SigningKeyFile);
 
             var ttl = CardanoCLI.QueryTip().Slot + 120;
 
@@ -41,7 +41,7 @@ namespace CS.Csharp.CardanoCLI
             var build = transactions.BuildTransaction(txParams, Int64.Parse(minFee), ttl, mintParams);
             if (CardanoCLI.HasError(minFee)) { return "Error build: " + build; }
 
-            var sign = transactions.SignTransaction(txParams, $"{pParams.PolicyName}.skey");
+            var sign = transactions.SignTransaction(txParams);
             if (CardanoCLI.HasError(minFee)) { return "Error sign: " + sign; }
 
             var submit = transactions.SubmitTransaction(txParams);

@@ -10,5 +10,8 @@ namespace CS.Csharp.CardanoCLI.Models
 
         public string PolicyName { get; set; }
 
+        public string SigningKeyFile { get; set; }
+        public string VerificationKeyFile { get; set; }
+
     }
 }
