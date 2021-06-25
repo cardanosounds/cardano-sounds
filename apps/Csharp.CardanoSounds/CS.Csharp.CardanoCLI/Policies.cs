@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace CS.Csharp.CardanoCLI
@@ -75,31 +76,30 @@ namespace CS.Csharp.CardanoCLI
 
         public string GeneratePolicyKeyHash(PolicyParams pParams)
         {
-            var cmd = $"address key-hash";
-            cmd += _incmd_newline;
-
-            cmd = $"--payment-verification-key-file policies/{pParams.PolicyName}.vkey";
-
-            return CardanoCLI.RunCLICommand(cmd);
+            var cmd = $"address key-hash --payment-verification-key-file policy/{pParams.PolicyName}.vkey";
+            var output = CardanoCLI.RunCLICommand(cmd);
+            
+            return Regex.Replace(output, @"\s", "");
         }
 
         public string CreatePolicyScriptFile(PolicyParams pParams, string policyKeyHash)
         {
 
             var script = @"{
-              ""type"": ""all"",
-              ""scripts"": [
-                {
-                  ""keyHash"": ""POLICY_KEY_HASH"",
-                  ""type"": ""sig""
-                }";
-            if (pParams.TimeLimited) script += @",{
-                  ""type"": ""before"",
-                  ""slot"": ""SLOT""}
-                }";
-            script += @"
-              ]
-            }";
+    ""type"": ""all"",
+    ""scripts"": [
+        {
+        ""keyHash"": ""POLICY_KEY_HASH"",
+        ""type"": ""sig""
+        }";
+    if (pParams.TimeLimited) script += @",
+        {
+        ""type"": ""before"",
+        ""slot"": ""SLOT""
+        }";
+    script += @"
+    ]
+}";
 
             script = script.Replace("POLICY_KEY_HASH", policyKeyHash);
 
@@ -109,14 +109,17 @@ namespace CS.Csharp.CardanoCLI
             {
                 script = script.Replace("SLOT", (currentSlot + (pParams.ValidForMinutes * 60)).ToString());
             }
-
+            Console.Write(script);
             try
-            {
-                System.IO.File.WriteAllText($"{_working_dir}/{pParams.PolicyName}.script", script);
+            {   
+ 
+        
+                //System.IO.File.Create($"{_working_dir}/policy/{pParams.PolicyName}.script");
+                System.IO.File.WriteAllText($"{_working_dir}/policy/{pParams.PolicyName}.script", script);
             }
             catch(Exception ex)
             {
-                return ex.Message;
+                return $"CS.Error: {ex.Message}";
             }
 
             return $"{pParams.PolicyName}.script";

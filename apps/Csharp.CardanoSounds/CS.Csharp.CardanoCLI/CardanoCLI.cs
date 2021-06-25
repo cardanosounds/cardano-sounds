@@ -37,7 +37,7 @@ namespace CS.Csharp.CardanoCLI
 
             var policy = policies.CreatePolicy(policyParams);
 
-            if (policy == new Policy())
+            if (string.IsNullOrEmpty(policy.PolicyKeyHash))
             {
                 Console.WriteLine("error");
             }
