@@ -26,30 +26,31 @@ namespace CS.Csharp.CardanoCLI
         {
             var mintParams = new MintParams
             {
-                PolicyName = "testpolicy",
-                TokenAmount = 1000,
-                TokenName = "CSTEST"
+                PolicyName = "testpolicynft",
+                TokenAmount = 1,
+                TokenName = "CSDEVNFT"
             };
 
             var policyParams = new PolicyParams
             {
-                PolicyName = "testpolicy",
+                PolicyName = "testpolicynft",
                 TimeLimited = true,
                 ValidForMinutes = 20,
-                SigningKeyFile = "signing-key",
-                VerificationKeyFile = "verification-key"
+                SigningKeyFile = "signing-key-2",
+                VerificationKeyFile = "verification-key-2"
             };
 
             var txParams = new TransactionParams()
             {
-                TxFileName = $"testpolicy",
+                TxFileName = $"testpolicynft",
                 LovelaceValue = 5000000,
                 SendAllTxInAda = false,
-                SenderAddress = "addr_test1vrw3r08naaq8wrtemegjk7p3e9zp7a2ceul9rd84pd3nckcynl6xq",
-                SendToAddress = "addr_test1vrw3r08naaq8wrtemegjk7p3e9zp7a2ceul9rd84pd3nckcynl6xq",
-                TxInLovelaceValue = 989650078,
+                SenderAddress = "addr_test1vpl22c6vml7p7n5vv4n2mjf6sfw9kcse5c7jjk3uxc9dllcvvvj8q",
+                SendToAddress = "addr_test1vpl22c6vml7p7n5vv4n2mjf6sfw9kcse5c7jjk3uxc9dllcvvvj8q",
+                TxInLovelaceValue = 5000000,
                 TxInHash = "37626db011baf6c4900bd8fb1a010fea3003b19067f88c46c391c77e4c4f5948",
-                TxInIx = 1
+                TxInIx = 0,
+                MetadataFileName = "test-nft-meta.json"
             };
 
             Assets assets = new Assets(_network, _working_dir);

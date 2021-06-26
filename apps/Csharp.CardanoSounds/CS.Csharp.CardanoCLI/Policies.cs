@@ -53,19 +53,6 @@ namespace CS.Csharp.CardanoCLI
             return policy;
         }
 
-        public string GeneratePolicySigningKeys(PolicyParams pParams)
-        {
-            var cmd = $"address key-gen";
-            cmd += _incmd_newline;
-
-            cmd += $"--verification-key-file {pParams.PolicyName}.vkey";
-            cmd += _incmd_newline;
-
-            cmd += $"--signing-key-file {pParams.PolicyName}.skey";
-
-            return CardanoCLI.RunCLICommand(cmd);
-        }
-
         public string GeneratePolicyKeyHash(PolicyParams pParams)
         {
             var cmd = $"address key-hash --payment-verification-key-file {pParams.VerificationKeyFile}";
