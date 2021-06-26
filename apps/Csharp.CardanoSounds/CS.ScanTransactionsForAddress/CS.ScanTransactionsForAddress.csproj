@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CS.DB.Cosmos\CS.DB.Cosmos.csproj" />
     <ProjectReference Include="..\CS.Models\CS.Models.csproj" />
     <ProjectReference Include="..\CS.Utilities\CS.Utilities.csproj" />
   </ItemGroup>

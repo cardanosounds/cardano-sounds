@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using CS.Utilities;
 using CS.Models;
 using NLog.Internal;
+using CS.DB.Cosmos;
 
 namespace CS.ScanTransactionsForAddress
 {
@@ -30,13 +31,19 @@ namespace CS.ScanTransactionsForAddress
             //get transactions
             var txs = await GetTransactions();
 
+            var i = 1;
             foreach (var tx in txs)
             {
                 //get sender's address
                 var sender = await GetSenderAddress(tx.Tx_Hash);
 
+                tx.Id = Guid.NewGuid().ToString();
+                tx.Status = "new";
+                var transactions = new Transactions();
+
                 tx.SenderAddress = sender;
-                Console.WriteLine(sender);
+                Console.WriteLine(await transactions.Create(tx));
+                i++;
             }
 
             Console.ReadLine();

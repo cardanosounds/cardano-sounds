@@ -15,7 +15,7 @@ namespace CS.DB.Cosmos
             Database cosmos = new Database();
             await cosmos.Setup();
 
-            await cosmos.txContainer.CreateItemAsync(tx, new PartitionKey(tx.Status));
+            //await cosmos.txContainer.CreateItemAsync(tx, new PartitionKey(tx.Status));
            
             try
             {
