@@ -21,5 +21,7 @@ namespace CS.Models
 
         [JsonProperty(PropertyName = "status")]
         public string Status { get; set; }
+
+        public DateTime Created { get; set; }
     }
 }

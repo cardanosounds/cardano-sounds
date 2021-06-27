@@ -10,6 +10,7 @@ using CS.Utilities;
 using CS.Models;
 using NLog.Internal;
 using CS.DB.Cosmos;
+using System.Linq;
 
 namespace CS.ScanTransactionsForAddress
 {
@@ -22,22 +23,41 @@ namespace CS.ScanTransactionsForAddress
         private static string addr;
         private static int count;
         private static int pageCount = 1;
+        private static string lastTxId;
 
         static async Task Main(string[] args)
         {
             //load configuration from App.config
             LoadConfig();
 
+            //do once or fails
+            Authenticate();
+
             //get transactions
             var txs = await GetTransactions();
 
+            lastTxId = Transactions.GetLastTx();
+            if (txs.Select(t => t.Tx_Hash).Contains(lastTxId))
+            {
+                var count = txs.Count;
+                var index = txs.Select(t => t.Tx_Hash).ToList().IndexOf(lastTxId);
+                if (count - 1 == index)
+                {
+                    pageCount++;
+                    txs = await GetTransactions();
+                }
+                else
+                {
+                    txs.RemoveRange(0, index + 1);
+                }
+            }
             var i = 1;
             foreach (var tx in txs)
             {
                 //get sender's address
                 var sender = await GetSenderAddress(tx.Tx_Hash);
 
-                tx.Id = Guid.NewGuid().ToString();
+                tx.Id = tx.Tx_Hash;
                 tx.Status = "new";
                 var transactions = new Transactions();
 
@@ -51,7 +71,7 @@ namespace CS.ScanTransactionsForAddress
 
         private static async Task<List<Transaction>> GetTransactions()
         {
-            Authenticate();
+            //Authenticate();
 
             var transactions = new List<Transaction>();
 
@@ -63,6 +83,7 @@ namespace CS.ScanTransactionsForAddress
             {
                 var streamTask = client.GetStreamAsync(reqUrl);
                 var txs = await streamTask;
+
 
                 //var reader = new StreamReader(txs);
                 var transactionsArr = (JArray)DeserializeFromStream(txs);
