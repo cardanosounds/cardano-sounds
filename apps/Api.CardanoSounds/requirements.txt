@@ -1,0 +1,16 @@
+asn1crypto==0.24.0
+click==7.1.2
+cryptography==2.1.4
+enum34==1.1.6
+idna==2.6
+ipaddress==1.0.17
+keyring==10.6.0
+keyrings.alt==3.0
+pycrypto==2.6.1
+pygobject==3.26.1
+pyparted==3.11.1
+pyxdg==0.25
+redis==3.4.1
+rq==1.2.2
+SecretStorage==2.3.1
+six==1.11.0
