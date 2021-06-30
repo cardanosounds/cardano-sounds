@@ -1,4 +1,5 @@
 from pydub import AudioSegment
+from models.transaction import Transaction
 #1 enriching sounds
 #2 melody
 #3 bass
@@ -33,3 +34,4 @@ output.export(fE, format="mp3")
 
 
 
+#def mix_sound(tx: Transaction):
