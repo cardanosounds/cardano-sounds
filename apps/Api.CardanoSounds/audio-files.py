@@ -1,11 +1,30 @@
 import glob
 import pickle
+from random import randrange
 from models.soundprobability import SoundProbability
 
 class AudioFiles:
 
-	def calc_enrich_sounds_probabilities():
-		data_file = "enriching-sound-probability.data"
+	enrich_probab_file = "enriching-sound-probability.data"
+
+	def get_enrich_sound(self):
+		sps = self.enrich_sounds_probabilities()
+		num = randrange(100000)
+		probrange = 0
+		previous_sound = sps[0]
+		for sp in sps:
+			probrange += sp.probability * 100000
+			if probrange > num: 
+				return previous_sound
+			else:
+				previous_sound = sp
+		return
+
+	def enrich_sounds_probabilities(self):
+		filehandler = open(self.enrich_probab_file, 'rb') 
+		return pickle.load(filehandler)
+
+	def calc_enrich_sounds_probabilities(self):
 
 		last_prob = 0
 		
@@ -44,20 +63,15 @@ class AudioFiles:
 			sp = SoundProbability(probability=prob, filename=fp, category=category)
 			sps.append(sp)
 			i += 0.94	
-			fw = open(data_file, 'wb')
+			fw = open(self.enrich_probab_file, 'wb')
 
 		pickle.dump(sps, fw)
 		fw.close()
 		
-		filehandler = open(data_file, 'rb') 
-		sps = pickle.load(filehandler)
+		
 
-		sum = 0
-		for sp in sps:
-			sum += sp.probability
-			print(sp)
-
-		print(sum)	
+auo = AudioFiles()
+print(auo.get_enrich_sound())			
 
 
 
