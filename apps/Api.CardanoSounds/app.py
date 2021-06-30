@@ -24,9 +24,9 @@ def index():
 
 @app.route("/sound")
 def generate_sound(tx: Transaction):
-    from app import
+    #from app import
     job = q.enqueue_call(
-            func=generate, args=(tx,), result_ttl=5000
+            func=start_generating, args=(tx,), result_ttl=5000
         )
 
 

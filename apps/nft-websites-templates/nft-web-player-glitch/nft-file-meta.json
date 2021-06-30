@@ -1,0 +1,26 @@
+{
+"721": {
+   "be3a4e111a307643783820c2bf15fcace87f161187be9301857b593a": {
+      "CSDEVNFT0": {
+         "sounds": [
+            "sound1",
+            "sound2",
+            "sound3",
+            "sound4",
+            "sound5"
+         ],
+         "collection": "The first wave - Cardano Sounds",
+         "files": [
+            {
+               "mediaType": "audio/mp3",
+               "name": "cs0",
+               "src": "https://arweave.net/7BFX7ocamAH5jRxqs4oD9LhKfCjJufyqhwk7zmel91c"
+            }
+         ],
+         "rarity": 0.000000000000,
+       	 "website": "https://arweave.net/IX6sv4sFSueEzSFAkx7CG-qDaSSlUOCbeWVZibwv98g",
+       	 "buyingTx": "00000000000000000000000000000000000000000000000000000000"
+      }
+    }
+  }
+}
