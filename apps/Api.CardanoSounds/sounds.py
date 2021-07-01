@@ -4,7 +4,7 @@ import qrandom
 from mixsound import MixSound
 from models.soundprobability import SoundProbability
 
-class AudioFiles:
+class Sounds:
 
 	enrich_probab_file = "enriching-sound-probability.data"
 
@@ -100,7 +100,7 @@ class AudioFiles:
 		return SoundProbability(probability=round(1/melodies_count, 5), filename=filePaths[random_num - 1], category=category)
 
 		
-auo = AudioFiles()
+auo = Sounds()
 mixer = MixSound()
 
 sps = auo.get_random_track("randomTxHash000000111122222333344445555666677777888889999")

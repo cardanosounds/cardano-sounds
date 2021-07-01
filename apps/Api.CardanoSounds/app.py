@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, jsonify, url_for, f
 from rq import Queue
 from rq.job import Job
 from worker import conn
+from sounds import Sounds
 
 import random
 import string
@@ -17,6 +18,14 @@ app = Flask(__name__)
 
 q = Queue(connection=conn)
 
+
+def start_sound_generation(tx: Transaction):
+    sounds = Sounds()
+    sounds.get_random_track(tx.tx_hash)
+    
+
+
+
 @app.route("/")
 def index():
     return "index"
@@ -25,8 +34,9 @@ def index():
 @app.route("/sound")
 def generate_sound(tx: Transaction):
     #from app import
-    job = q.enqueue_call(
-            func=start_generating, args=(tx,), result_ttl=5000
+    
+    q.enqueue_call(
+            func=start_sound_generation, args=(tx,), result_ttl=5000
         )
 
 
