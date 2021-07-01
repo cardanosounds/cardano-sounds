@@ -1,6 +1,7 @@
 import glob
 import pickle
 import qrandom
+from mixsound import MixSound
 from models.soundprobability import SoundProbability
 
 class AudioFiles:
@@ -81,14 +82,16 @@ class AudioFiles:
 	def get_signature(self):
 		return self.get_sound("F:/CSwaves/signatures/", "signature")
 
-	def get_sounds_for_track(self):
-		sps = []
-		sps.append(self.get_enrich_sound())
-		sps.append(self.get_melody())
-		sps.append(self.get_drums())
-		sps.append(self.get_bass())
-		sps.append(self.get_signature())
-		return sps
+	def get_random_track(self, tx_hash):
+		mix = MixSound()
+		mix.mix_sound(
+			tx_hash,
+			self.get_enrich_sound(),
+			self.get_melody(),
+			self.get_drums(),
+			self.get_bass(),
+			self.get_signature()
+		)
 
 	def get_sound(self, folder_path, category):
 		filePaths = glob.glob(folder_path + "*")
@@ -98,4 +101,10 @@ class AudioFiles:
 
 		
 auo = AudioFiles()
-print(auo.get_sounds_for_track())	
+mixer = MixSound()
+
+sps = auo.get_random_track("randomTxHash000000111122222333344445555666677777888889999")
+
+
+	
+
