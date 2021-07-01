@@ -67,6 +67,35 @@ class AudioFiles:
 
 		pickle.dump(sps, fw)
 		fw.close()
+
+
+	def get_melody(self):
+		return self.get_sound("F:/CSwaves/melodies/", "melody")
+
+	def get_bass(self):
+		return self.get_sound("F:/CSwaves/bass/", "bass")
+
+	def get_drums(self):
+		return self.get_sound("F:/CSwaves/drums/", "drums")
+
+	def get_signature(self):
+		return self.get_sound("F:/CSwaves/signatures/", "signature")
+
+	def get_sounds_for_track(self):
+		sps = []
+		sps.append(self.get_enrich_sound())
+		sps.append(self.get_melody())
+		sps.append(self.get_drums())
+		sps.append(self.get_bass())
+		sps.append(self.get_signature())
+		return sps
+
+	def get_sound(self, folder_path, category):
+		filePaths = glob.glob(folder_path + "*")
+		melodies_count = len(filePaths)
+		random_num = qrandom.randint(1, melodies_count)
+		return SoundProbability(probability=round(1/melodies_count, 5), filename=filePaths[random_num - 1], category=category)
+
 		
 auo = AudioFiles()
-print(auo.get_enrich_sound())	
+print(auo.get_sounds_for_track())	
