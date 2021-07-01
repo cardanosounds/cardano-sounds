@@ -1,6 +1,6 @@
 import glob
 import pickle
-from random import randrange
+import qrandom
 from models.soundprobability import SoundProbability
 
 class AudioFiles:
@@ -9,7 +9,7 @@ class AudioFiles:
 
 	def get_enrich_sound(self):
 		sps = self.enrich_sounds_probabilities()
-		num = randrange(100000)
+		num = qrandom.randint(0, 100000)
 		probrange = 0
 		previous_sound = sps[0]
 		for sp in sps:
@@ -68,10 +68,5 @@ class AudioFiles:
 		pickle.dump(sps, fw)
 		fw.close()
 		
-		
-
 auo = AudioFiles()
-print(auo.get_enrich_sound())			
-
-
-
+print(auo.get_enrich_sound())	
