@@ -43,7 +43,7 @@ if {$force_conservative} {
 
 
 set timeout -1
-spawn arweave deploy UPLOADPATH
+spawn arweave deploy UPLOADPATH --package
 match_max 100000
 expect -exact "Enter your encryption passphrase to decrypt "
 send -- "none\r"
