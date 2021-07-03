@@ -6,7 +6,7 @@ from arweavedeploy import ArweaveDeploy
 
 class Upload:
 
-	generated_sounds_folder = "F:\CSwaves\generated-sounds"
+	generated_sounds_folder = "/home/dzcodes/sounds"
 	project_id = os.getenv('PROJECT_ID')
 
 
@@ -39,7 +39,7 @@ class Upload:
 
 	def upload_to_arweave(self, tx_hash):
 		deployer = ArweaveDeploy()
-		deployer.upload_sound_file(tx_hash)
+		return deployer.upload_sound_file(tx_hash)
 
 
 

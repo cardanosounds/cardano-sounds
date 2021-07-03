@@ -4,6 +4,8 @@ from rq.job import Job
 from worker import conn
 from sounds import Sounds
 from upload import Upload
+from websites import Websites
+from arweavedeploy import ArweaveDeploy
 
 import random
 import string
@@ -26,8 +28,10 @@ def start_sound_generation(tx: Transaction):
     upload = Upload()
     metadata.ipfs_id_sound = upload.upload_to_ipfs(tx.tx_hash)
     metadata.arweave_id_sound = upload.upload_to_arweave(tx.tx_hash)
-    
-
+    websites = Websites()
+    websites.create_nft_website(metadata)
+    deploy = ArweaveDeploy()
+    print(deploy.deploy_website(tx.tx_hash))
 
 
 
@@ -38,7 +42,7 @@ def index():
 
 @app.route("/sound")
 def generate_sound(tx: Transaction):
-    #from app import
+    from app import start_sound_generation
     
     q.enqueue_call(
             func=start_sound_generation, args=(tx,), result_ttl=5000

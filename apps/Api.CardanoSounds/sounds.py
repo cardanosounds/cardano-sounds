@@ -1,3 +1,4 @@
+import os
 import glob
 import pickle
 import qrandom
@@ -9,6 +10,7 @@ from models.transaction import Transaction
 class Sounds:
 
 	enrich_probab_file = "enriching-sound-probability.data"
+	base_sounds_folder = "/home/dzcodes/cs-base-sounds"
 
 	def get_enrich_sound(self):
 		sps = self.enrich_sounds_probabilities()
@@ -31,7 +33,7 @@ class Sounds:
 
 		last_prob = 0
 		
-		filePaths = glob.glob("F:/CSwaves/enriching-rarest/*")
+		filePaths = glob.glob(os.path.join(self.base_sounds_folder,"enriching-rarest/*"))
 		i = 1
 		sps = []
 		for fp in filePaths:
@@ -44,7 +46,7 @@ class Sounds:
 			last_prob = sp.probability
 			i += 0.37
 
-		filePaths = glob.glob("F:/CSwaves/enriching-mid-rare/*")
+		filePaths = glob.glob(os.path.join(self.base_sounds_folder,"enriching-mid-rare/*"))
 		i = 1
 		for fp in filePaths:
 			prob = i * 0.001 + last_prob
@@ -57,7 +59,7 @@ class Sounds:
 			i += 0.002
 
 
-		filePaths = glob.glob("F:/CSwaves/enriching-common/*")
+		filePaths = glob.glob(os.path.join(self.base_sounds_folder, "enriching-common/*"))
 		i = 1
 		for fp in filePaths:
 			prob = i * 0.00003 + last_prob
@@ -73,16 +75,16 @@ class Sounds:
 
 
 	def get_melody(self):
-		return self.get_sound("F:/CSwaves/melodies/", "melody")
+		return self.get_sound(os.path.join(self.base_sounds_folder, "melodies/"), category="melody")
 
 	def get_bass(self):
-		return self.get_sound("F:/CSwaves/bass/", "bass")
+		return self.get_sound(os.path.join(self.base_sounds_folder, "bass/"), category="bass")
 
 	def get_drums(self):
-		return self.get_sound("F:/CSwaves/drums/", "drums")
+		return self.get_sound(os.path.join(self.base_sounds_folder, "drums/"), category="drums")
 
 	def get_signature(self):
-		return self.get_sound("F:/CSwaves/signatures/", "signature")
+		return self.get_sound(os.path.join(self.base_sounds_folder, "signatures/"), category="signature")
 
 	def get_random_track(self, tx: Transaction):
 		mix = MixSound()
@@ -111,7 +113,7 @@ class Sounds:
 			signature
 		)
 
-		return Metadata(tx.tx_hash, "CSDEVNFT" + tx.id, total_probability, rarity, [enrich, melody, drums, bass, signature])
+		return Metadata(tx.tx_hash, "CSDEVNFT" + str(tx.id), total_probability, rarity, [enrich, melody, drums, bass, signature])
 
 
 
@@ -120,13 +122,4 @@ class Sounds:
 		melodies_count = len(filePaths)
 		random_num = qrandom.randint(1, melodies_count)
 		return SoundProbability(probability=round(1/melodies_count, 5), filename=filePaths[random_num - 1], category=category)
-
-		
-auo = Sounds()
-mixer = MixSound()
-
-sps = auo.get_random_track("randomTxHash000000111122222333344445555666677777888889999")
-
-
-	
 
