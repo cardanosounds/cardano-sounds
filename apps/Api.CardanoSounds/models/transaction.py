@@ -4,7 +4,7 @@ import tokenvalue
 
 @dataclass
 class Transaction:
-    id: str
+    id: int
     tx_hash: str
     output_index: int
     amount: float

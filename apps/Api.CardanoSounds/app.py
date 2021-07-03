@@ -21,8 +21,9 @@ q = Queue(connection=conn)
 
 def start_sound_generation(tx: Transaction):
     sounds = Sounds()
-    sounds.get_random_track(tx.tx_hash)
-    
+    metadata = sounds.get_random_track(tx)
+    upload
+
 
 
 

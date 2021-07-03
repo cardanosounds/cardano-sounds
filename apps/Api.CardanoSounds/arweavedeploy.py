@@ -35,7 +35,8 @@ class ArweaveDeploy:
 	
 
 	def upload_sound_file(self, tx_hash):
-		with open(tx_hash + ".mp3" , 'rb') as track:
+		filepath = os.path.join(self.sounds_folder, tx_hash, ".mp3")
+		with open(filepath , 'rb') as track:
 			audio_string_data = track.read()
 			
 			transaction = Transaction(self.wallet, data=audio_string_data)
