@@ -3,6 +3,7 @@ from rq import Queue
 from rq.job import Job
 from worker import conn
 from sounds import Sounds
+from upload import Upload
 
 import random
 import string
@@ -22,7 +23,10 @@ q = Queue(connection=conn)
 def start_sound_generation(tx: Transaction):
     sounds = Sounds()
     metadata = sounds.get_random_track(tx)
-    upload
+    upload = Upload()
+    metadata.ipfs_id_sound = upload.upload_to_ipfs(tx.tx_hash)
+    metadata.arweave_id_sound = upload.upload_to_arweave(tx.tx_hash)
+    
 
 
 

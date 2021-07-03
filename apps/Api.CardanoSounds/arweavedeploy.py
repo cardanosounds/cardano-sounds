@@ -1,4 +1,5 @@
 import os
+import json
 import subprocess
 
 #this lib unfortunately doesn't work on windows
@@ -42,8 +43,7 @@ class ArweaveDeploy:
 			transaction = Transaction(self.wallet, data=audio_string_data)
 			transaction.add_tag('Content-Type', 'audio/mp3')
 			transaction.sign()
-			return transaction.send()
+			transaction.send()
+			return transaction.id
 
 
-ad = ArweaveDeploy()
-print(ad.deploy_website("randomTxHash000000111122222333344445555666677777888889999"))

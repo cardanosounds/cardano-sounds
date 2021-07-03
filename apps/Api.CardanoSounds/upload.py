@@ -10,13 +10,6 @@ class Upload:
 	project_id = os.getenv('PROJECT_ID')
 
 
-	def upload_sound(self, tx):
-		ipfs_resp = self.upload_to_ipfs(tx.tx_hash)
-		print(ipfs_resp)
-		ar_resp = self.upload_to_arweave(tx.tx_hash)
-		print(ar_resp)
-
-
 	def upload_to_ipfs(self, tx_hash):
 		file_path = os.path.join(self.generated_sounds_folder, tx_hash + ".mp3")
 
