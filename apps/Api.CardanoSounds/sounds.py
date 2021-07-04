@@ -95,7 +95,7 @@ class Sounds:
 		bass = self.get_bass()
 		signature = self.get_signature()
 
-		total_probability = enrich.probability * melody.probability * drums.probability * bass.probability * signature.probability * 10000000000 
+		total_probability = enrich.probability * melody.probability * drums.probability * bass.probability * signature.probability * 100
 
 		if(enrich.category == "enriching-common"):
 			rarity = 1
