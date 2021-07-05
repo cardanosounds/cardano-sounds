@@ -41,7 +41,7 @@ namespace CS.ScanTransactionsForAddress
             {
                 var count = txs.Count;
                 var index = txs.Select(t => t.Tx_Hash).ToList().IndexOf(lastTxId);
-                if (index +1 == pageCount)
+                if (index + 1 == count)
                 {
                     pageCount++;
                     txs = await GetTransactions();

@@ -9,7 +9,6 @@ namespace CS.DB.Cosmos
 {
     public class Database
     {
-        // The Azure Cosmos DB endpoint for running this sample.
         private static readonly string EndpointUri = ConfigurationManager.AppSettings["CosmosEndPointUri"];
 
         // The primary key for the Azure Cosmos account.
@@ -26,6 +25,7 @@ namespace CS.DB.Cosmos
 
         // The container we will create.
         public  Container txContainer;
+        public  Container metadataContainer;
 
         public static async Task Main(string[] args)
         {
@@ -58,6 +58,7 @@ namespace CS.DB.Cosmos
             CreateCosmosClient();
             await CreateCosmosDatabase();
             await CreateTxContainer();
+            await CreateMetadataContainer();
         }
 
         private void CreateCosmosClient()
@@ -73,6 +74,11 @@ namespace CS.DB.Cosmos
         private async Task CreateTxContainer()
         {
             txContainer = await database.CreateContainerIfNotExistsAsync("transactions", "/status");
+        }
+
+        private async Task CreateMetadataContainer()
+        {
+            metadataContainer = await database.CreateContainerIfNotExistsAsync("metadata", "/id");
         }
     }
 }
