@@ -1,6 +1,11 @@
+import json
 from azure.cosmos import CosmosClient, PartitionKey, exceptions
-from base import Base
+from db.base import Base
+import jsonpickle
+
+from models.metadata import Metadata
 from models.transaction import Transaction
+from models.soundprobability import SoundProbability
 
 class Query:
 	base = Base()
@@ -14,12 +19,14 @@ class Query:
 			return(json.dumps(item, indent=True))
 
 	def delete_data(self, container_name, query):
-		container = self.base.get_container_client(container_name)
+		container = self.base.get_existing_container(container_name)
 		for item in container.query_items(
 				query=query,
 				enable_cross_partition_query=True):
 			container.delete_item(item)
 
-	def insert_transaction(self, transaction: Transaction):
-		container = self.base.get_container_client('transactions')
-		container.upsert_item(transaction)
+	def insert_metadata(self, metadata: Metadata):
+		container = self.base.get_existing_container('metadata')
+		metadata = jsonpickle.encode(metadata)
+		container.create_item(json.loads(metadata))
+

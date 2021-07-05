@@ -15,7 +15,7 @@ class Websites:
 
 
 	def create_nft_website(self, metadata: Metadata):
-		webdir = os.path.join(self.websites_folder, metadata.tx_hash)
+		webdir = os.path.join(self.websites_folder, metadata.id)
 		soundsstring = ""
 		first = True
 		for sp in metadata.sounds:
@@ -39,7 +39,7 @@ class Websites:
 			htmlfile=htmlfile.replace('TOKEN_NAME', metadata.token_name)
 			htmlfile=htmlfile.replace('SOUND_PROBABILITY', str(metadata.probabilty))
 			htmlfile=htmlfile.replace('USED_SOUNDS', soundsstring)
-			htmlfile=htmlfile.replace('BUYING_TX', metadata.tx_hash)
+			htmlfile=htmlfile.replace('BUYING_TX', metadata.id)
 
 		htmlfilename = os.path.join(webdir, "index.html")
 		with open(htmlfilename, "w") as f:

@@ -6,6 +6,7 @@ from sounds import Sounds
 from upload import Upload
 from websites import Websites
 from arweavedeploy import ArweaveDeploy
+from db.query import Query
 
 import random
 import string
@@ -32,6 +33,8 @@ def start_sound_generation(tx: Transaction):
     websites.create_nft_website(metadata)
     deploy = ArweaveDeploy()
     print(deploy.deploy_website(tx.tx_hash))
+    query = Query()
+    query.insert_metadata(metadata)
 
 
 

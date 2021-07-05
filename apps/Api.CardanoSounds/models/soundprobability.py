@@ -4,5 +4,4 @@ from dataclasses import dataclass
 class SoundProbability:
     probability: float
     filename: str
-    category: int
-    
+    category: str    

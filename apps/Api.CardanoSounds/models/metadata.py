@@ -4,7 +4,7 @@ from models.soundprobability import SoundProbability
 
 @dataclass
 class Metadata:
-    tx_hash: str
+    id: str
     token_name: str
     probabilty: float
     rarity: int

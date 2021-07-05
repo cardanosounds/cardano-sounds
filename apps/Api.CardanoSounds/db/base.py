@@ -10,9 +10,9 @@ class Base:
     client = CosmosClient(acc_uri, credential=db_key)
     database = client.get_database_client(db_name)
  
-    def create_or_get_container(self, container_name):
+    def create_or_get_container(self, container_name, partitionkey):
         try:
-            container = self.database.create_container(id=container_name, partition_key=PartitionKey(path="/productName"))
+            container = self.database.create_container(id=container_name, partition_key=PartitionKey(path=f"/{partitionkey}"))
         except exceptions.CosmosResourceExistsError:
             container = self.database.get_container_client(container_name)
         except exceptions.CosmosHttpResponseError:
