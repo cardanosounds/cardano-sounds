@@ -43,7 +43,7 @@ export default function Address( { display } : { display?: "flex" | "none" | Arr
                 <Input 
                     placeholder="addr11565FAKE63454rsdfgb363454rsd9556363454rsdfgb363454r" 
                     id="address"
-                    isDisabled
+                    isReadonly={true}
                 />
                 <InputRightElement children=
                     {
