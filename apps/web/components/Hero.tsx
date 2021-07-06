@@ -77,7 +77,7 @@ export default function Hero() {
           // bgColor={isDark ? ("gray.900") : ("gray.50")}
           // justify={{ base: "center", md: "space-around", xl: "space-between" }}
           direction={{ base: "column-reverse", md: "row" }}
-          minH={["60vh", "60vh", "60vh", "80vh", "90vh", "90vh"]}
+          minH={["85vh", "85vh", "60vh", "80vh", "90vh", "90vh"]}
         >
           <Stack
             w={{ base: "80vw", md: "75vw" }}
@@ -240,7 +240,7 @@ export default function Hero() {
                   <FaChevronLeft
                     //mt={{ base: "5vh", md: "4" }}
                     height="40%"
-                    aria-label="Explore CardanoSounds"
+                    aria-label="Go back"
                     //size="lg"
                     fill="#4A5568"
                     //color="gray.600"

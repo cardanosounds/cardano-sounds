@@ -19,7 +19,7 @@ export default function PreBuy() {
             >
                 <Heading
                     as="h1"
-                    size="xl"
+                    size="lg"
                     textAlign={["left", "left", "left", "left", "center", "center"]}
                 >
                     HOW TO GET ONE OF THE FIRST CARDANO SOUNDS NFTS?

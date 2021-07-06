@@ -24,8 +24,8 @@ export default function Footer() {
             w="5vw"
             align="right"
             pos="absolute"
-            right={["7vw", "4vw", "5vw", "5vw", "3vw", "2vw"]}
-            bottom={[ "10vh", "10vh", "10vh", "15vh", "15vh", "15vh" ]}
+            right={["0vw", "4vw", "5vw", "5vw", "3vw", "2vw"]}
+            bottom={[ "5vh", "10vh", "10vh", "15vh", "15vh", "15vh" ]}
             transition="all 0.3s ease-in-out"
             //mt={{ base: "10vh", md: "15vh" }}
           >

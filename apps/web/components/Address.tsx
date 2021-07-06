@@ -28,24 +28,26 @@ export default function Address( { display } : { display?: "flex" | "none" | Arr
             <InputGroup 
                 mt={["5vh", "5vh", "5vh"]}
                 w={["85vw", "85vw", "20vw", "20vw", "20vw", "20vw"]}
+                onClick={
+                    () => {
+                        navigator.clipboard.writeText("addr11565FAKE63454rsdfgb363454rsd9556363454rsdfgb363454r")
+                        toast({
+                            title: "Copied",
+                            status: "success",
+                            duration: 1500,
+                            isClosable: true
+                        })
+                    }
+                } 
             >
                 <Input 
-                    placeholder="addr115659556363454rsdfgb363454rsd9556363454rsdfgb363454r" 
+                    placeholder="addr11565FAKE63454rsdfgb363454rsd9556363454rsdfgb363454r" 
                     id="address"
                     isDisabled
                 />
                 <InputRightElement children=
                     {
-                        <CopyIcon onClick={() => {
-                                navigator.clipboard.writeText("addr115659556363454rsdfgb363454rsd9556363454rsdfgb363454r")
-                                toast({
-                                    title: "Copied",
-                                    status: "success",
-                                    duration: 1500,
-                                    isClosable: true
-                                })
-                            }
-                        } 
+                        <CopyIcon 
                         color="gray.600" />
                     } 
                 />

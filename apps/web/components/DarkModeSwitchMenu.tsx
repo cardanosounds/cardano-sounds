@@ -108,7 +108,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                     <Box 
                       align="flex-start"
                       //50vw 5vh
-                      margin={["3vh 0 2vh 8vw", "3vh 0 2vh 8vw", "4vh 0.5em 0.25em 3em", "7vh 0.5em 0.25em 4em", "5vh 0.5em 0.25em 6em",  "5vh 0.5em 0.25em 11em"]}
+                      margin={["3vh 0 2vh 2vw", "3vh 0 2vh 8vw", "4vh 0.5em 0.25em 3em", "7vh 0.5em 0.25em 4em", "5vh 0.5em 0.25em 6em",  "5vh 0.5em 0.25em 11em"]}
                       aria-label="Cardano Sounds home"
                       variant="ghost"
                       

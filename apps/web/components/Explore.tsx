@@ -19,25 +19,25 @@ export default function Explore({ goBackFunc } : { goBackFunc : Function }) {
                 
                 <Flex 
                     direction="column" 
-                    w={["80vw", "80vw", "46vw", "46vw", "45vw", "45vw"]} 
-                    fontSize={["0.725rem", "0.825rem", "0.9rem", "0.9rem", "1.25rem", "1.75rem"]} 
+                    w={["70vw", "70vw", "46vw", "46vw", "45vw", "45vw"]} 
+                    fontSize={["0.825rem", "0.9rem", "0.9rem", "0.9rem", "1.25rem", "1.75rem"]} 
                     textAlign="left" 
-                    minH={["20vh", "20vh", "50vh"]}
+                    minH={["40vh", "30vh", "50vh"]}
                     mb={["0vh", "0vh", "0vh", "0vh", "5vh"]}
-                    mt={["25vh", "25vh", "15vh", "unset"]}
+                    mt={["20vh", "20vh", "15vh", "15vh"]}
                 >
                   <Flex>
                     <Text>
-                      We are bringing audio NFTs created by you / your transaction
+                      We are bringing audio NFTs created by you / your transaction.
                     </Text>
                   </Flex>
                   <Spacer/>
                   <Text>
-                    When we receive transaction, music clip is algorithmically put together with our original sounds, minted and sent to you
+                    When we receive transaction, music clip is algorithmically put together with our original sounds, minted and sent to you.
                   </Text>
                   <Spacer/>
                   <Text>
-                    Which makes each track unique and <strong>yours</strong>
+                    Which makes each track unique and <strong>yours</strong>.
                   </Text>
                   <Spacer/> 
                 </Flex>
@@ -45,15 +45,18 @@ export default function Explore({ goBackFunc } : { goBackFunc : Function }) {
                 <Flex direction="column" mt={["unset", "2.5vh", "unset"]} w={{ base: "80vw", md: "20vw" }} textColor="gray.600">
                   <Popover>
                     <PopoverTrigger>
-                      <IconButton variant="ghost" 
-                        className={utilStyles.shadow}
+                      <IconButton 
                         width={["70vw", "70vw", "25vw", "25vw", "25vw", "25vw" ]}
+                        mt={["1vh", "1vh", "5vh"]}
                         height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]} 
+                        variant="ghost"
+                        className={utilStyles.shadow}
+                        position= {["inherit", "inherit", "absolute"]}
+                        right={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}
+                        bottom={["43vh", "43vh", "63vh", "63vh", "63vh", "63vh"]}
+                        transition="all 0.3s ease-in-out" 
                         size="lg" 
                         aria-label="Sale purpouse" 
-                        pos={[ "inherit", "inherit", "absolute" ]}
-                        left={["2vw", "2vw", "12vw", "12vw", "12vw", "12vw"]}
-                        bottom={["10vh", "10vh", "15vh", "15vh", "15vh", "15vh"]}
                         color="gray.600"
                         icon={<InfoIcon />}/>
                     </PopoverTrigger>
@@ -66,6 +69,8 @@ export default function Explore({ goBackFunc } : { goBackFunc : Function }) {
                   </Popover>
                   <NextChakraLink href="/prebuy">
                     <Button 
+                      
+
                       width={["70vw", "70vw", "25vw", "25vw", "25vw", "25vw" ]}
                       mt={["1vh", "1vh", "5vh"]}
                       height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]} 
@@ -73,7 +78,7 @@ export default function Explore({ goBackFunc } : { goBackFunc : Function }) {
                       className={utilStyles.shadow}
                       position= {["inherit", "inherit", "absolute"]}
                       right={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}
-                      bottom={["43vh", "43vh", "63vh", "63vh", "63vh", "63vh"]}
+                      bottom={["32vh", "32vh", "47vh", "47vh", "47vh", "47vh"]}
                       transition="all 0.3s ease-in-out"
                     >
                       {/* chakra color var doesn't work here */}
@@ -91,11 +96,11 @@ export default function Explore({ goBackFunc } : { goBackFunc : Function }) {
                       width={["70vw", "70vw", "25vw", "25vw", "25vw", "25vw" ]}
                       mt={["1vh", "1vh", "5vh"]}
                       height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]} 
-                      variant="ghost"
-                      className={utilStyles.shadow}
                       position= {["inherit", "inherit", "absolute"]}
                       right={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}
-                      bottom={["32vh", "32vh", "47vh", "47vh", "47vh", "47vh"]}
+                      bottom={["21vh", "21vh", "31vh", "31vh", "31vh", "31vh"]}
+                      variant="ghost"
+                      className={utilStyles.shadow}
                       transition="all 0.3s ease-in-out"
                     >
                       {/* chakra color var doesn't work here */}
@@ -108,27 +113,27 @@ export default function Explore({ goBackFunc } : { goBackFunc : Function }) {
                     </Button>
                   </NextChakraLink>
                   <Spacer/>
-                  <NextChakraLink href="/">
-                    <Button 
-                      width={["70vw", "70vw", "25vw", "25vw", "25vw", "25vw" ]}
-                      mt={["1vh", "1vh", "5vh"]}
-                      height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]} 
-                      variant="ghost"
-                      className={utilStyles.shadow}
-                      position= {["inherit", "inherit", "absolute"]}
-                      right={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}
-                      bottom={["21vh", "21vh", "31vh", "31vh", "31vh", "31vh"]}
-                      transition="all 0.3s ease-in-out"
-                    >
-                      {/* chakra color var doesn't work here */}
-                      <FaChevronRight fill="#4A5568"/>
-                        <Heading fontSize="1.5rem" as="h4" textColor="gray.600"
-                            fontWeight="normal"
-                        >
-                            NFTS
-                        </Heading>  
-                    </Button>
-                  </NextChakraLink>
+                  {/*</Flex><NextChakraLink href="/">*/}
+                  {/*</Flex>  <Button */}
+                  {/*</Flex>    width={["70vw", "70vw", "25vw", "25vw", "25vw", "25vw" ]}*/}
+                  {/*</Flex>    mt={["1vh", "1vh", "5vh"]}*/}
+                  {/*</Flex>    height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]} */}
+                  {/*</Flex>    variant="ghost"*/}
+                  {/*</Flex>    className={utilStyles.shadow}*/}
+                  {/*</Flex>    position= {["inherit", "inherit", "absolute"]}*/}
+                  {/*</Flex>    right={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}*/}
+                  {/*</Flex>    bottom={["21vh", "21vh", "31vh", "31vh", "31vh", "31vh"]}*/}
+                  {/*</Flex>    transition="all 0.3s ease-in-out"*/}
+                  {/*</Flex>  >*/}
+                  {/*</Flex>    {/* chakra color var doesn't work here */}
+                  {/*</Flex>    <FaChevronRight fill="#4A5568"/>*/}
+                  {/*</Flex>      <Heading fontSize="1.5rem" as="h4" textColor="gray.600"*/}
+                  {/*</Flex>          fontWeight="normal"*/}
+                  {/*</Flex>      >*/}
+                  {/*</Flex>          NFTS*/}
+                  {/*</Flex>      </Heading>  */}
+                  {/*</Flex>  </Button>*/}
+                  {/*</Flex></NextChakraLink>*/}
                   <Spacer/>
                   <NextChakraLink href="/">
                     <Button 
