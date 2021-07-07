@@ -20,6 +20,7 @@ export interface TxStatusData {
 export interface NFTData {
     ipfs: string
     arweave: string
+    web: string
     rarity: number
     buyingTx: string
     mintTx: string

@@ -29,7 +29,7 @@ const Sketch = (p) => {
 	}
 
 	p.setup = () => {
-		p.createCanvas(800, 800)
+		p.createCanvas(size.width, size.height)
 		p.textAlign(p.CENTER, p.CENTER);
 		
 		p.background(26, 32, 44)

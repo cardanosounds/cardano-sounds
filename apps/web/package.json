@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "node server.js"
   },
   "dependencies": {
     "@chakra-ui/icons": "^1.0.13",

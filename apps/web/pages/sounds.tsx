@@ -11,6 +11,25 @@ const P5Comp = dynamic(() => import("../components/playerSuperFormula"),
   { ssr: false }
 );
 
+const testData: NFTData = {
+            ipfs: "string",
+            arweave: "string",
+            rarity: 1,
+            web:"arweavewebsite.net",
+            buyingTx: "string",
+            mintTx: "string",
+            assetHash: "string",
+            tokenName: "string",
+            attributes: [{
+                        name: "string",
+                        probability: 0.0000001,
+                        media: "string"
+                    }
+                ]
+        
+    }
+
+
 const size = { width: 800, height: 800 }
 
 export default function Sounds() {
@@ -20,9 +39,7 @@ export default function Sounds() {
     return (
         <Layout>
             <Flex align="center" justify="center" w="100vw">
-               {/* <SoundNFT soundNFTData="https://filesamples.com/samples/audio/flac/sample3.flac" />
-                <AudioPlayer url={soundNFTData.media} />*/}
-                <P5Comp isDark={isDark} />
+                <SoundNFT soundNFTData={testData} />
             </Flex>
         </Layout>
     )

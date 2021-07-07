@@ -14,6 +14,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
             ipfs: "string",
             arweave: "string",
             rarity: 1,
+            web:"arweavewebsite.net",
             buyingTx: "string",
             mintTx: "string",
             assetHash: "string",
