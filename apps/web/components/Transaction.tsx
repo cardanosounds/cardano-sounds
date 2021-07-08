@@ -18,6 +18,7 @@ import {
 export default function Transaction({ id } : {id: string}) {
 
     const [data,setData] = useState<string>(); 
+    const [isFinished, finishNFT] = useState<boolean>(false);
     
     useEffect(() => {
         // An instance of EventSource by passing the events URL
@@ -27,16 +28,17 @@ export default function Transaction({ id } : {id: string}) {
         // A function to parse and update the data state
         const updateData = (messageEvent: MessageEvent) => {
             console.log(messageEvent.data)
-            setData(messageEvent.data);
-            if (messageEvent.data === "finished" || messageEvent.data === "error") {
-                eventSource.close();
+            setData(messageEvent.data)
+            if (messageEvent.data === "NFT created" || messageEvent.data === "error") {
+                finishNFT(true)
+                eventSource.close()
             }
         };
 
         // eventSource now listening to all the events named 'message'
-        eventSource.addEventListener('message', updateData);
+        eventSource.addEventListener('message', updateData)
         // Unsubscribing to the event stream when the component is unmounted
-        return () => eventSource.close();
+        return () => eventSource.close()
     }, []);
   
     return (
@@ -52,14 +54,12 @@ export default function Transaction({ id } : {id: string}) {
               align="center"
               margin="auto"
             >
-
+                {/*{isFinished ?
+                <SoundNFT />
+                :
                 <p>{data}</p>
+                }*/}
 
-                {/*<div dangerouslySetInnerHTML={{ __html: data.iconFrom }} /> */}
-
-
-                {/* <div dangerouslySetInnerHTML={{ __html: data.iconTo }} />  */}  
-            
             </Stack>
             { data !== id + " done" ? <Progress size="xs" isIndeterminate /> : <></>}
 
