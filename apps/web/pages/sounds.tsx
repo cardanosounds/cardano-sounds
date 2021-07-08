@@ -38,7 +38,7 @@ export default function Sounds() {
     
     return (
         <Layout>
-            <Flex align="center" justify="center" w="100vw">
+            <Flex align="center" justify="center" minH="85vh" w="100vw">
                 <SoundNFT soundNFTData={testData} />
             </Flex>
         </Layout>

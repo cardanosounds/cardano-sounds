@@ -62,6 +62,8 @@ export default function Buy(){
                     
                     <InputGroup 
                         mt={["5vh", "5vh", "5vh", "5vh", "unset"]}
+                        maxW={["90vw", "85vw", "60vw", "50vw"]}
+                        mx="auto"
                         display={txStatus ? "none" : mobileTxSearch ? "flex" : "none"}
                     >
                         <Input 
