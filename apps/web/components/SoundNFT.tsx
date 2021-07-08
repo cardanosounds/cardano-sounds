@@ -25,7 +25,7 @@ export default function SoundNFT(soundNFTData: { soundNFTData: NFTData } ) {
             minW="80vw"
         >
            
-                <Box>
+                <Box mt={["15vh", "15vh", "unset"]}>
                     <PlayerGlitch size={{width:450, height:450}} isDark={false}/>
                 </Box>
                 <Spacer></Spacer>
@@ -36,7 +36,8 @@ export default function SoundNFT(soundNFTData: { soundNFTData: NFTData } ) {
                         <Heading size="md">policy:</Heading><Text>be3a4e111a307643783820c2bf15fcace87f161187be9301857b593a</Text>
                         <Heading size="md">sounds:</Heading><Text>sound1, sound2, sound3, sound4, sound5</Text>
                         <Heading size="md">player:</Heading><Text>glitch</Text>
-                        <Heading size="md">buyingTx:</Heading><Text>randomTxHash000000111122222333344445555666677777888889999</Text>
+                        <Heading size="md">buying xx:</Heading><Text>randomTxHash000000111122222333344445555666677777888889999</Text>
+                        <Heading size="md">mint tx:</Heading><Text>randomTxHash000000111122222333344445555666677777888889999</Text>
                     </Flex>
                 </Stack>
         </Flex>
