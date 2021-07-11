@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Layout, { siteTitle } from '../components/layout'
 import React from "react"
-import { TxStatusData } from "../interfaces/interfaces"
+import { NFTData, TxStatusData } from "../interfaces/interfaces"
 import NextChakraLink from '../components/NextChakraLink'
 import {
   Button,
@@ -12,8 +12,26 @@ import {
   IconButton, 
   Progress
 } from "@chakra-ui/react"
+import SoundNFT from './SoundNFT'
 
-
+const testData: NFTData = {
+            ipfs: "string",
+            arweave: "string",
+            rarity: 1,
+            web:"arweavewebsite.net",
+            buyingTx: "string",
+            mintTx: "string",
+            assetHash: "string",
+            tokenName: "string",
+            attributes: [{
+                        name: "string",
+                        probability: 0.0000001,
+                        media: "string"
+                    }
+                ],
+            player:"glitch"        
+        
+    }
 
 export default function Transaction({ id } : {id: string}) {
 
@@ -54,14 +72,14 @@ export default function Transaction({ id } : {id: string}) {
               align="center"
               margin="auto"
             >
-                {/*{isFinished ?
-                <SoundNFT />
+                {isFinished ?
+                <SoundNFT soundNFTData={testData}/>
                 :
                 <p>{data}</p>
-                }*/}
+                }
 
             </Stack>
-            { data !== id + " done" ? <Progress size="xs" isIndeterminate /> : <></>}
+            { !isFinished ? <Progress size="xs" isIndeterminate /> : <></>}
 
         </Flex>
     </>

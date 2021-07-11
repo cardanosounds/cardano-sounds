@@ -65,7 +65,7 @@ const Sketch = (p) => {
 	}
 
 	p.draw = () => {
-		isDark ? bgColor = {r: 26, g: 32, b: 44} : bgColor = {r: 255, g: 255, b: 255}
+		isDark ? bgColor = {r: 26, g: 32, b: 44} : bgColor = {r: 255, g: 245, b: 245}
 		p.background(bgColor.r, bgColor.g, bgColor.b)
 
 		

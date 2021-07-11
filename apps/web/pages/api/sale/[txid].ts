@@ -17,22 +17,9 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     const randNum: number = Math.random()
 
     if(randNum >= 0.2 ) {
-        if(randNum >= 0.4) {
-          if(randNum >= 0.6) {
-              if(randNum >= 0.8) {
-                data = txid + ' done'
-              }
-              else {
-                data = 'music generated for ' + txid
-              } 
-          }
-          else {
-              'waiting for sound generation ' + txid
-          } 
-        }
-        else {
-            'transaction ' + txid + ' received'
-        } 
+      
+          data =   'waiting for sound generation ' + txid
+    
     }
     else data = "NFT created"
 

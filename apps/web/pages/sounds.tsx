@@ -6,6 +6,7 @@ import { NFTData } from '../interfaces/interfaces'
 import dynamic from "next/dynamic";
 import { Flex, useColorMode } from '@chakra-ui/react';
 import Layout from '../components/layout';
+import SoundNFTPreview from '../components/SoundNFTPreview';
 
 const P5Comp = dynamic(() => import("../components/playerSuperFormula"),
   { ssr: false }
@@ -25,8 +26,8 @@ const testData: NFTData = {
                         probability: 0.0000001,
                         media: "string"
                     }
-                ]
-        
+                ],
+            player:"glitch"        
     }
 
 
@@ -39,7 +40,7 @@ export default function Sounds() {
     return (
         <Layout>
             <Flex align="center" justify="center" minH="85vh" w="100vw">
-                <SoundNFT soundNFTData={testData} />
+                <SoundNFTPreview soundNFTData={testData} />
             </Flex>
         </Layout>
     )

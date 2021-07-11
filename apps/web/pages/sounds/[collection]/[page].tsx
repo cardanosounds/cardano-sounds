@@ -31,6 +31,7 @@ import { getSoundsNFTData } from '../../../lib/sounds'
 import Head from "next/head"
 import Layout from "../../../components/layout"
 import SoundNFT from "../../../components/SoundNFT"
+import SoundNFTPreviewSmall from "../../../components/SoundNFTPreviewSmall"
  
 export default function SoundList({ errorCode, data }: {
     errorCode: number
@@ -132,11 +133,11 @@ export default function SoundList({ errorCode, data }: {
           columns={[1,2,2,3]}
         >
          { data.nfts.map(( nftsound: NFTData ) => (
-            <Box className={utilStyles.card} key={nftsound.tokenName} borderRadius="2xl" padding={5} borderWidth="1px" display={{ base: "block", md: "inline-block" }}
-             w={["80vw", "40vw", "25vw"]} height="60vh" margin="auto" onClick={ () => openModal(nftsound.tokenName) } cursor="pointer"
-             bgColor={isDark ? ("gray.800") : ("white")} > 
-              <SoundNFT soundNFTData={nftsound}/>
-            </Box>
+           <SoundNFTPreviewSmall soundNFTData={nftsound}/>
+            //<Box className={utilStyles.card} key={nftsound.tokenName} borderRadius="2xl" padding={5} borderWidth="1px" display={{ base: "block", md: "inline-block" }}
+            // w={["80vw", "40vw", "25vw"]} height="60vh" margin="auto" onClick={ () => openModal(nftsound.tokenName) } cursor="pointer"
+            // bgColor={isDark ? ("gray.800") : ("red.50")} > 
+            //</Box>
           ))}
         </SimpleGrid>
       </Flex>

@@ -27,6 +27,7 @@ export interface NFTData {
     assetHash: string
     tokenName: string
     attributes: Sound []
+    player: string
 }
 
 export interface Sound {

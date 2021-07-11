@@ -17,13 +17,13 @@ export default function PreBuy() {
                 maxW={["80vw", "80vw", "75vw", "70vw", "75vw", "70vw"]}
                 mt={["25vh", "25vh", "30vh", "30vh", "25vh", "25vh"]}
             >
-                <Heading
+               {/* <Heading
                     as="h1"
                     size="lg"
                     textAlign={["left", "left", "left", "left", "center", "center"]}
                 >
                     HOW TO GET ONE OF THE FIRST CARDANO SOUNDS NFTS?
-                </Heading>
+                </Heading>*/}
                     <List spacing={3} ml="0" marginInlineEnd="auto" mt="5vh" >
                         <ListItem>
                             <ListIcon as={FaChevronRight} color="green.500" />

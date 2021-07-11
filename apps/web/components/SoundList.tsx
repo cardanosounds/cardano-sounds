@@ -64,7 +64,7 @@ export default function SoundList({
           {allSoundsData.map(({ id, date, title, image }) => (
              <Box className={utilStyles.card} key={id} borderRadius="2xl" padding={5} borderWidth="1px" display={{ base: "block", md: "inline-block" }}
              w={["80vw", "40vw", "25vw"]} height="60vh" margin="auto" onClick={ () => openModal(id) } cursor="pointer"
-             bgColor={isDark ? ("gray.800") : ("white")} > 
+             bgColor={isDark ? ("gray.800") : ("red.50")} > 
                <Flex justify="center" display="column">
  
                   <Heading as="h3" size="md">{title}</Heading>

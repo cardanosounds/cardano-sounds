@@ -25,9 +25,6 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
     const [display, changeDisplay] = useState('none')
     const { isOpen, onOpen, onClose } = useDisclosure()
     
-    const gradColor = useColorModeValue("linear-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 0))", "linear-gradient(rgba(26, 32, 44, 1), rgba(26, 32, 44, 0))")
-
-
     const closeMenu = () => { 
       changeDisplay('none')
       document.getElementsByTagName('body')[0].style.overflow = 'visible'
@@ -64,7 +61,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
               top="0px"
               left="0px"
               right="0px"
-              bgColor={isDark ? "gray.800" : "white"}
+              bgColor={isDark ? "gray.800" : "red.50"}
               as="nav"
               justify="center"
               wrap="wrap"
@@ -81,7 +78,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                     <DrawerContent>
                       <DrawerHeader borderBottomWidth="1px">
                         <DrawerCloseButton />
-                        <Logo size={["2em", "3em", "2em", "5em", "5em", "5em"]} color={ isDark ? "gray.50" : "gray.900" }/>
+                        <Logo size={["2em", "3em", "2em", "5em", "5em", "5em"]} color={ isDark ? "red.50" : "gray.800" }/>
                       </DrawerHeader>
                       <DrawerBody>
                         <NextChakraLink href="/prebuy" className={mainStyles.disableEvents}>
@@ -119,7 +116,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                       <Stack direction="row">
                       <Logo 
                           size={["4em", "4em", "4em", "4em", "5em" ]}
-                          color={isDark ? ("gray.50") : ("gray.900")} 
+                          color={isDark ? ("red.50") : ("gray.800")} 
                       />
                       <Heading display={["none", "none", "flex"]} fontSize="3xl" pt="2.5vh">CARDANO SOUNDS</Heading>
                       </Stack>
@@ -132,7 +129,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                         position="absolute"
                         right={["8vw", "6vw", "5vw", "5vw"]}
                         top="5vh"
-                        color="gray.50"
+                        color="red.50"
                         isChecked={isDark}
                         onChange={toggleColorMode}
                       />
@@ -142,7 +139,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                           <IconButton 
                             aria-label="Open Menu"
                             variant="ghost"
-                            bgColor={isDark ? "rgba(26, 32, 44, 0.6)" : "rgba(255, 255, 255, 0.6)"}
+                            bgColor={isDark ? "rgba(26, 32, 44, 0.6)" : "rgba(255, 245, 245, 0.6)"}
                             size="lg"
                             icon={<FaChevronLeft/>}  
                             onClick={ onOpen } 
@@ -156,7 +153,6 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
 
                   </Flex>
               </Flex>
-              <Flex w="100%" h="0.5vh" background={gradColor}></Flex>
             </Flex>           
         </Flex>
     )

@@ -48,7 +48,7 @@ export default function Buy(){
                 direction="column"
                 minH="65vh"
             >   
-                <Heading
+                {/*<Heading
                     as="h1"
                     size="xl"
                     textAlign={["left", "left", "left", "center", "center", "center"]}
@@ -57,7 +57,7 @@ export default function Buy(){
                     mt={["unset"]}
                 >
                     BUY CARDANO SOUNDS NFT
-                </Heading>
+                </Heading>*/}
                 <Stack spacing={9} w={["100%", "100%", "100%", "70vw"]} direction={["column", "column", "column", "column", "row"]}>
                     
                     <InputGroup 
