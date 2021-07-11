@@ -6,7 +6,7 @@ import { NFTData } from "../../interfaces/interfaces";
 
 
 
-export default function Sound(nftData: NFTData)
+export default function Sound({nftData}: {nftData: NFTData})
 {
     let Player: React.ComponentType<{
         size: {
@@ -108,6 +108,6 @@ export const getServerSideProps = async (context) => {
     }
        // console.log(data)
     return {
-        props: {data}
+        props: {nftData: data}
     }
 }
