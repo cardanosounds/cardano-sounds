@@ -3,7 +3,7 @@ import p5, { FFT, SoundFile, Vector } from 'p5'
 import "../p5.sound.js"
 import { Flex } from '@chakra-ui/react'
 
-export default function PlayerSuperFormula({ isDark } : { isDark: boolean}) {
+export default function PlayerSuperFormula({ size, isDark } : { size: { width: number, height: number}, isDark: boolean}) {
 let myP5: p5
 let song: SoundFile
 let fft: FFT

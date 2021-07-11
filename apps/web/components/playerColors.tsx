@@ -3,7 +3,7 @@ import p5, { FFT, Image, SoundFile, Vector, Color } from 'p5'
 import "../p5.sound.js"
 
 
-export default function PlayerColors({ size } : { size: { width: number, height: number}}) {
+export default function PlayerColors({ size, isDark } : { size: { width: number, height: number}, isDark: boolean}) {
     let myP5: p5
     let song: SoundFile
     let fft: FFT

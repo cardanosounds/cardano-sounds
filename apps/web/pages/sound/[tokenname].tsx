@@ -4,36 +4,61 @@ import dynamic from "next/dynamic";
 import React, { ComponentType } from "react";
 import { NFTData } from "../../interfaces/interfaces";
 
-export default function Sound(nftData: {nftData: NFTData})
+
+
+export default function Sound(nftData: NFTData)
 {
+    let Player: React.ComponentType<{
+        size: {
+            width: number;
+            height: number;
+        };
+        isDark: boolean;
+        }>
     let playerComp: string
-    switch(nftData.nftData.player)
+    switch(nftData.player)
     {
         case "glitch":
             {
-                playerComp = "../../components/playerGlitch"
+                Player = dynamic(() => import("../../components/playerGlitch"),
+                                        { ssr: false }
+                                    );
                 break
             }
         case "superformula":
             {
-                playerComp = "../../components/playerSuperFormula"
+                Player = dynamic(() => import("../../components/playerSuperFormula"),
+                                    { ssr: false }
+                                );
                 break
             }
         case "randomDancers":
             {
-                playerComp = "../../components/playerRandomDancers"
+                Player = dynamic(() => import("../../components/playerRandomDancers"),
+                                        { ssr: false }
+                                    );
+                break
             }
         default:
-            playerComp = "../../components/playerColors"
+            Player = dynamic(() => import("../../components/playerColors"),
+                                        { ssr: false }
+                                    );
+            break
     }
-    const Player: ComponentType<{nftData: NFTData}> = dynamic(() => import(playerComp),
-        { ssr: false }
+    const Playerr: React.ComponentType<{
+        size: {
+            width: number;
+            height: number;
+        };
+        isDark: boolean;
+        }> = dynamic(() => import(playerComp),
+            { ssr: false }
     );
-    const data = nftData.nftData
+
 	return (
 		<>
             <Flex>
-                <Player nftData={data}/>
+                <Player size={{height: 400, width: 400}} isDark={false}/>
                 <Spacer></Spacer>
                 <Stack 
                     minW={["85vw", "85vw", "30vw"]}
@@ -41,13 +66,13 @@ export default function Sound(nftData: {nftData: NFTData})
                     justify="center"
                 >
                     <Flex display="column">
-                        <Heading size="sm">web:</Heading><a><Text>{data.web}</Text></a>
-                        <Heading size="sm">probability:</Heading><Text>{data.rarity} %</Text>
+                        <Heading size="sm">web:</Heading><a><Text>{nftData.web}</Text></a>
+                        <Heading size="sm">probability:</Heading><Text>{nftData.rarity} %</Text>
                         <Heading size="sm">policy:</Heading><Text>be3a4e111a307643783820c2bf15fcace87f161187be9301857b593a</Text>
                         <Heading size="sm">sounds:</Heading><Text>sound1, sound2, sound3, sound4, sound5</Text>
-                        <Heading size="sm">player:</Heading><Text>{data.player}</Text>
-                        <Heading size="sm">buying tx:</Heading><Text>{data.buyingTx}</Text>
-                        <Heading size="sm">mint tx:</Heading><Text>{data.mintTx}</Text>
+                        <Heading size="sm">player:</Heading><Text>{nftData.player}</Text>
+                        <Heading size="sm">buying tx:</Heading><Text>{nftData.buyingTx}</Text>
+                        <Heading size="sm">mint tx:</Heading><Text>{nftData.mintTx}</Text>
                     </Flex>
                 </Stack>
             </Flex>
@@ -55,7 +80,7 @@ export default function Sound(nftData: {nftData: NFTData})
 	)
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps = async (context) => {
     // ...
     const { tokenname } = context.query
 
@@ -81,10 +106,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             player:"glitch"        
         }
     }
-        
+       // console.log(data)
     return {
-        props: {
-          data
-        },
+        props: {data}
     }
 }
