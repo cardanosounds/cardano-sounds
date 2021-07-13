@@ -11,7 +11,7 @@ const containerid = "containerId"
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
 	const { tokenname } = req.query
-
+    console.log(tokenname)
 	if (typeof(tokenname) === "undefined") res.status(400).json("no id provided")
 
 	let nftData: NFTData
@@ -50,6 +50,4 @@ export async function getSoundNFTData(tokenName: string): Promise<NFTData | stri
     else {
         return "Wrong id"
     }
-    
-    return "Wrong request"
 }
