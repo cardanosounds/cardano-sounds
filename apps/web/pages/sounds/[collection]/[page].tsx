@@ -1,57 +1,35 @@
 import React from "react"
-import Date from '../../../components/date'
 import Error from 'next/error'
-import utilStyles from '../../../styles/utils.module.css'
 
 import { GetServerSideProps } from 'next'
 import {
-  Box,
-  Button,
   Flex,
-  Heading,
-  Stack,
-  Text,
   SimpleGrid,
   useColorMode,
+  Select,
 } from "@chakra-ui/react"
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-} from "@chakra-ui/react"
-import { useRouter } from "next/router"
 import { useState } from 'react'
-import { ContextualHref, NFTData, SoundListData } from '../../../interfaces/interfaces'
-import { useContextualRouting } from '../../../contextual-modal/contextual-modal'
+import { NFTData, SoundListData } from '../../../interfaces/interfaces'
 import Head from "next/head"
 import Layout from "../../../components/layout"
-import SoundNFT from "../../../components/SoundNFT"
 import SoundNFTPreviewSmall from "../../../components/SoundNFTPreviewSmall"
- 
+
+const apiPath = "http://localhost:3000/api/"
+
 export default function SoundList({ errorCode, data }: {
     errorCode: number
     data: SoundListData
     
 })
 {
-  const router = useRouter();
-  const { makeContextualHref, returnHref }: ContextualHref = useContextualRouting()
   const [ collection, changeCollection ] = useState<String>("all")
-
-  const { colorMode } = useColorMode()
-  const isDark = colorMode === 'dark'
- 
 
   const loadNewPage = async () => {
       if(data.last) return
 
       data.page += 1
 
-      const res: SoundListData = JSON.parse((await fetch("/api/sounds/" + collection + "/" + String(data.page))).json.toString())
+      const res: SoundListData = await fetch(apiPath + "sounds/" + collection + "/" + String(data.page)).then(rs => rs.json())
 
       data.last = res.last
 
@@ -66,7 +44,7 @@ export default function SoundList({ errorCode, data }: {
   return (
     <Layout>
       <Head>
-        <title>First Post</title>
+        <title>CardanoSounds - NFTs</title>
       </Head>
    <Flex
       display="column"
@@ -74,16 +52,12 @@ export default function SoundList({ errorCode, data }: {
       minH="60vh"
       mb={12}
     >
-      <Heading
-        as="h2"
-        size="xl"
-        fontWeight="normal"
-        textAlign="center"
-        display="block"
-        my={8}
-      >
-        Sounds
-      </Heading> 
+      <Select variant="outline" placeholder="Select collection">
+        <option onSelect={() => { changeCollection }} value="all">All</option>
+        <option onSelect={() => { changeCollection }}  value="wave1">Wave 1</option>
+        <option onSelect={() => { changeCollection }}  value="wave2">Wave 2</option>
+        <option onSelect={() => { changeCollection }}  value="wave3">Wave 3</option>
+      </Select>
       <Flex
         display="column"
         align="center"
@@ -97,10 +71,6 @@ export default function SoundList({ errorCode, data }: {
         >
          { data.nfts.map(( nftsound: NFTData ) => (
            <SoundNFTPreviewSmall soundNFTData={nftsound}/>
-            //<Box className={utilStyles.card} key={nftsound.tokenName} borderRadius="2xl" padding={5} borderWidth="1px" display={{ base: "block", md: "inline-block" }}
-            // w={["80vw", "40vw", "25vw"]} height="60vh" margin="auto" onClick={ () => openModal(nftsound.tokenName) } cursor="pointer"
-            // bgColor={isDark ? ("gray.800") : ("red.50")} > 
-            //</Box>
           ))}
         </SimpleGrid>
       </Flex>
@@ -112,7 +82,6 @@ export default function SoundList({ errorCode, data }: {
 export const getServerSideProps: GetServerSideProps = async (context) => {
     // ...
     let errorCode: number = null;
-    const { query } = context.query
 
     const { collection } = context.query
     const { page } = context.query
@@ -120,7 +89,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     let data: SoundListData
 
     if (errorCode === null) {
-        data = JSON.parse((await fetch("/api/sounds/all/1")).json.toString()) 
+        data = await fetch(apiPath + "sounds/" + collection + "/" + page).then(res => res.json())
         if(data == null) {
             data = {
                 last: true,
