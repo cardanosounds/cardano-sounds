@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { NFTData } from "../../../../interfaces/interfaces"
+import { NFTData, SoundListData } from "../../../../interfaces/interfaces"
 
 import { CosmosClient, DatabaseResponse } from "@azure/cosmos"
 
@@ -14,11 +14,13 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     const { collection } = req.query
     const { page } = req.query
 
-    const testData = {
+    const testData:SoundListData = 
+    {
         last: true,
-        collection: "all",
-        page: 1,
+        collection: collection.toString(),
+        page: Number(page.toString()),
         nfts: [{
+            player: "string",
             ipfs: "string",
             arweave: "string",
             rarity: 1,
@@ -29,7 +31,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
             tokenName: "string",
             attributes: [{
                         name: "string",
-                        probability: "number",
+                        probability: 0.000,
                         media: "string"
                     }
                 ]

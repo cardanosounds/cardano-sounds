@@ -27,7 +27,6 @@ import { useRouter } from "next/router"
 import { useState } from 'react'
 import { ContextualHref, NFTData, SoundListData } from '../../../interfaces/interfaces'
 import { useContextualRouting } from '../../../contextual-modal/contextual-modal'
-import { getSoundsNFTData } from '../../../lib/sounds'
 import Head from "next/head"
 import Layout from "../../../components/layout"
 import SoundNFT from "../../../components/SoundNFT"
@@ -41,37 +40,18 @@ export default function SoundList({ errorCode, data }: {
 {
   const router = useRouter();
   const { makeContextualHref, returnHref }: ContextualHref = useContextualRouting()
+  const [ collection, changeCollection ] = useState<String>("all")
 
   const { colorMode } = useColorMode()
   const isDark = colorMode === 'dark'
-
-  const [openedModal, changeModalState] = useState<boolean>(false);
-  
-  
-  const openModal = (id: string) => {
-      {/*fetchCollection(id)
-      router.push(
-          makeContextualHref({ id: id }),
-          `/collections/${id}`,
-          {
-          shallow: true,
-          }
-        );*/}
-      changeModalState(true)
-  }
-  const closeModal = () => {
-      //router.push(returnHref, "/", { shallow: true });
-      window.history.pushState({}, document.title, 
-        "/sounds/" + data.collection + "/" + data.page);
-      changeModalState(false)
-  }
+ 
 
   const loadNewPage = async () => {
       if(data.last) return
 
       data.page += 1
 
-      const res = await getSoundsNFTData(data.collection.toString(), data.page)
+      const res: SoundListData = JSON.parse((await fetch("/api/sounds/" + collection + "/" + String(data.page))).json.toString())
 
       data.last = res.last
 
@@ -88,24 +68,7 @@ export default function SoundList({ errorCode, data }: {
       <Head>
         <title>First Post</title>
       </Head>
-    <Modal size="xl" isOpen={openedModal} onClose={closeModal}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalCloseButton />
-          <ModalBody>
-
-            <>
-
-            </>
-
-
-          </ModalBody>
-          <ModalFooter>
-            <Button onClick={closeModal}>Close</Button>
-          </ModalFooter>
-        </ModalContent>
-    </Modal>
-    <Flex
+   <Flex
       display="column"
       align="center"
       minH="60vh"
@@ -157,7 +120,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     let data: SoundListData
 
     if (errorCode === null) {
-        data = await getSoundsNFTData(collection.toString(), page as unknown as number)
+        data = JSON.parse((await fetch("/api/sounds/all/1")).json.toString()) 
         if(data == null) {
             data = {
                 last: true,
