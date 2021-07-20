@@ -1,4 +1,4 @@
-let song, fft, amp, ampBass, ampMid, ampHigh, fa, w
+let song, fft, amp, ampBass, ampMid, ampHigh, fa
 let t = 0
 
 
@@ -10,7 +10,7 @@ function preload() {
 }
 
 function setup() {
-	updateW(windowWidth);
+	const w = getW();
 	var myCanv = createCanvas(w, w);
 	myCanv.parent("sketchElement");
 	textAlign(CENTER, CENTER);
@@ -78,7 +78,7 @@ function mouseClicked() {
 }
 function windowResized() {
 	
-	updateW(windowWidth);
+	const w = getW();
 	resizeCanvas(w, w);
 }
 
@@ -96,13 +96,10 @@ function y2 (t) {
 	return  cos(t / 20) * 200 + cos(t / 12) * 20;
 }
 
-function updateW(wW) {
-	if(wW < 600){
-		console.log("make Big")
-		console.log(windowWidth)
-		
-		w = wW * 0.9;
+function getW() {
+	if(windowWidth < 600){
+		return windowWidth * 0.9;
 	} else {
-		w = wW * 0.5;
+		return windowWidth * 0.5;
 	}
 }
