@@ -45,16 +45,7 @@ export default function Sound({nftData}: {nftData: NFTData})
                                     );
             break
     }
-    const Playerr: React.ComponentType<{
-        size: {
-            width: number;
-            height: number;
-        };
-        isDark: boolean;
-        }> = dynamic(() => import(playerComp),
-            { ssr: false }
-    );
-
+    
 	return (
 		<>
             <Flex>
@@ -103,7 +94,7 @@ export const getServerSideProps = async (context) => {
                         media: "string"
                     }
                 ],
-            player:"glitch"        
+            player:"superformula"        
         }
     }
        // console.log(data)
