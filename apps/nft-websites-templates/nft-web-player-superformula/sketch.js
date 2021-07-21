@@ -64,8 +64,8 @@ function draw() {
 				t,	//theta
 				100,//a
 				100,	//b
-				2,//map(wave[index], -1, 1, 0, 16),//map(amp, 100,250, 0, 20),	//m
-				map(ampMid, 0, 255, 0, 30),	//n1
+				8,//map(wave[index], -1, 1, 0, 16),//map(amp, 100,250, 0, 20),	//m
+				map(ampMid, 0, 255, 0, 26),	//n1
 				map(ampBass, 0, 255, 0, 16),		//n2
 				map(amp, 0, 255, 0, 16)	//n3
 				);
@@ -74,8 +74,8 @@ function draw() {
 			//console.log(rad)
 			vertex(x, y)
 			if(isUp){
-				const x = (rad + 1) * cos(t)
-				const y = (rad + 1) * sin(t)
+				const x = (-rad) * cos(t)
+				const y = (-rad) * sin(t)
 				vertex(x, y)
 			} 
 		}

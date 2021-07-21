@@ -85,7 +85,7 @@ const Sketch = (p) => {
 					100,//a
 					100,	//b
 					2,  //m
-					p.map(ampMid, 0, 255, 0, 30),	//n1
+					p.map(ampMid, 0, 255, 0, 26),	//n1
 					p.map(ampBass, 0, 255, 0, 16),		//n2
 					p.map(amp, 0, 255, 0, 16), 	//n3
 					p	//p5 lib
@@ -93,8 +93,8 @@ const Sketch = (p) => {
 				const x = rad * p.cos(t)
 				const y = rad * p.sin(t)
 				if(isUp){
-					const x = (rad + 1) * p.cos(t)
-					const y = (rad + 1) * p.sin(t)
+					const x = (-rad) * p.cos(t)
+					const y = (-rad) * p.sin(t)
 					p.vertex(x, y)
 				} 
 			}
