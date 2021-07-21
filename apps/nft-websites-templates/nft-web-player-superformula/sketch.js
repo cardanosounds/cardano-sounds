@@ -1,4 +1,4 @@
-let song, fft, amp, ampBass, ampMid, ampHigh, fa
+let song, fft, amp, ampBass, ampMid, ampHigh, fa, wave
 let t = 0
 
 
@@ -21,13 +21,12 @@ function setup(){
 
 	stroke(255)
 	strokeWeight(2)
-
-
 	textSize(width/5)	
 	textFont(fa)
-
+	
 	fft = new p5.FFT()
-
+	
+	wave = fft.waveform()
 
 	//p.noLoop()
 }
@@ -59,18 +58,19 @@ function draw() {
 		
 		const isUp = ampBass > 235 ? true : false
 		for(let t = 0; t <= 2*PI; t += 0.01) {
-			//let index = floor(map(t, 0.00, 2*PI, 0, wave.length - 1))
+			let index = floor(map(t, 0.00, 2*PI, 0, wave.length - 1))
 			const rad = r(
 				t,	//theta
 				100,//a
 				100,	//b
-				8,//map(wave[index], -1, 1, 0, 16),//map(amp, 100,250, 0, 20),	//m
+				6,//map(amp, 100,250, 0, 20),	//m
 				map(ampMid, 0, 255, 0, 26),	//n1
 				map(ampBass, 0, 255, 0, 16),		//n2
 				map(amp, 0, 255, 0, 16)	//n3
 				);
-			const x = rad * cos(t)
-			const y = rad * sin(t)
+			const e = map(wave[index], -1, 1, 0, 2)
+			const x = (rad + e) * cos(t)
+			const y = (rad + e) * sin(t)
 			//console.log(rad)
 			vertex(x, y)
 			if(isUp){
