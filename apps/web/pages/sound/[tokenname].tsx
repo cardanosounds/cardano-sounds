@@ -15,7 +15,6 @@ export default function Sound({nftData}: {nftData: NFTData})
         };
         isDark: boolean;
         }>
-    let playerComp: string
     switch(nftData.player)
     {
         case "glitch":
@@ -94,10 +93,9 @@ export const getServerSideProps = async (context) => {
                         media: "string"
                     }
                 ],
-            player:"superformula"        
+            player:"randomDancers"    
         }
     }
-       // console.log(data)
     return {
         props: {nftData: data}
     }

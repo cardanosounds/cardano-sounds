@@ -1,4 +1,4 @@
-let song, fft, amp, ampBass, ampMid, ampHigh, fa, wave, dancersArr, prevDancersArr, bassDancersArr, prevBassDancersArr
+let song, fft, amp, ampBass, fa, wave, dancersArr, prevDancersArr, bassDancersArr, prevBassDancersArr
 let t = 0
 
 
@@ -56,8 +56,6 @@ function draw() {
 	fft.analyze()
 	amp = int(fft.getEnergy(20, 220))
 	ampBass = int(fft.getEnergy("bass"))
-	ampMid = int(fft.getEnergy("lowMid"))
-	ampHigh = int(fft.getEnergy("mid"))
 
 	if(amp == 0) {
 		let playIconChar = char(61515)

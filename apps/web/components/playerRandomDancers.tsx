@@ -7,15 +7,18 @@ export default function PlayerRandomDancers({ size, isDark } : { size: { width: 
 let myP5: p5
 let song: SoundFile
 let fft: FFT
+let wave
 let amp: number
 let ampBass: number
-let ampMid: number
-let ampHigh: number
 let sd: Vector
 let prevd: Vector
 let w: number
 let bgColor: {r: number, g: number, b: number} = {r: 26, g: 32, b: 44}
 let fa
+let dancersArr: Array<Vector>
+let prevDancersArr: Array<Vector>			
+let bassDancersArr: Array<Vector>
+let prevBassDancersArr: Array<Vector>
 
 const myRef = useRef()
 
@@ -49,54 +52,114 @@ const Sketch = (p) => {
 		isDark ? bgColor = {r: 26, g: 32, b: 44} : bgColor = {r: 255, g: 255, b: 255}
 		p.background(bgColor.r, bgColor.g, bgColor.b)
 
-		sd = p.createVector(p.width/2, p.height/2)
-		prevd = sd.copy()
+		dancersArr = []
+		prevDancersArr = []
+		bassDancersArr = []
+		prevBassDancersArr = []
+
+		for(let i = 0; i < 8; i++) {
+			const d = (i + 1) * 0.5
+			const sd = p.createVector(p.width/d, p.height/2)
+			const prevd = sd.copy()
+			dancersArr.push(sd)
+			prevDancersArr.push(prevd)
+		}
+
+		for(let i = 0; i < 17; i += 2) {
+			const d = (i + 1) * 0.15
+			const sd = p.createVector(p.width/2, p.height/d)
+			const prevd = sd.copy()
+			bassDancersArr.push(sd)
+			prevBassDancersArr.push(prevd)
+		}
 
 
 		p.textSize(p.width/5)	
 		p.textFont(fa)
 
 		fft = new FFT()
-	
-
-		//p.noLoop()
+		wave = fft.waveform()
 	}
 
 	p.draw = () => {
 		isDark ? bgColor = {r: 26, g: 32, b: 44} : bgColor = {r: 255, g: 255, b: 255}
 		//.background(bgColor.r, bgColor.g, bgColor.b)
 
-		p.strokeWeight(5)
-		p.stroke(255)
-		
+		bgColor = {r: 26, g: 32, b: 44} // bgColor = {r: 255, g: 245, b: 245}
+		p.background(bgColor.r, bgColor.g, bgColor.b)
 
+		
 		fft.analyze()
 		amp = p.int(fft.getEnergy(20, 220))
 		ampBass = p.int(fft.getEnergy("bass"))
-		ampMid = p.int(fft.getEnergy("lowMid"))
-		ampHigh = p.int(fft.getEnergy("mid"))
-		
 
 		if(amp == 0) {
-			//let playIconChar = p.char(61515)
-			//p.fill(255)
-			//p.text(playIconChar, p.width/2, p.height/2)
+			let playIconChar = p.char(61515)
+			p.fill(255, 245, 245)
+			p.text(playIconChar, p.width/2, p.height/2)
 		} else {
-			////let playIconChar = p.char(61516)
-			//p.fill(255)
-			//p.text(playIconChar, p.width/2, p.height/2)
+			p.beginShape()
+			p.noFill()	
+			p.stroke(255, 245, 245)
+			
+			p.strokeWeight(3)
+			
+			const bassUp = ampBass > 234 ? true : false
+			
+			for(let i = 0; i < 8; i++)
+			{
+				let sd = dancersArr[i]
+				let prevd = prevDancersArr[i]	
+				let bassD = bassDancersArr[i]
+				let prevBassD = prevBassDancersArr[i]		
+				
+				let step = p5.Vector.random2D()
+				let bassStep = p5.Vector.random2D()
 
-			let wave = fft.waveform()
-			
-			
+				const index = p.floor(p.map(i, 0, 7, 0, wave.length - 1))
+				
+				if(wave[index] != 0 ) {
+					
+					p.line(sd.x, sd.y, prevd.x, prevd.y)
+					
+					if(bassUp){
+						step.mult(p.random(1, 10))
+					} else {
+						p.random(100) > 10 ? step.mult(1) : step.mult(10)
+
+					}
+
+					prevd.set(sd)
+					prevDancersArr[i] = prevd
+					sd.add(step)
+					if(p.abs(sd.x) >= p.width || p.abs(sd.y) >= p.height){
+						const d = (i + 1) * 0.5
+						dancersArr[i] = p.createVector(p.width/d, p.height/2)
+					}
+					else {
+						dancersArr[i] = sd
+					}
+				}
+				if(bassUp){
+
+					p.line(bassD.x, bassD.y, prevBassD.x, prevBassD.y)
+
+					bassStep.mult(p.random(1, 25))
+					
+					prevBassD.set(bassD)
+					prevBassDancersArr[i] = prevBassD
+					bassD.add(bassStep)
+					if(p.abs(bassD.x) >= p.width || p.abs(bassD.y) >= p.height){
+						const d = (i + 1) * 2 * 0.15
+						bassDancersArr[i] = p.createVector(p.width/2, p.height/d)
+					}
+					else {
+						bassDancersArr[i] = bassD
+					}
+				}
+			}
+			p.endShape();
 		}
-		p.line(sd.x, sd.y, prevd.x, prevd.y)
-
-		prevd.set(sd)
-		//if(sampleIsLooping && song.loop)
-		var step = Vector.random2D()
-		p.random(100) > 5 ? step.mult(2) : step.mult(25)
-		sd.add(step)
 
 				
 	}
