@@ -1,5 +1,4 @@
 let song, fft, amp, ampBass, ampMid, ampHigh, fa, wave
-let t = 0
 
 
 function preload() {
