@@ -11,8 +11,8 @@ export default function PlayerColors({ size, isDark } : { size: { width: number,
     let ampBass: number
     let ampMid: number
     let ampHigh: number
-    let img: Image
     let t: number = 0
+    let bgColor: {r: number, g: number, b: number} = {r: 26, g: 32, b: 44}
     let fa
 
     const myRef = useRef()
@@ -21,122 +21,85 @@ export default function PlayerColors({ size, isDark } : { size: { width: number,
 	myP5 = new p5(Sketch, myRef.current)
     }, [])
     
-    
-
 
     const Sketch = (p) => {
 
 	p.preload = () => {
 		
-		fa = p.loadFont('/fontawesome.ttf');
-		song = p.loadSound('/sounds/clip1.flac')
+		fa = p.loadFont('https://arweave.net/2sAqaLM2Dx4kl-4cDfjym2DOylAKi1F7vi-Gy1ndw9U');
+		song = p.loadSound('https://5qivp3uhdkmad6mndrvlhcqd6s4eu7bizg47zkuhbe544z5f65lq.arweave.net/7BFX7ocamAH5jRxqs4oD9LhKfCjJufyqhwk7zmel91c')
+		
 	}
-
+	
 	p.setup = () => {
-		p.createCanvas(800, 800)
+		const w = getW(p)
+		p.createCanvas(w, w)
 		p.textAlign(p.CENTER, p.CENTER);
-
-		p.background(20)
-
+	
+		isDark ? bgColor = {r: 26, g: 32, b: 44} : bgColor = {r: 255, g: 255, b: 255}
+	
+		p.noFill()
+	
+		p.stroke(255)
+		p.strokeWeight(3)
+	
+	
+		p.textSize(p.width/5)	
+		p.textFont(fa)
+	
 		fft = new FFT()
 	
-
-		p.noLoop()
+	
+		//p.noLoop()
 	}
     
 	p.draw = () => {
-		p.background(20)
-		p.strokeWeight(5)
+		let bgColor = {r: 26, g: 32, b: 44} // bgColor = {r: 255, g: 245, b: 245}
+		p.background(bgColor.r, bgColor.g, bgColor.b)
+
+		
 		fft.analyze()
 		amp = p.int(fft.getEnergy(20, 220))
 		ampBass = p.int(fft.getEnergy("bass"))
 		ampMid = p.int(fft.getEnergy("lowMid"))
 		ampHigh = p.int(fft.getEnergy("mid"))
-		
 
-		if(amp === 0 || typeof(amp) === "undefined") {
+		if(amp == 0) {
 			let playIconChar = p.char(61515)
-			p.fill(255)
-			p.textSize(p.width/5)	
-			p.textFont(fa)
+			p.fill(255, 245, 245)
 			p.text(playIconChar, p.width/2, p.height/2)
 		} else {
-
-			let wave = fft.waveform()
-			
-			p.push()
 			p.translate(p.width/2, p.height/2)
 			
-			for(let i = 0; i < 20; i++) {
-				let index = p.floor(p.map(i, 0, 10, 0, wave.length - 1))
-				//let red: number = amp == 0 ? 20 : p.map(wave[index], -1, 1, 20, 255)
-				//let green: number = amp == 0 ? 20 : p.map(wave[index], -1, 1, 0, 24)
-				//green = p.map(green, 0, 24, 255, 0)
-				//let blue: number = amp == 0 ? 20 : p.map(wave[index], -1, 1, 2, 36)
-				//blue = p.map(blue, 2, 36, 0, 255)
+			for(let i = 0; i < 10; i++) {
 				p.stroke(ampHigh, ampMid, ampBass)
-				//console.log(ampMid)
 				p.line(x1(t + i, p, amp), y1(t + i, p, amp), x2(t + i, p, amp), y2(t + i, p, amp))
-			}
-			p.pop()
-			if(ampBass > 230) {
-				p.push()
-				p.translate(p.width/2, p.height/2)
-				let countB = p.map(ampBass, 200, 250, 1, 20)
-				
-				for(let i = 0; i < 20; i++) {
-					let index = p.floor(p.map(i, 0, 10, 0, wave.length - 1))
-					//let green: number = p.map(i, 0, 20, 0, 255)
-					//let blue: number = p.map(i, 0, 20, 255, 0)
-					let red: number = amp == 0 ? 20 : p.map(wave[index], -1, 1, 20, 255)
-					let colMultiplier: number = p.map(wave[index], -1, 1, 1, 12)
-					let green: number = amp == 0 ? 20 : p.map(wave[index], -1, 1, 0, 24)
-					green = p.map(green, 0, 24, 0, 255)
-					let blue: number = amp == 0 ? 20 : p.map(wave[index], -1, 1, 0, 36)
-					blue = p.map(blue, 0, 36, 0, 255)
+
+				if(ampBass > 215) {
 					p.stroke(ampBass, ampMid, ampHigh)
-					//p.stroke(red, i * colMultiplier, i * colMultiplier)
 					p.line(x1(-0.5*t + i, p, amp), y1(-0.5*t + i, p, amp), x2(-0.5*t + i, p, amp), y2(-0.5*t + i, p, amp))
 				}
-				p.pop()
-			}
-
-			if(ampMid > 200) {
-				p.push()
-				p.translate(p.width/2, p.height/2)
-				let count = p.map(ampMid, 200, 250, 1, 20)
-				
-				for(let i = 0; i < 20; i++) {
-					let index = p.floor(p.map(i, 0, 10, 0, wave.length - 1))
-					//let green: number = p.map(i, 0, 20, 0, 255)
-					//let blue: number = p.map(i, 0, 20, 255, 0)
-					let red: number = amp == 0 ? 20 : p.map(wave[index], -1, 1, 20, 255)
-					let colMultiplier: number = p.map(wave[index], -1, 1, 1, 12)
-					let green: number = amp == 0 ? 20 : p.map(wave[index], -1, 1, 0, 24)
-					green = p.map(green, 0, 24, 0, 255)
-					let blue: number = amp == 0 ? 20 : p.map(wave[index], -1, 1, 0, 36)
-					blue = p.map(blue, 0, 36, 0, 255)
+				if(ampMid > 155){
 					p.stroke(ampMid, ampBass, ampHigh)
-					//p.stroke(red, i * colMultiplier, i * colMultiplier)
 					p.line(x1(-t + i, p, amp), y1(-t + i, p, amp), x2(-t + i, p, amp), y2(-t + i, p, amp))
 				}
-				p.pop()
 			}
-
-			t+= p.map(amp === 0 ? 0 : amp, 0, 250, 0, 0.8)
+			
+			t+= p.map(amp, 0, 250, 0, 0.05)
+			
 		}
-				
 	}
 
 	p.mouseClicked = () => {
 		if(song.isPlaying()) {
-			song.pause()
-			amp = 0 
-			p.noLoop()
+			song.pause()	
 		} else {
-			song.play()
-			p.loop()
+			song.loop()
 		}
+	}
+	p.windowResize = () => {
+		const w = getW(p)
+		p.resizeCanvas(w, w)
 	}
     }
 
@@ -150,14 +113,24 @@ export default function PlayerColors({ size, isDark } : { size: { width: number,
 }
 
 const x1 = (t: number, p: p5, a: number) => {
-	return p.sin(t / 10) * 50 + p.sin(t / 5) * 20
+	return p.sin(t / 10) + p.sin(t / 5) * a
 }
 const y1 = (t: number, p: p5, a: number) => {
-	return  p.cos(t /10) * 50 + p.cos(t / 4) * 5
+	return  p.cos(t /10) + p.cos(t / 4) * a
 }
 const x2 = (t: number, p: p5, a: number) => {
-	return p.sin(t / 10) * 100 + p.sin(t) * 2
+	return p.sin(t / 10) + p.sin(t) * a
 }
 const y2 = (t: number, p: p5, a: number) => {
-	return  p.cos(t / 20) * 100 + p.cos(t / 12) * 20
+	return  p.cos(t / 20) + p.cos(t / 12) * a
+}
+
+
+
+const getW = (p: p5) => {
+	if(p.windowWidth < 600){		
+		return p.windowWidth * 0.9;
+	} else {
+		return p.windowWidth * 0.5;
+	}
 }
