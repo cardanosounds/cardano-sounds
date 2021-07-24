@@ -1,2 +1,0 @@
-This static website is PoC for animated players on persistent storage (with NFT sound) 
-It was deployed on Arweave also with libraries to remove external sources (libraries also on AR): https://arweave.net/wepPRHUGWok6gl_rl1WneQGUsQSBwZG-48f9beuyb8A
