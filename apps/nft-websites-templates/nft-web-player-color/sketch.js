@@ -84,7 +84,7 @@ function getW() {
 	if(windowWidth < 600){		
 		return windowWidth * 0.9;
 	} else {
-		return windowWidth * 0.5;
+		return windowWidth * 0.4;
 	}
 }
 

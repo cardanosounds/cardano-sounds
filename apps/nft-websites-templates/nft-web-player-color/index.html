@@ -6,11 +6,27 @@
     <script src="https://arweave.net/j9Mm1MXlXQ6RRk_bKLX8O-QOiDaEVO6CKM_N0j8rCwk"></script>
     <script src="sketch.js"></script>
     <style>
-      #sketchElement {
-        width: 50%;          
-      }
       .name {
         max-width: 15vw;
+      }
+      .head {
+        margin-top: 5vh;
+      }
+      canvas {
+        position: absolute;
+        top: 10vh;
+        left: 5vw;
+        z-index: -1;
+        display: inline-block;
+      }
+      #sketchElement{
+        width: 50%;
+        display: inline-block;
+      }
+      .metadata {
+        width: 49%;
+        margin-top: 15vh;
+        display: inline-block;
       }
       @media only screen and (max-width: 600px) {
         #sketchElement {
@@ -18,6 +34,21 @@
         }
         .name {
           max-width: 60vw;
+        }
+        #sketchElement, .metadata {
+          width: 90%;
+          display: block;
+        }
+        .metadata {
+          margin-top:100vw;
+          margin-left:5vw;
+        }
+        canvas {
+          position: absolute;
+          top: 10vw;
+          left: 5vw;
+          z-index: -1;
+          display: block;
         }
       }
       body {
@@ -46,18 +77,18 @@
         CARDANO SOUNDS - WAVE 1 - NFT
       </div>
       <div id="sketchElement" style="margin: auto auto;"></div>
-      <div>
+      <div class="metadata">
             <div>
-              <td><h3>name:</h3><p class="name"> CSDEVNFT0</p></td>
+              <td><h3>name:</h3><p class="name">CSDEVNFT0</p></td>
               <td><h3>probability:</h3><p> 0.00000 %</p></td>
             </div>
             <div>
-              <td><h3>policy:</h3><p> be3a4e111a307643783820c2bf15fcace87f161187be9301857b593a</p></td>
-              <td><h3>sounds:</h3><p> sound1, sound2, sound3, sound4, sound5</p></td>
+              <td><h3>policy:</h3><p>be3a4e111a307643783820c2bf15fcace87f161187be9301857b593a</p></td>
+              <td><h3>sounds:</h3><p>sound1, sound2, sound3, sound4, sound5</p></td>
             </div>
             <div>
-              <td><h3>player:</h3><p> glitch</p></td>
-              <td><h3>buyingTx:</h3><p> 00000000000000000000000000000000000000000000000000000000</p></td>
+              <td><h3>player:</h3><p>colors</p></td>
+              <td><h3>buyingTx:</h3><p>00000000000000000000000000000000000000000000000000000000</p></td>
             </div>
       </div>
     </main>
