@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Csharp.CardanoCLI" Version="1.27.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
@@ -17,7 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Csharp.CardanoCLI\Csharp.CardanoCLI.csproj" />
     <ProjectReference Include="..\CS.DB.Cosmos\CS.DB.Cosmos.csproj" />
   </ItemGroup>
 
