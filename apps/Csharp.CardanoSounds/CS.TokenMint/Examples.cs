@@ -106,8 +106,8 @@ namespace CS.TokenMint
                 PolicyName = "testnftpolicy",
                 TimeLimited = true,
                 ValidForMinutes = 120,
-                SigningKeyFile = "signing-key",
-                VerificationKeyFile = "verification-key"
+                SigningKeyFile = "signing-key-2",
+                VerificationKeyFile = "verification-key-2"
             };
 
 
@@ -126,8 +126,8 @@ namespace CS.TokenMint
             {
                 PolicyName = "testtokenpolicy",
                 TimeLimited = false,
-                SigningKeyFile = "signing-key",
-                VerificationKeyFile = "verification-key"
+                SigningKeyFile = "signing-key-2",
+                VerificationKeyFile = "verification-key-2"
             };
 
             var tokenPolicy = policies.Create(tokenPolicyParams);
@@ -141,108 +141,5 @@ namespace CS.TokenMint
                 Console.WriteLine("token policy success");
             }
         }
-
-        //public void TestTransactionWithTokens()
-        //{
-        //    var txParams = new TransactionParams()
-        //    {
-        //        TxFileName = $"tx-tokens",
-        //        LovelaceValue = 2000000,
-        //        SendAllTxInAda = false,
-        //        SenderAddress = "addr_test1vrw3r08naaq8wrtemegjk7p3e9zp7a2ceul9rd84pd3nckcynl6xq",
-        //        SendToAddress = "addr_test1vpl22c6vml7p7n5vv4n2mjf6sfw9kcse5c7jjk3uxc9dllcvvvj8q",
-        //        TxInLovelaceValue = 989477405,
-        //        TxInHash = "e1c85be256a393cc341ba0353e257d921544892e8a6529a38e5204e1bab4a73e",
-        //        TxInIx = 0,
-        //        NativeTokensInUtxo = new List<NativeToken>(){
-        //            new NativeToken{
-        //                Amount = 1000,
-        //                TokenFullName = "1986a6fba600525df58ad520bedaba94a8e7a297ea929a23cf230376.CSTEST"
-        //            }
-        //        },
-        //        NativeTokensToSend = new List<NativeToken>(){
-        //            new NativeToken{
-        //                Amount = 1000,
-        //                TokenFullName = "1986a6fba600525df58ad520bedaba94a8e7a297ea929a23cf230376.CSTEST"
-        //            }
-        //        },
-        //        SigningKeyFile = "signing-key"
-        //    };
-        //    Transaction(txParams);
-        //}
-
-        //public void TestTransaction()
-        //{
-        //    var txParams = new TransactionParams()
-        //    {
-        //        TxFileName = $"tx2",
-        //        LovelaceValue = 5000000,
-        //        SendAllTxInAda = false,
-        //        SenderAddress = "addr_test1vrw3r08naaq8wrtemegjk7p3e9zp7a2ceul9rd84pd3nckcynl6xq",
-        //        SendToAddress = "addr_test1vpl22c6vml7p7n5vv4n2mjf6sfw9kcse5c7jjk3uxc9dllcvvvj8q",
-        //        TxInLovelaceValue = 989477405,
-        //        TxInHash = "7b8b5e3141b1239bf69e7513e599babc02a204602952abcac2fea226563712ab",
-        //        TxInIx = 1
-        //    };
-        //    Transaction(txParams);
-        //}
-
-
-        //public void Transaction(TransactionParams txParams)
-        //{
-        //    var ttl = cli.QueryTip().Slot + 100;
-
-        //    var transactions = new Transactions(txParams.SigningKeyFile, cli);
-
-        //    var f = transactions.PrepareTransaction(txParams, ttl);
-        //    Console.WriteLine(f);
-        //    if (!f.StartsWith("CS.Error"))
-        //    {
-        //        var protocolParams = cli.SetProtocolParamaters();
-        //        if (!cli.HasError(protocolParams))
-        //        {
-        //            var minFee = transactions.CalculateMinFee(txParams);
-        //            if (!cli.HasError(minFee))
-        //            {
-        //                Console.WriteLine(minFee);
-        //                var buildTx = transactions.BuildTransaction(txParams, (long)Convert.ToInt64(minFee.Replace(" Lovelace", "")), ttl);
-        //                if (!cli.HasError(buildTx))
-        //                {
-        //                    var signTx = transactions.SignTransaction(txParams);
-        //                    if (!cli.HasError(signTx))
-        //                    {
-        //                        var submit = transactions.SubmitTransaction(txParams);
-        //                        Console.WriteLine(submit);
-        //                        if (!cli.HasError(submit))
-        //                        {
-        //                            Console.WriteLine("Success!");
-        //                        }
-        //                    }
-        //                    else
-        //                    {
-        //                        Console.WriteLine("SIGN ERROR: " + signTx);
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    Console.WriteLine("BUILD ERROR: " + buildTx);
-        //                }
-        //            }
-        //            else
-        //            {
-        //                Console.WriteLine("FEE CALC ERROR: " + minFee);
-        //            }
-        //        }
-        //        else
-        //        {
-        //            Console.WriteLine("PROTOCOL PARAMS ERROR: " + protocolParams);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine("PREPARE ERROR: " + f);
-        //    }
-        //}
-
     }
 }
