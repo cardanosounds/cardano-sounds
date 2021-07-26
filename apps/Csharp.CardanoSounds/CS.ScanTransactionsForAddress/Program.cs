@@ -69,11 +69,11 @@ namespace CS.ScanTransactionsForAddress
             Console.ReadLine();
         }
 
-        private static async Task<List<Transaction>> GetTransactions()
+        private static async Task<List<IncommingTransaction>> GetTransactions()
         {
             //Authenticate();
 
-            var transactions = new List<Transaction>();
+            var transactions = new List<IncommingTransaction>();
 
             //create request url and log
             var reqUrl = apiUrl + "addresses/" + addr + "/utxos?" + "count=" + count + "&page=" + pageCount + "&order=" + order;
@@ -88,7 +88,7 @@ namespace CS.ScanTransactionsForAddress
                 //var reader = new StreamReader(txs);
                 var transactionsArr = (JArray)DeserializeFromStream(txs);
 
-                transactions = transactionsArr.ToObject<List<Transaction>>();
+                transactions = transactionsArr.ToObject<List<IncommingTransaction>>();
             }
             catch (Exception ex)
             {

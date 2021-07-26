@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace CS.Models
 {
-    public class Transaction
+    public class IncommingTransaction
     {
         [JsonProperty(PropertyName = "id")]
         public string Id { get; set; }
