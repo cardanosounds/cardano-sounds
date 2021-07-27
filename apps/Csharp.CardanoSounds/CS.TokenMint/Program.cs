@@ -2,6 +2,7 @@
 using System.IO;
 using CS.Csharp.CardanoCLI;
 using CS.Csharp.CardanoCLI.Models;
+using CS.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -13,18 +14,15 @@ namespace CS.TokenMint
 {
     class Program
     {
+
         static void Main(string[] args)
         {
-            //CLI cli = new CLI 
-            var readyTx = DB.Cosmos.Transactions.GetReadyToMintTransaction();
-
             var host = AppStartup();
 
-            var exampleService = ActivatorUtilities.CreateInstance<Examples>(host.Services);
+            var mintingService = ActivatorUtilities.CreateInstance<Mint>(host.Services);
 
-            exampleService.TestMintTokens();
+            mintingService.MintFromDbTransaction();
         }
-
 
         static void BuildConfig(IConfigurationBuilder builder)
         {
@@ -51,7 +49,7 @@ namespace CS.TokenMint
             Log.Logger.Information("Application Starting");
             var host = Host.CreateDefaultBuilder() // Initialising the Host 
                 .ConfigureServices((context, services) => { // Adding the DI container for configuration
-                    services.AddSingleton<IExamples, Examples>(); 
+                    services.AddSingleton<IMint, Mint>(); 
                 })
                 .UseSerilog() // Add Serilog
                 .Build(); // Build the Host

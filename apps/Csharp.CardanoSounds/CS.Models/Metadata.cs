@@ -14,6 +14,12 @@ namespace CS.Models
 		[JsonProperty("token_name")]
 		public string TokenName { get; set; }
 
+		[JsonProperty("player")]
+		public string Player { get; set; }
+
+		[JsonProperty("player_image")]
+		public string PlayerImage { get; set; }
+
 		[JsonProperty("probabilty")]
 		public long Probability { get; set; }
 
@@ -24,7 +30,7 @@ namespace CS.Models
 		public Sound[] Sounds { get; set; }
 
 		[JsonProperty("arweave_id_sound")]
-		public Uri ArweaveIdSound { get; set; }
+		public string ArweaveIdSound { get; set; }
 
 		[JsonProperty("ipfs_id_sound")]
 		public string IpfsIdSound { get; set; }

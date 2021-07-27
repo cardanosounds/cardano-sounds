@@ -1,0 +1,32 @@
+{
+  "721": {
+    "nftpolicy": {
+      "NFT_NAME": {
+        "description": "test cardanosounds nft",
+        "files": [
+          {
+            "mediaType": "audio/mpeg",
+            "name": "NFT_NAME",
+            "src": "IPFS_AUDIO",
+            "arweaveHash": "ARWEAVE_AUDIO"
+          }
+        ],
+        "probability": "SOUND_PROBABILITY",
+        "sounds": "SOUND_1, SOUND_2, SOUND_3, SOUND_4, SOUND_5",
+        "image": "IPFS_PLAYER_PREVIEW",
+        "player": "PLAYER_NAME",
+        "name": "NFT_NAME",
+        "arweaveWebsite": "ARWEAVE_WEBSITE",
+        "buyingTransaction": "TRANSACTION_HASH"
+      }
+    },
+    "testtokenpolicy": {
+      "CSCT": {
+        "description": "test cardanosounds token",
+        "image": "ipfs://Qmc44FAKEANDWONTWORKING",
+        "name": "CSTEST",
+        "website": "cardanosounds.com"
+      }
+    }
+  }
+}
