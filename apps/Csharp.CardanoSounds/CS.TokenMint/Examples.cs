@@ -3,6 +3,7 @@ using CS.Csharp.CardanoCLI.Models;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,6 +23,112 @@ namespace CS.TokenMint
             cli = new CLI(_network, _cardano_cli_location, _working_directory, new CliLogger(logger));
             //_logger = logger;
         }
+
+        public void MintFromTransaction()
+        {
+           
+            var tx = DB.Cosmos.Transactions.GetReadyToMintTransaction();
+
+            var meta = File.ReadAllText(Path.Combine(_working_directory, "metadatatemplate.json"));
+            meta = meta.Replace("NFT_NAME", tx.Metadata.TokenName);
+            meta = meta.Replace("IPFS_AUDIO", tx.Metadata.IpfsIdSound);
+            meta = meta.Replace("ARWEAVE_AUDIO", tx.Metadata.ArweaveIdSound);
+            meta = meta.Replace("SOUND_PROBABILITY", tx.Metadata.Probability.ToString());
+            meta = meta.Replace("IPFS_PLAYER_PREVIEW", tx.Metadata.PlayerImage);
+            meta = meta.Replace("PLAYER_NAME", tx.Metadata.Player);
+            meta = meta.Replace("ARWEAVE_WEBSITE", tx.Metadata.ArweaveWebsiteUri.ToString());
+            meta = meta.Replace("TRANSACTION_HASH", tx.Tx_Hash);
+            for (var i = 0; i < tx.Metadata.Sounds.Length; i++)
+            {
+                meta = meta.Replace("SOUND_" + (i+1), tx.Metadata.Sounds[i].Filename);
+            }
+
+            File.WriteAllText(Path.Combine(_working_directory, "metadata_" + tx.Metadata.TokenName + ".json"), meta);
+            //tx.Metadata.Sounds;
+
+            var nftPolicyParams = new PolicyParams
+            {
+                PolicyName = "nftpolicy",
+                TimeLimited = true,
+                ValidForMinutes = 120,
+                SigningKeyFile = "signing-key-2",
+                VerificationKeyFile = "verification-key-2"
+            };
+
+            Policies policies = new Policies(cli);
+
+            policies.Create(nftPolicyParams);
+
+            var mintParams = new MintParams
+            {
+                TokenParams = new List<TokenParams>
+                {
+                    new TokenParams()
+                    {
+                        PolicyName = "nftpolicy",
+                        TokenAmount = 1,
+                        TokenName = tx.Metadata.TokenName
+                    },
+                    new TokenParams
+                    {
+                        PolicyName = "testtokenpolicy",
+                        TokenAmount = 1,
+                        TokenName = "CSCT"
+                    }
+                }
+            };
+
+            var txParams = new TransactionParams()
+            {
+                TxFileName = $"testmintfromtx",
+                TransactionInputs = new List<TxIn>
+                {
+                    new TxIn
+                    {
+                        TxHash = "2ac398ce480c4b474f5edc88d8384baf4ed5f47e6e87c4e009e55b6e2865cac9",
+                        TxIx = 0,
+                        Amount = new List<TokenValue>
+                        {
+                            new TokenValue(5000000)
+                        }
+
+                    }
+                },
+                TransactionOutputs = new List<TxOut>
+                {
+                    new TxOut
+                    {
+                        RecipientAddress = "addr_test1vrw3r08naaq8wrtemegjk7p3e9zp7a2ceul9rd84pd3nckcynl6xq",
+                        PaysFee = false,
+                        Amount = new List<TokenValue>
+                        {
+                            new TokenValue(2000000),
+                            new TokenValue(1, tx.Metadata.TokenName),
+                            new TokenValue(1, "CSCT")
+                        }
+
+                    },
+                    new TxOut
+                    {
+                        RecipientAddress = "addr_test1vpl22c6vml7p7n5vv4n2mjf6sfw9kcse5c7jjk3uxc9dllcvvvj8q",
+                        PaysFee = true,
+                        Amount = new List<TokenValue>
+                        {
+                            new TokenValue(3000000)
+                        }
+                    }
+                },
+                MetadataFileName = $"metadata_{tx.Metadata.TokenName}.json",
+                SendAllTxsUnspentOutput = true,
+                SigningKeyFile = "signing-key-2"
+            };
+
+            Assets assets = new Assets(cli);
+
+            Console.Write(assets.MintNativeTokens(new List<PolicyParams>()/*{ nftPolicyParams, tokenPolicyParams }*/, mintParams, txParams));
+
+        }
+
 
         public void TestMintTokens()
         {

@@ -2,6 +2,7 @@
 using System.IO;
 using CS.Csharp.CardanoCLI;
 using CS.Csharp.CardanoCLI.Models;
+using CS.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -13,10 +14,15 @@ namespace CS.TokenMint
 {
     class Program
     {
+        private readonly string nftPolicyName = "";
+        private readonly string nftName = "";
+
+        private readonly string tokenPolicyName = "";
+        private readonly string tokenName = "";
+
         static void Main(string[] args)
         {
             //CLI cli = new CLI 
-            var readyTx = DB.Cosmos.Transactions.GetReadyToMintTransaction();
 
             var host = AppStartup();
 
@@ -24,7 +30,6 @@ namespace CS.TokenMint
 
             exampleService.TestMintTokens();
         }
-
 
         static void BuildConfig(IConfigurationBuilder builder)
         {
