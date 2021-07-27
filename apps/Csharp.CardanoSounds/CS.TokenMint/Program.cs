@@ -14,21 +14,14 @@ namespace CS.TokenMint
 {
     class Program
     {
-        private readonly string nftPolicyName = "";
-        private readonly string nftName = "";
-
-        private readonly string tokenPolicyName = "";
-        private readonly string tokenName = "";
 
         static void Main(string[] args)
         {
-            //CLI cli = new CLI 
-
             var host = AppStartup();
 
-            var exampleService = ActivatorUtilities.CreateInstance<Examples>(host.Services);
+            var mintingService = ActivatorUtilities.CreateInstance<Mint>(host.Services);
 
-            exampleService.TestMintTokens();
+            mintingService.MintFromDbTransaction();
         }
 
         static void BuildConfig(IConfigurationBuilder builder)
@@ -56,7 +49,7 @@ namespace CS.TokenMint
             Log.Logger.Information("Application Starting");
             var host = Host.CreateDefaultBuilder() // Initialising the Host 
                 .ConfigureServices((context, services) => { // Adding the DI container for configuration
-                    services.AddSingleton<IExamples, Examples>(); 
+                    services.AddSingleton<IMint, Mint>(); 
                 })
                 .UseSerilog() // Add Serilog
                 .Build(); // Build the Host
