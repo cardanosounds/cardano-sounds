@@ -35,7 +35,6 @@ function setup(){
 		prevBassDancersArr.push(prevd)
 	}
 
-
 	noFill()
 
 	stroke(255)
@@ -49,24 +48,21 @@ function setup(){
 }
 
 function draw() {
-	bgColor = {r: 26, g: 32, b: 44} // bgColor = {r: 255, g: 245, b: 245}
-	background(bgColor.r, bgColor.g, bgColor.b)
+	background(RGB_BACKGROUND_COLOR)
 
-	
 	fft.analyze()
 	amp = int(fft.getEnergy(20, 220))
 	ampBass = int(fft.getEnergy("bass"))
 
 	if(amp == 0) {
 		let playIconChar = char(61515)
-		fill(255, 245, 245)
+		fill(RGB_FILL_COLOR)
 		text(playIconChar, width/2, height/2)
 	} else {
 
-
 		beginShape()
 		noFill()	
-		stroke(255, 245, 245)
+		stroke(RGB_FILL_COLOR)
 		
 		strokeWeight(3)
 		
@@ -92,7 +88,6 @@ function draw() {
 					step.mult(random(1, 10))
 				} else {
 					random(100) > 10 ? step.mult(1) : step.mult(10)
-
 				}
 
 				prevd.set(sd)

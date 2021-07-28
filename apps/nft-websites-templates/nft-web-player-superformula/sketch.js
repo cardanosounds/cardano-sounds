@@ -13,12 +13,8 @@ function setup(){
 	createCanvas(w, w)
 	textAlign(CENTER, CENTER);
 
-	//isDark ? bgColor = {r: 26, g: 32, b: 44} : bgColor = {r: 255, g: 255, b: 255}
-	//p.background(bgColor.r, bgColor.g, bgColor.b)
-
 	noFill()
 
-	stroke(255)
 	strokeWeight(2)
 	textSize(width/5)	
 	textFont(fa)
@@ -26,15 +22,11 @@ function setup(){
 	fft = new p5.FFT()
 	
 	wave = fft.waveform()
-
-	//p.noLoop()
 }
 
 function draw() {
-	bgColor = {r: 26, g: 32, b: 44} // bgColor = {r: 255, g: 245, b: 245}
-	background(bgColor.r, bgColor.g, bgColor.b)
+	background(RGB_BACKGROUND_COLOR)
 
-	
 	fft.analyze()
 	amp = int(fft.getEnergy(20, 220))
 	ampBass = int(fft.getEnergy("bass"))
@@ -43,14 +35,14 @@ function draw() {
 
 	if(amp == 0) {
 		let playIconChar = char(61515)
-		fill(255, 245, 245)
+		fill(RGB_FILL_COLOR)
 		text(playIconChar, width/2, height/2)
 	} else {
 		
 		translate(width / 2, height / 2)
 		beginShape()
 		noFill()	
-		stroke(255, 245, 245)
+		stroke(RGB_FILL_COLOR)
 		
 		strokeWeight(3)
 		
@@ -62,7 +54,7 @@ function draw() {
 				t,	//theta
 				100,//a
 				100,	//b
-				6,//map(amp, 100,250, 0, 20),	//m
+				SUPERFORMULA_M,	//m
 				map(ampMid, 0, 255, 0, 26),	//n1
 				map(ampBass, 0, 255, 0, 16),		//n2
 				map(amp, 0, 255, 0, 16)	//n3
@@ -70,8 +62,9 @@ function draw() {
 			const e = map(wave[index], -1, 1, 0, 2)
 			const x = (rad + e) * cos(t)
 			const y = (rad + e) * sin(t)
-			//console.log(rad)
+			
 			vertex(x, y)
+
 			if(isUp){
 				const x = (-rad) * cos(t)
 				const y = (-rad) * sin(t)

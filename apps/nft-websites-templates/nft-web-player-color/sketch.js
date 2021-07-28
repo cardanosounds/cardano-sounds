@@ -14,9 +14,6 @@ function setup(){
 	createCanvas(w, w)
 	textAlign(CENTER, CENTER);
 
-	//isDark ? bgColor = {r: 26, g: 32, b: 44} : bgColor = {r: 255, g: 255, b: 255}
-	//p.background(bgColor.r, bgColor.g, bgColor.b)
-
 	noFill()
 
 	stroke(255)
@@ -27,14 +24,11 @@ function setup(){
 	fft = new p5.FFT()
 	
 	wave = fft.waveform()
-
-	//p.noLoop()
 }
 
-function draw() {
-	bgColor = {r: 26, g: 32, b: 44} // bgColor = {r: 255, g: 245, b: 245}
-	background(bgColor.r, bgColor.g, bgColor.b)
 
+function draw() {
+	background(RGB_BACKGROUND_COLOR)
 	
 	fft.analyze()
 	amp = int(fft.getEnergy(20, 220))
@@ -44,7 +38,7 @@ function draw() {
 
 	if(amp == 0) {
 		let playIconChar = char(61515)
-		fill(255, 245, 245)
+		fill(RGB_FILL_COLOR)
 		text(playIconChar, width/2, height/2)
 	} else {
 		translate(width/2, height/2)

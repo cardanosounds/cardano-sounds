@@ -1,7 +1,6 @@
 let song, fft, amp, ampBass, ampMid, ampHigh, fa
 let t = 0
 
-
 function preload() {
 	
 	fa = loadFont('https://arweave.net/2sAqaLM2Dx4kl-4cDfjym2DOylAKi1F7vi-Gy1ndw9U');
@@ -15,7 +14,7 @@ function setup() {
 	myCanv.parent("sketchElement");
 	textAlign(CENTER, CENTER);
 	
-	background(26, 32, 44)
+	background(RGB_BACKGROUND_COLOR)
 
 	textSize(width/5)	
 	textFont(fa)
@@ -23,15 +22,14 @@ function setup() {
 	fft = new p5.FFT()
 }
 function draw() {
-	bgColor = {r: 26, g: 32, b: 44} 
-	background(bgColor.r, bgColor.g, bgColor.b)
+	background(RGB_BACKGROUND_COLOR)
 	strokeWeight(5)
 	fft.analyze()
 	amp = int(fft.getEnergy(20, 220))	
 
 	if(amp == 0) {
 		let playIconChar = char(61515)
-		fill(255)
+		fill(RGB_FILL_COLOR)
 		text(playIconChar, width/2, height/2)
 	} else {
 		
@@ -45,7 +43,6 @@ function draw() {
 			for(let i = 0; i < 10; i++) {
 				let index = floor(map(i, 0, 10, 0, wave.length - 1))
 				let trebleColor = map(wave[index], -1, 1, 20, 255)
-				// = map(amp, 0, 250, 20, 255)
 				stroke(trebleColor, random(0,255), random(0, 255))
 				line(x1(t + i), y1(t + i), x2(t + i), y2(t + i))
 			}
@@ -68,11 +65,9 @@ function draw() {
 function mouseClicked() {
 	if(song.isPlaying()) {
 		song.pause();
-		//noLoop();
 		
 	} else {
 		song.loop();
-		//loop();
 					
 	}
 }
