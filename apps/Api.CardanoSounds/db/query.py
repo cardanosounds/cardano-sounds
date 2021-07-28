@@ -30,3 +30,8 @@ class Query:
 		metadata = jsonpickle.encode(metadata)
 		container.create_item(json.loads(metadata))
 
+	def insert_transaction(self, tx: Transaction):
+		container = self.base.get_existing_container('transactions')
+		tx = jsonpickle.encode(tx)
+		container.create_item(json.loads(tx))
+

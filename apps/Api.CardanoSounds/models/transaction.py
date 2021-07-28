@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
+from metadata import Metadata
 
 @dataclass
 class Transaction:
@@ -10,3 +11,4 @@ class Transaction:
     senderAdress: str
     status: str
     created: datetime
+    metadata: Metadata = None 

@@ -6,10 +6,11 @@ from models.soundprobability import SoundProbability
 class Metadata:
     id: str
     token_name: str
-    probabilty: float
-    rarity: int
+    probability: float
+    rarity: str
     sounds: List[SoundProbability]
     arweave_id_sound: str = ""
     ipfs_id_sound: str = ""
     arweave_website_uri: str = ""
+    player: str = ""
     

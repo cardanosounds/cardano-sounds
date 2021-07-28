@@ -11,6 +11,9 @@ class Sounds:
 
 	enrich_probab_file = "enriching-sound-probability.data"
 	base_sounds_folder = "/home/dzcodes/cs-base-sounds"
+	common_color = "#22543D" #green
+	mid_rare_color = "#2A4365" #blue
+	rare_color = "#000" #basic black
 
 	def get_enrich_sound(self):
 		sps = self.enrich_sounds_probabilities()
@@ -98,11 +101,11 @@ class Sounds:
 		total_probability = enrich.probability * melody.probability * drums.probability * bass.probability * signature.probability * 100
 
 		if(enrich.category == "enriching-common"):
-			rarity = 1
+			rarity = self.common_color
 		elif(enrich.category == "enriching-mid"):
-			rarity = 2
+			rarity = self.mid_rare_color
 		else:
-			rarity = 3
+			rarity = self.rare_color
 
 		mix.mix_sound(
 			tx.tx_hash,

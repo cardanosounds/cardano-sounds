@@ -30,7 +30,7 @@ def start_sound_generation(tx: Transaction):
     metadata.ipfs_id_sound = upload.upload_to_ipfs(tx.tx_hash)
     metadata.arweave_id_sound = upload.upload_to_arweave(tx.tx_hash)
     websites = Websites()
-    websites.create_nft_website(metadata)
+    metadata = websites.create_nft_website(metadata)
     deploy = ArweaveDeploy()
     print(deploy.deploy_website(tx.tx_hash))
     query = Query()
