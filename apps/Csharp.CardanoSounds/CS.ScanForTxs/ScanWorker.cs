@@ -27,9 +27,8 @@ namespace CS.ScanForTxs
         private static string addr;
         private static int count;
         private static int pageCount = 1;
-        private static float buyPriceLovelace = 5000000;
+        private static readonly float buyPriceLovelace = 5000000;
         private static IncommingTransaction lastTx;
-
 
         public ScanWorker(ILogger<ScanWorker> logger)
         {
@@ -42,12 +41,12 @@ namespace CS.ScanForTxs
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                await Task.Delay(1000, stoppingToken);
+                _logger.LogInformation("ScanWorker running at: {time}", DateTimeOffset.Now);
+                await Scan();
             }
         }
 
-        private async void Scan()
+        private async Task Scan()
         {
             var txs = await GetTransactions();
 
