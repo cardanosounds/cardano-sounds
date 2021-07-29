@@ -34,8 +34,10 @@ namespace CS.MintAndRefund.Services
             meta = meta.Replace("ARWEAVE_AUDIO", tx.Metadata.ArweaveIdSound);
             meta = meta.Replace("SOUND_PROBABILITY", tx.Metadata.Probability.ToString());
             meta = meta.Replace("IPFS_PLAYER_PREVIEW", tx.Metadata.PlayerImage);
-            meta = meta.Replace("PLAYER_NAME", tx.Metadata.Player);
-            meta = meta.Replace("ARWEAVE_WEBSITE", tx.Metadata.ArweaveWebsiteUri.ToString());
+            meta = meta.Replace("PLAYER_NAME", tx.Metadata.Player); 
+            meta = meta.Replace("IPFS_PLAYER_PREVIEW", tx.Metadata.PlayerImage); 
+
+             meta = meta.Replace("ARWEAVE_WEBSITE", tx.Metadata.ArweaveWebsiteUri.ToString());
             meta = meta.Replace("TRANSACTION_HASH", tx.Tx_Hash);
             for (var i = 0; i < tx.Metadata.Sounds.Length; i++)
             {

@@ -9,7 +9,7 @@ namespace CS.Models
     public class IncommingTransaction
     {
         [JsonProperty(PropertyName = "id")]
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         public string Tx_Hash { get; set; }
 

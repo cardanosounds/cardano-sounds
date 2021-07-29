@@ -72,7 +72,22 @@ namespace CS.ScanForTxs
                 //get sender's address
                 var sender = await GetSenderAddress(tx.Tx_Hash);
 
-                tx.Id = lastTx != null ? lastTx.Id : 1;
+                var idIndex = 1;
+                if(lastTx != null)
+                {
+                    bool convertN = int.TryParse(lastTx.Id.Replace("CSNFT", ""), out idIndex);
+                    if(!convertN)
+                    {
+                        _logger.LogWarning("Couldn't parse id from DB, id: " + lastTx.Id);
+                    }
+                }
+                else
+                {
+                    idIndex = 1;
+                }
+
+
+                tx.Id = $"CSNFT{idIndex}";
 
                 tx.SenderAddress = sender;
 
@@ -80,6 +95,8 @@ namespace CS.ScanForTxs
 
                 i++;
             }
+
+            if (txs == null || txs.Count < 1) await Task.Delay(TimeSpan.FromSeconds(10));
         }
 
         private async Task ProcessTransaction(IncommingTransaction tx)
