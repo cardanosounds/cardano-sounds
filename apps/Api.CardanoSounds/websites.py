@@ -21,7 +21,9 @@ class Websites:
 			sketch=f.read().replace('SOUND_ARWEAVE_LINK', "https://arweave.net/" + arweave_sound)
 
 			if player == "superformula":
-				sketch = sketch.replace("SUPERFORMULA_M", str(qrandom.list_picker([0,2,4,6,8,10])))
+				ranNum = str(qrandom.list_picker([0,2,4,6,8,10]))
+				player += f"-{ranNum}"
+				sketch = sketch.replace("SUPERFORMULA_M", ranNum)
 
 			if modeNum in [0,2,4,6]:
 				player += "-dark"
