@@ -7,6 +7,7 @@ from upload import Upload
 from websites import Websites
 from arweavedeploy import ArweaveDeploy
 from db.query import Query
+import jsons
 
 import random
 import string
@@ -43,9 +44,11 @@ def index():
     return "index"
 
 
-@app.route("/sound")
-def generate_sound(tx: Transaction):
+@app.route("/addtxtoqueue", methods=['POST'])
+def generate_sound():
     from app import start_sound_generation
+
+    tx = jsons.load(request.json, Transaction)
     
     q.enqueue_call(
             func=start_sound_generation, args=(tx,), result_ttl=5000
