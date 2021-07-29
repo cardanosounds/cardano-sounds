@@ -6,6 +6,7 @@ using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace CS.DB.Cosmos
 {
@@ -22,6 +23,13 @@ namespace CS.DB.Cosmos
         //Reusable instance of DocumentClient which represents the connection to a DocumentDB endpoint
         private static DocumentClient client;
 
+        private readonly ILogger _logger;
+
+        public Transactions(ILogger logger)
+        {
+            _logger = logger;
+        }
+
         public async Task<HttpStatusCode> Create(IncommingTransaction tx)
         {
             HttpStatusCode statusCode;
@@ -29,15 +37,13 @@ namespace CS.DB.Cosmos
             Database cosmos = new Database();
             await cosmos.Setup();
 
-            //await cosmos.txContainer.CreateItemAsync(tx, new PartitionKey(tx.Status));
-
             try
             {
                 // Read the item to see if it exists
-                ItemResponse<IncommingTransaction> txRes = await cosmos.txContainer.ReadItemAsync<IncommingTransaction>(tx.Id, new PartitionKey(tx.Tx_Hash));
+                ItemResponse<IncommingTransaction> txRes = await cosmos.txContainer.ReadItemAsync<IncommingTransaction>(tx.Id.ToString(), new PartitionKey(tx.Tx_Hash));
                 statusCode = txRes.StatusCode;
 
-                Console.WriteLine("Item in database with id: {0} already exists\n", txRes.Resource.Tx_Hash);
+                _logger.LogWarning("Item in database with id: {0} already exists\n", txRes.Resource.Tx_Hash);
             }
             catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
             {
@@ -48,13 +54,13 @@ namespace CS.DB.Cosmos
                 statusCode = txRes.StatusCode;
 
                 // Note that after creating the item, we can access the body of the item with the Resource property off the ItemResponse. We can also access the RequestCharge property to see the amount of RUs consumed on this request.
-                Console.WriteLine("Created item in database with id: {0} Operation consumed {1} RUs.\n", txRes.Resource.Tx_Hash, txRes.RequestCharge);
+                _logger.LogTrace("Created item in database with id: {0} Operation consumed {1} RUs.\n", txRes.Resource.Tx_Hash, txRes.RequestCharge);
             }
 
             return statusCode;
         }
 
-        public static string GetLastTx()
+        public static IncommingTransaction GetLastTx()
         {
             using (client = new DocumentClient(new Uri(EndpointUri), PrimaryKey))
             {
@@ -63,10 +69,9 @@ namespace CS.DB.Cosmos
                 UriFactory.CreateDocumentCollectionUri(DBName, "transactions"), option)
                 .Where(x => x.Status == "new")
                 .OrderByDescending(x => x.Created)
-                .AsEnumerable().Select(y => y.Id)
                 .FirstOrDefault();
 
-                return tx == null ? "" : tx;
+                return tx;
             }
         }
 

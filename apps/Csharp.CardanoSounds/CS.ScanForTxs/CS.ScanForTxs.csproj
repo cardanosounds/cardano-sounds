@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>dotnet-CS.ScanForTxs-AB5D07B6-C9E3-4BF7-9328-3580D5C7FCCF</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="App.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="5.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CS.DB.Cosmos\CS.DB.Cosmos.csproj" />
+    <ProjectReference Include="..\CS.Models\CS.Models.csproj" />
+  </ItemGroup>
+</Project>
