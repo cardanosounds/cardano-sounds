@@ -2,11 +2,11 @@ import os
 import requests
 import json
 from pprint import pprint
-from arweavedeploy import ArweaveDeploy
+from app.arweavedeploy import ArweaveDeploy
 
 class Upload:
 
-	generated_sounds_folder = "/home/dzcodes/sounds"
+	generated_sounds_folder = "/home/azureuser/sounds"
 	project_id = os.getenv('PROJECT_ID')
 
 

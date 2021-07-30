@@ -1,16 +1,18 @@
 import os
-from models.metadata import Metadata
+from app.models.metadata import Metadata
 import qrandom
 
 class Websites:
-	sounds_folder = "/home/dzcodes/sounds"
-	websites_folder = "/home/dzcodes/websites"
-	base_sounds_folder = "/home/dzcodes/cs-base-sounds/"
-	template_html = "/home/dzcodes/nft-web-templates/index.html"
-	glitch_template_sketch = "/home/dzcodes/nft-web-templates/glitch-sketch.js"
-	color_template_sketch = "/home/dzcodes/nft-web-templates/color-sketch.js"
-	randomdancers_template_sketch = "/home/dzcodes/nft-web-templates/randomdancers-sketch.js"
-	superformula_template_sketch = "/home/dzcodes/nft-web-templates/superformula-sketch.js"
+	sounds_folder = "/home/azureuser/sounds"
+	websites_folder = "/home/azureuser/websites"
+	base_sounds_folder = "/home/azureuser/soundclips/cswaves/"
+	template_html = "/home/azureuser/nft-web-templates/index.html"
+	glitch_template_sketch = "/home/azureuser/nft-web-templates/glitch-sketch.js"
+	color_template_sketch = "/home/azureuser/nft-web-templates/color-sketch.js"
+	randomdancers_template_sketch = "/home/azureuser/nft-web-templates/randomdancers-sketch.js"
+	superformula_template_sketch = "/home/azureuser/nft-web-templates/superformula-sketch.js"
+	dark_image = "ipfs://QmVbxKssNkVXMbws59sHQANrth9KTHRrGgSwXF2GoPEkvX"
+	light_image = "ipfs://QmYXEHY15W7MPxzLjXWQvjEbLEfq8UTm55WNgJo3N4ei8Q"
 
 	def build_sketch(self, arweave_sound: str):		
 		playersketch, player = self.choose_player()
@@ -89,9 +91,11 @@ class Websites:
 			if('-light' in player):
 				htmlfile=htmlfile.replace('BACKGROUND_COLOR', "255,245,245")
 				htmlfile=htmlfile.replace('TEXT_COLOR', "26,32,44")
+				metadata.image = self.light_image
 			else:
 				htmlfile=htmlfile.replace('BACKGROUND_COLOR', "26,32,44")
 				htmlfile=htmlfile.replace('TEXT_COLOR', "255,245,245")
+				metadata.image = self.dark_image
 
 		htmlfilename = os.path.join(webdir, "index.html")
 		with open(htmlfilename, "w") as f:

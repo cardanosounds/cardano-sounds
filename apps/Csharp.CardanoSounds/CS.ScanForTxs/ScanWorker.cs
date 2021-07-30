@@ -50,7 +50,9 @@ namespace CS.ScanForTxs
 
         private async Task Scan()
         {
-            pageCount = (transactions.GetTxCount() / 10) + 1;
+            
+            var totalTxCount = transactions.GetTxCount();
+            pageCount = ( totalTxCount / 10) + 1;
 
             var txs = await GetTransactions();
             

@@ -8,9 +8,9 @@ from arweave.arweave_lib import Wallet, Transaction
 #this class uses Linux specific commands
 class ArweaveDeploy:
 
-	wallet = Wallet("arweave-key-uJCW-t0cfLptFzJbD1dvei6eTsQQ8fAKuGhZmpDvutU.json")
-	sounds_folder = "/home/dzcodes/sounds"
-	websites_folder = "/home/dzcodes/websites"
+	wallet = Wallet("/home/azureuser/arweave-key-uJCW-t0cfLptFzJbD1dvei6eTsQQ8fAKuGhZmpDvutU.json")
+	sounds_folder = "/home/azureuser/sounds"
+	websites_folder = "/home/azureuser/websites"
 
 	#expect also wouldn't work on win
 	deploy_file_script = "expect-ar-deploy-site.sh"

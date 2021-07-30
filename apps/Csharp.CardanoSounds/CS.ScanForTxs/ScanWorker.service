@@ -4,16 +4,16 @@ Description=Long running service/daemon created from .NET worker template
 [Service]
 Type=notify
 # will set the Current Working Directory (CWD). Worker service will have issues without this setting
-WorkingDirectory=~/cardano-sounds/apps/Csharp.CardanoSounds/CS.ScanForTxs
+WorkingDirectory=/home/azureuser/srv/ScanWorker
 # systemd will run this executable to start the service
-ExecStart=~/cardano-sounds/apps/Csharp.CardanoSounds/CS.ScanForTxs/ScanWorker
+ExecStart=/home/azureuser/srv/ScanWorker/CS.ScanForTxs
 # to query logs using journalctl, set a logical name here
 SyslogIdentifier=TxScan
 
 # Use your username to keep things simple.
 # If you pick a different user, make sure dotnet and all permissions are set correctly to run the app
-# To update permissions, use 'chown azureuser -R ~/cardano-sounds/apps/Csharp.CardanoSounds/CS.ScanForTxs/ScanWorker' to take ownership of the folder and files,
-#       Use 'chmod +x ~/cardano-sounds/apps/Csharp.CardanoSounds/CS.ScanForTxs/ScanWorker' to allow execution of the executable file
+# To update permissions, use 'chown azureuser -R /home/azureuser/srv/ScanWorker/CS.ScanForTxs' to take ownership of the folder and files,
+#       Use 'chmod +x /home/azureuser/srv/ScanWorker/CS.ScanForTxs' to allow execution of the executable file
 User=azureuser
 
 # ensure the service restarts after crashing
@@ -23,7 +23,7 @@ RestartSec=5
 
 # This environment variable is necessary when dotnet isn't loaded for the specified user.
 # To figure out this value, run 'env | grep DOTNET_ROOT' when dotnet has been loaded into your shell.
-#Environment=DOTNET_ROOT=/opt/rh/rh-dotnet31/root/usr/lib64/dotnet  
+Environment=DOTNET_ROOT=/opt/rh/rh-dotnet31/root/usr/lib64/dotnet  
 
 [Install]
 WantedBy=multi-user.target

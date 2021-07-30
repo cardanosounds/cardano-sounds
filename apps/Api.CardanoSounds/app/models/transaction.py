@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from metadata import Metadata
+from app.models.metadata import Metadata
 
 @dataclass
 class Transaction:

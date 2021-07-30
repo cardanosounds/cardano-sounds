@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from typing import List
-from models.soundprobability import SoundProbability
+from app.models.soundprobability import SoundProbability
 
 @dataclass
 class Metadata:
@@ -13,4 +13,5 @@ class Metadata:
     ipfs_id_sound: str = ""
     arweave_website_uri: str = ""
     player: str = ""
+    image: str = ""
     

@@ -2,15 +2,15 @@ import os
 import glob
 import pickle
 import qrandom
-from mixsound import MixSound
-from models.soundprobability import SoundProbability
-from models.metadata import Metadata
-from models.transaction import Transaction
+from app.mixsound import MixSound
+from app.models.soundprobability import SoundProbability
+from app.models.metadata import Metadata
+from app.models.transaction import Transaction
 
 class Sounds:
 
 	enrich_probab_file = "enriching-sound-probability.data"
-	base_sounds_folder = "/home/dzcodes/cs-base-sounds"
+	base_sounds_folder = "/home/azureuser/soundclips/cswaves"
 	common_color = "#22543D" #green
 	mid_rare_color = "#2A4365" #blue
 	rare_color = "#000" #basic black
@@ -71,9 +71,11 @@ class Sounds:
 			sp = SoundProbability(probability=prob, filename=fp, category=category)
 			sps.append(sp)
 			i += 0.94	
-			fw = open(self.enrich_probab_file, 'wb')
+			
+		fw = open(self.enrich_probab_file, 'wb')
 
 		pickle.dump(sps, fw)
+		print(sps)
 		fw.close()
 
 
@@ -119,10 +121,11 @@ class Sounds:
 		return Metadata(tx.tx_hash, "CSNFT" + str(tx.id), total_probability, rarity, [enrich, melody, drums, bass, signature])
 
 
-
 	def get_sound(self, folder_path, category):
 		filePaths = glob.glob(folder_path + "*")
 		melodies_count = len(filePaths)
 		random_num = qrandom.randint(1, melodies_count)
 		return SoundProbability(probability=round(1/melodies_count, 5), filename=filePaths[random_num - 1], category=category)
 
+sounds = Sounds()
+sounds.calc_enrich_sounds_probabilities()

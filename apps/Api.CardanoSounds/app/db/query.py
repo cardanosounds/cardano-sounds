@@ -1,11 +1,11 @@
 import json
 from azure.cosmos import CosmosClient, PartitionKey, exceptions
-from db.base import Base
+from app.db.base import Base
 import jsonpickle
 
-from models.metadata import Metadata
-from models.transaction import Transaction
-from models.soundprobability import SoundProbability
+from app.models.metadata import Metadata
+from app.models.transaction import Transaction
+from app.models.soundprobability import SoundProbability
 
 class Query:
 	base = Base()

@@ -1,6 +1,6 @@
 import os
 from pydub import AudioSegment
-from models.soundprobability import SoundProbability
+from app.models.soundprobability import SoundProbability
 
 class MixSound:
 	#1 enriching sounds
