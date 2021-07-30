@@ -29,12 +29,14 @@ namespace CS.ScanForTxs
         private static int pageCount = 1;
         private static readonly float buyPriceLovelace = 5000000;
         private static IncommingTransaction lastTx;
+        private readonly Transactions transactions;
 
         public ScanWorker(ILogger<ScanWorker> logger)
         {
             _logger = logger;
             LoadConfig();
             Authenticate();
+            transactions = new Transactions(_logger);
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -48,13 +50,27 @@ namespace CS.ScanForTxs
 
         private async Task Scan()
         {
-            var txs = await GetTransactions();
+            pageCount = (transactions.GetTxCount() / 10) + 1;
 
-            lastTx = Transactions.GetLastTx();
+            var txs = await GetTransactions();
+            
+            lastTx = transactions.GetLastTx();            
             var lastTxHash = lastTx?.Tx_Hash;
+
+            //NFT index
+            var i = 1;
+            if(lastTx != null)
+            {
+                bool convertN = int.TryParse(lastTx.Id.Replace("CSNFT", ""), out i);
+                if(!convertN)
+                {
+                    _logger.LogWarning("Couldn't parse id from DB, id: " + lastTx.Id);
+                }
+                i += 1;
+            }
+
             if (lastTx != null && txs.Select(t => t.Tx_Hash).Contains(lastTxHash))
             {
-                var count = txs.Count;
                 var index = txs.Select(t => t.Tx_Hash).ToList().IndexOf(lastTxHash);
                 if (index + 1 == count)
                 {
@@ -66,28 +82,12 @@ namespace CS.ScanForTxs
                     txs.RemoveRange(0, index + 1);
                 }
             }
-            var i = 1;
             foreach (var tx in txs)
             {
                 //get sender's address
                 var sender = await GetSenderAddress(tx.Tx_Hash);
 
-                var idIndex = 1;
-                if(lastTx != null)
-                {
-                    bool convertN = int.TryParse(lastTx.Id.Replace("CSNFT", ""), out idIndex);
-                    if(!convertN)
-                    {
-                        _logger.LogWarning("Couldn't parse id from DB, id: " + lastTx.Id);
-                    }
-                }
-                else
-                {
-                    idIndex = 1;
-                }
-
-
-                tx.Id = $"CSNFT{idIndex}";
+                tx.Id = $"CSNFT{i}";
 
                 tx.SenderAddress = sender;
 
@@ -96,7 +96,11 @@ namespace CS.ScanForTxs
                 i++;
             }
 
-            if (txs == null || txs.Count < 1) await Task.Delay(TimeSpan.FromSeconds(10));
+            if (txs == null || txs.Count < 1) 
+            {
+                await Task.Delay(TimeSpan.FromSeconds(10));
+            }
+            pageCount = 1;
         }
 
         private async Task ProcessTransaction(IncommingTransaction tx)
@@ -111,15 +115,15 @@ namespace CS.ScanForTxs
                 var content = new StringContent(tx.ToString(), Encoding.UTF8, "application/json");
 
                 //add tx queue for generating sounds & websites (metadata)
-                var result = await queueClient.PostAsync(queueApiUrl + "/addtxtoqueue", content);
-                if(result.StatusCode == System.Net.HttpStatusCode.OK)
-                {
-                    _logger.LogInformation($"added tx {tx.Tx_Hash} to queue");
-                }
-                else
-                {
-                    _logger.LogError($"failed submitting tx {tx.Tx_Hash} to queue");
-                }
+                //var result = await queueClient.PostAsync(queueApiUrl + "/addtxtoqueue", content);
+                ////if(result.StatusCode == System.Net.HttpStatusCode.OK)
+                //{
+                //    _logger.LogInformation($"added tx {tx.Tx_Hash} to queue");
+                //}
+                //else
+                //{
+                //    _logger.LogError($"failed submitting tx {tx.Tx_Hash} to queue");
+                //}
             }
             else
             {
@@ -138,7 +142,7 @@ namespace CS.ScanForTxs
             }
             var amount = tx.Amount.First();
 
-            if (amount.Unit != "lovelace" && amount.Quantity != buyPriceLovelace) return false;
+            if (amount.Unit != "lovelace" || amount.Quantity != buyPriceLovelace) return false;
 
             return true;
         }
@@ -149,7 +153,7 @@ namespace CS.ScanForTxs
 
             //create request url and log
             var reqUrl = blockfrostApiUrl + "addresses/" + addr + "/utxos?" + "count=" + count + "&page=" + pageCount + "&order=asc";
-            _logger.LogTrace("Sending request to:" + Environment.NewLine + reqUrl);
+            _logger.LogInformation("Sending request to:" + Environment.NewLine + reqUrl);
 
             try
             {

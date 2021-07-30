@@ -60,18 +60,52 @@ namespace CS.DB.Cosmos
             return statusCode;
         }
 
-        public static IncommingTransaction GetLastTx()
+        public IncommingTransaction GetLastTx()
         {
-            using (client = new DocumentClient(new Uri(EndpointUri), PrimaryKey))
+            try 
             {
-                var option = new FeedOptions { EnableCrossPartitionQuery = true };
-                var tx = client.CreateDocumentQuery<IncommingTransaction>(
-                UriFactory.CreateDocumentCollectionUri(DBName, "transactions"), option)
-                .Where(x => x.Status == "new")
-                .OrderByDescending(x => x.Created)
-                .FirstOrDefault();
+                using (client = new DocumentClient(new Uri(EndpointUri), PrimaryKey))
+                {
+                    var option = new FeedOptions { EnableCrossPartitionQuery = true };
+                    var tx = client.CreateDocumentQuery<IncommingTransaction>(
+                    UriFactory.CreateDocumentCollectionUri(DBName, "transactions"), option)
+                    .Where(x => x.Status == "confirmed")
+                    .OrderByDescending(x => x.Created)
+                    .AsEnumerable()
+                    .FirstOrDefault();
 
-                return tx;
+                    return tx;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return null;
+            }
+        }
+
+        public int GetTxCount()
+        {
+            try 
+            {
+
+                using (client = new DocumentClient(new Uri(EndpointUri), PrimaryKey))
+                {
+                    var option = new FeedOptions { EnableCrossPartitionQuery = true };
+                    var txCount = client.CreateDocumentQuery<IncommingTransaction>(
+                    UriFactory.CreateDocumentCollectionUri(DBName, "transactions"), option)
+                    .Where(x => x.Status == "confirmed")
+                    .OrderByDescending(x => x.Created)
+                    .AsEnumerable()
+                    .Count();
+
+                    return txCount;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return 0;
             }
         }
 
