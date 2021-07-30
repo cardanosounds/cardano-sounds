@@ -25,12 +25,13 @@ class Websites:
 				player += f"-{ranNum}"
 				sketch = sketch.replace("SUPERFORMULA_M", ranNum)
 
-			if modeNum in [0,2,4,6]:
+			if modeNum % 2 == 0: 
+			#[0,2,4,6]:
 				player += "-dark"
 				sketch = sketch.replace("RGB_BACKGROUND_COLOR", "26,32,44")
 				sketch = sketch.replace("RGB_FILL_COLOR", "255,245,245")
 			else: 
-				#[7,1,3,5]
+			#[7,1,3,5]
 				player += "-light"
 				sketch = sketch.replace("RGB_BACKGROUND_COLOR", "255,245,245")
 				sketch = sketch.replace("RGB_FILL_COLOR", "26,32,44")
@@ -62,7 +63,7 @@ class Websites:
 
 		return playersketch, player
 
-	        
+
 	def create_nft_website(self, metadata: Metadata):
 		webdir = os.path.join(self.websites_folder, metadata.id)
 		soundsstring = ""
@@ -77,18 +78,24 @@ class Websites:
 		if not os.path.exists(webdir):
 			os.makedirs(webdir)
 
+		sketch, player = self.build_sketch(metadata.arweave_id_sound)
+
 		with open(self.template_html) as f:
 			htmlfile=f.read().replace('RARITY_COLOR', metadata.rarity)
 			htmlfile=htmlfile.replace('TOKEN_NAME', metadata.token_name)
-			htmlfile=htmlfile.replace('SOUND_PROBABILITY', str(metadata.probabilty))
+			htmlfile=htmlfile.replace('SOUND_PROBABILITY', str(metadata.probability))
 			htmlfile=htmlfile.replace('USED_SOUNDS', soundsstring)
 			htmlfile=htmlfile.replace('BUYING_TX', metadata.id)
+			if('-light' in player):
+				htmlfile=htmlfile.replace('BACKGROUND_COLOR', "255,245,245")
+				htmlfile=htmlfile.replace('TEXT_COLOR', "26,32,44")
+			else:
+				htmlfile=htmlfile.replace('BACKGROUND_COLOR', "26,32,44")
+				htmlfile=htmlfile.replace('TEXT_COLOR', "255,245,245")
 
 		htmlfilename = os.path.join(webdir, "index.html")
 		with open(htmlfilename, "w") as f:
 			f.write(htmlfile)
-		
-		sketch, player = self.build_sketch(metadata.arweave_id_sound)
 
 		metadata.player = player
 
