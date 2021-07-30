@@ -116,7 +116,7 @@ class Sounds:
 			signature
 		)
 
-		return Metadata(tx.tx_hash, "CSDEVNFT" + str(tx.id), total_probability, rarity, [enrich, melody, drums, bass, signature])
+		return Metadata(tx.tx_hash, "CSNFT" + str(tx.id), total_probability, rarity, [enrich, melody, drums, bass, signature])
 
 
 
