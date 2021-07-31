@@ -4,7 +4,7 @@ let t = 0
 function preload() {
 	
 	fa = loadFont('https://arweave.net/2sAqaLM2Dx4kl-4cDfjym2DOylAKi1F7vi-Gy1ndw9U');
-	song = loadSound('https://arweave.net/UWc0alxktDF6x_lZi_Maqe4ruy3x9StebFIaADhtmMY')
+	song = loadSound('SOUND_ARWEAVE_LINK')
 	
 }
 
