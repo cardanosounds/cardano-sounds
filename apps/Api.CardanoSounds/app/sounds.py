@@ -1,7 +1,7 @@
 import os
 import glob
 import pickle
-import qrandom
+import quantumrandom
 from app.mixsound import MixSound
 from app.models.soundprobability import SoundProbability
 from app.models.metadata import Metadata
@@ -17,7 +17,7 @@ class Sounds:
 
 	def get_enrich_sound(self):
 		sps = self.enrich_sounds_probabilities()
-		num = qrandom.randint(0, 100000)
+		num = quantumrandom.randint(0, 100000)
 		probrange = 0
 		previous_sound: SoundProbability = sps[0]
 		for sp in sps:
@@ -124,6 +124,6 @@ class Sounds:
 	def get_sound(self, folder_path, category):
 		filePaths = glob.glob(folder_path + "*")
 		melodies_count = len(filePaths)
-		random_num = qrandom.randint(1, melodies_count)
-		return SoundProbability(probability=round(1/melodies_count, 5), filename=filePaths[random_num - 1], category=category)
+		random_num = quantumrandom.randint(1, melodies_count)
+		return SoundProbability(probability=round(1/melodies_count, 5), filename=filePaths[int(random_num - 1)], category=category)
 

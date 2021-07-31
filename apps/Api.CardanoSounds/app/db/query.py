@@ -40,7 +40,7 @@ class Query:
 		# Query a document
 		read_item = container.read_item(item=tx.id, partition_key=tx.Tx_Hash)
 
-		read_item.metadata = tx.metadata
+		read_item['metadata'] = tx.metadata.toJSON()
 		return container.replace_item(item=read_item, body=read_item)
 
 		

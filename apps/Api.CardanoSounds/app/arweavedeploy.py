@@ -32,7 +32,7 @@ class ArweaveDeploy:
 		#make deploy script executable 
 		command = ["chmod", "u+x", os.path.join(self.websites_folder, "webdeploy-" + Tx_Hash + ".sh")]
 		subprocess.run(command)
-		outputlines = subprocess.Popen(os.path.join(self.websites_folder, "./webdeploy-" + Tx_Hash + ".sh"), shell=True, stdout=subprocess.PIPE).stdout.readlines()
+		outputlines = subprocess.Popen(os.path.join(self.websites_folder, "webdeploy-" + Tx_Hash + ".sh"), shell=True, stdout=subprocess.PIPE).stdout.readlines()
 		line_n = len(outputlines)
 		return outputlines[line_n - 4].decode().replace("b\'\\x1b[96m\'", "").replace("\\x1b[39m\\r\\n\'", "")
 	

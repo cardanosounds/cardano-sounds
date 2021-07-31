@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import List
 from app.models.metadata import Metadata
 from app.models.tokenvalue import TokenValue
+import json
 
 
 @dataclass
@@ -15,3 +16,7 @@ class Transaction:
     status: str
     Created: datetime
     metadata: Metadata = None 
+
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__, 
+            sort_keys=True, indent=4)

@@ -1,6 +1,6 @@
 import os
 from app.models.metadata import Metadata
-import qrandom
+import quantumrandom
 
 class Websites:
 	sounds_folder = "/home/azureuser/sounds"
@@ -17,13 +17,13 @@ class Websites:
 	def build_sketch(self, arweave_sound: str):		
 		playersketch, player = self.choose_player()
 
-		modeNum = qrandom.randint(0,7)
+		modeNum = quantumrandom.randint(0,7)
 
 		with open(playersketch) as f:
 			sketch=f.read().replace('SOUND_ARWEAVE_LINK', "https://arweave.net/" + arweave_sound)
 
 			if player == "superformula":
-				ranNum = str(qrandom.list_picker([0,2,4,6,8,10]))
+				ranNum = str(quantumrandom.randint(0,5) * 2)
 				player += f"-{ranNum}"
 				sketch = sketch.replace("SUPERFORMULA_M", ranNum)
 
@@ -46,7 +46,7 @@ class Websites:
 		randomdancers_nums = [2,6,11,14]
 		#superformula_nums = [3,7,8,12]
 
-		num = qrandom.randint(0,14)
+		num = quantumrandom.randint(0,14)
 
 		if num in glitch_nums:
 			playersketch = self.glitch_template_sketch

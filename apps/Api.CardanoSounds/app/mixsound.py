@@ -2,13 +2,15 @@ import os
 from pydub import AudioSegment
 from app.models.soundprobability import SoundProbability
 
+AudioSegment.ffmpeg = "/usr/bin/ffmpeg"
+
 class MixSound:
 	#1 enriching sounds
 	#2 melody
 	#3 bass
 	#4 drums
 	#5 signature
-	output_folder = "/home/dzcodes/sounds"
+	output_folder = "/home/azureuser/sounds"
 
 	def mix_sound(self, Tx_Hash, enriching: SoundProbability, melody: SoundProbability, drums: SoundProbability, bass: SoundProbability, signature: SoundProbability):
 		sound1 = AudioSegment.from_file(enriching.filename, format="flac")
@@ -23,5 +25,5 @@ class MixSound:
 		output = output.overlay(sound4)
 		output = output.overlay(sound5)
 		out_file = os.path.join(self.output_folder, Tx_Hash + ".mp3")
-		print(out_file)
+		
 		output.export(out_file, format="mp3")
