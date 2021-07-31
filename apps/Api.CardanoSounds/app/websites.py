@@ -17,13 +17,13 @@ class Websites:
 	def build_sketch(self, arweave_sound: str):		
 		playersketch, player = self.choose_player()
 
-		modeNum = quantumrandom.randint(0,7)
+		modeNum = int(round(quantumrandom.randint(0,7)))
 
 		with open(playersketch) as f:
 			sketch=f.read().replace('SOUND_ARWEAVE_LINK', "https://arweave.net/" + arweave_sound)
 
 			if player == "superformula":
-				ranNum = str(quantumrandom.randint(0,5) * 2)
+				ranNum = str(int(round(quantumrandom.randint(0,5))) * 2)
 				player += f"-{ranNum}"
 				sketch = sketch.replace("SUPERFORMULA_M", ranNum)
 
@@ -46,7 +46,7 @@ class Websites:
 		randomdancers_nums = [2,6,11,14]
 		#superformula_nums = [3,7,8,12]
 
-		num = quantumrandom.randint(0,14)
+		num = int(round(quantumrandom.randint(0,14)))
 
 		if num in glitch_nums:
 			playersketch = self.glitch_template_sketch
@@ -88,6 +88,7 @@ class Websites:
 			htmlfile=htmlfile.replace('SOUND_PROBABILITY', str(metadata.probability))
 			htmlfile=htmlfile.replace('USED_SOUNDS', soundsstring)
 			htmlfile=htmlfile.replace('BUYING_TX', metadata.id)
+			htmlfile=htmlfile.replace('PLAYER', player)
 			if('-light' in player):
 				htmlfile=htmlfile.replace('BACKGROUND_COLOR', "255,245,245")
 				htmlfile=htmlfile.replace('TEXT_COLOR', "26,32,44")

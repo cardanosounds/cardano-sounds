@@ -17,7 +17,7 @@ class Sounds:
 
 	def get_enrich_sound(self):
 		sps = self.enrich_sounds_probabilities()
-		num = quantumrandom.randint(0, 100000)
+		num = int(round(quantumrandom.randint(0, 100000)))
 		probrange = 0
 		previous_sound: SoundProbability = sps[0]
 		for sp in sps:
@@ -124,6 +124,6 @@ class Sounds:
 	def get_sound(self, folder_path, category):
 		filePaths = glob.glob(folder_path + "*")
 		melodies_count = len(filePaths)
-		random_num = quantumrandom.randint(1, melodies_count)
+		random_num = int(round(quantumrandom.randint(1, melodies_count)))
 		return SoundProbability(probability=round(1/melodies_count, 5), filename=filePaths[int(random_num - 1)], category=category)
 
