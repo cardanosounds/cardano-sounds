@@ -22,15 +22,19 @@ namespace CS.MintAndRefund.Services
         private readonly CLI _cli;
         private readonly ILogger<Mint> _logger;
 
+        private readonly CS.DB.Cosmos.Transactions _dbTransactions; 
+
         public Mint(ILogger<Mint> logger)
         {
             _cli = new CLI(_network, _cardano_cli_location, _working_directory, new CliLogger(logger));
+            _dbTransactions = new CS.DB.Cosmos.Transactions(logger);
             _logger = logger;
         }
 
         public async Task MintFromDbTransaction()
         {
-            var tx = DB.Cosmos.Transactions.GetReadyToMintTransaction();
+            var tx = _dbTransactions.GetReadyToMintTransaction();
+
 
             if (tx == null)
             {

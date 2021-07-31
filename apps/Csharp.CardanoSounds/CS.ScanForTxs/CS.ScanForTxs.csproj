@@ -6,11 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="App.config" />
+    <Content Remove="ScanForTxs.config" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="ScanForTxs.config" />
   </ItemGroup>
 
   <ItemGroup>

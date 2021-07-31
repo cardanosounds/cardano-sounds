@@ -4,16 +4,16 @@ Description=Long running service/daemon created from .NET worker template
 [Service]
 Type=notify
 # will set the Current Working Directory (CWD). Worker service will have issues without this setting
-WorkingDirectory=/home/azureuser/srv/MintWorker
+WorkingDirectory=/home/azureuser/srv/MintAndRefundWorker
 # systemd will run this executable to start the service
-ExecStart=/home/azureuser/srv/MintWorker/CS.MintAndRefund
+ExecStart=/home/azureuser/srv/MintAndRefundWorker/CS.MintAndRefund
 # to query logs using journalctl, set a logical name here
-SyslogIdentifier=TxScan
+SyslogIdentifier=MintAndRefund
 
 # Use your username to keep things simple.
 # If you pick a different user, make sure dotnet and all permissions are set correctly to run the app
-# To update permissions, use 'chown azureuser -R /home/azureuser/srv/MintWorker/CS.MintAndRefund' to take ownership of the folder and files,
-#       Use 'chmod +x /home/azureuser/srv/MintWorker/CS.MintAndRefund' to allow execution of the executable file
+# To update permissions, use 'chown azureuser -R /home/azureuser/srv/MintAndRefundWorker/CS.MintAndRefund' to take ownership of the folder and files,
+#       Use 'chmod +x /home/azureuser/srv/MintAndRefundWorker/CS.MintAndRefund' to allow execution of the executable file
 User=azureuser
 
 # ensure the service restarts after crashing

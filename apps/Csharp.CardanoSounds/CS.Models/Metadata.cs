@@ -36,7 +36,7 @@ namespace CS.Models
 		public string IpfsIdSound { get; set; }
 
 		[JsonProperty("arweave_website_uri")]
-		public Uri ArweaveWebsiteUri { get; set; }
+		public string ArweaveWebsiteUri { get; set; }
 	}
 
 	public partial class Sound
