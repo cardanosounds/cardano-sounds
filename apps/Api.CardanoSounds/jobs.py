@@ -20,9 +20,7 @@ def start_sound_generation(tx: Transaction):
     websites = Websites()
     metadata = websites.create_nft_website(metadata)
     deploy = ArweaveDeploy()
-    #print(
-    deploy.deploy_website(tx.Tx_Hash)
-    #)
+    metadata.arweave_website_uri = deploy.deploy_website(tx.Tx_Hash)
     query = Query()
     tx.metadata = metadata
     query.update_transaction(tx)

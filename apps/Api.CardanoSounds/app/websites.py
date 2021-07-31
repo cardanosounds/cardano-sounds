@@ -11,8 +11,8 @@ class Websites:
 	color_template_sketch = "/home/azureuser/nft-web-templates/color-sketch.js"
 	randomdancers_template_sketch = "/home/azureuser/nft-web-templates/randomdancers-sketch.js"
 	superformula_template_sketch = "/home/azureuser/nft-web-templates/superformula-sketch.js"
-	dark_image = "ipfs://QmVbxKssNkVXMbws59sHQANrth9KTHRrGgSwXF2GoPEkvX"
-	light_image = "ipfs://QmYXEHY15W7MPxzLjXWQvjEbLEfq8UTm55WNgJo3N4ei8Q"
+	dark_image = "ipfs://QmXcuQJNP5Sz4bc8nRVvGdG6t3k3X6K4uHRvuatXocjbLJ"
+	light_image = "ipfs://QmSBH3pZiRMQF5b2jQCXYFK8hg45mjT71uWTMe5LFScYXm"
 
 	def build_sketch(self, arweave_sound: str):		
 		playersketch, player = self.choose_player()

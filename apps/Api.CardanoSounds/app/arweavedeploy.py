@@ -34,7 +34,7 @@ class ArweaveDeploy:
 		subprocess.run(command)
 		outputlines = subprocess.Popen(os.path.join(self.websites_folder, "webdeploy-" + Tx_Hash + ".sh"), shell=True, stdout=subprocess.PIPE).stdout.readlines()
 		line_n = len(outputlines)
-		return outputlines[line_n - 4].decode().replace("b\'\\x1b[96m\'", "").replace("\\x1b[39m\\r\\n\'", "")
+		return outputlines[line_n - 4].decode().replace("\\u001b[96m", "").replace("\\u001b[39m\\r\\n", "")
 	
 
 	def upload_sound_file(self, Tx_Hash):
