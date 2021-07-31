@@ -1,7 +1,9 @@
-﻿namespace CS.MintAndRefund.Interfaces
+﻿using System.Threading.Tasks;
+
+namespace CS.MintAndRefund.Interfaces
 {
     public interface IMint
     {
-        public void MintFromDbTransaction();
+        public Task MintFromDbTransaction();
     }
 }

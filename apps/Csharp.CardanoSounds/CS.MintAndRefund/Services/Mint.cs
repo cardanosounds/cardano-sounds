@@ -17,16 +17,27 @@ namespace CS.MintAndRefund.Services
         public readonly string _network = ConfigurationManager.AppSettings["CLI_NETWORK"];//"--testnet-magic 1097911063"; //--mainnet
         public readonly string _cardano_cli_location = ConfigurationManager.AppSettings["CLI_PATH"];//$"/home/azureuser/cardano-node-1.27.0/cardano-cli"; //.exe for windows
         public readonly string _working_directory = ConfigurationManager.AppSettings["CLI_WORKING_DIR"];//"/home/azureuser/cardano-node-1.27.0";
-        private readonly CLI cli;
+        public readonly string _signing_key = ConfigurationManager.AppSettings["CLI_SIGNING_KEY"];
+        public readonly string _verif_key = ConfigurationManager.AppSettings["CLI_VERIFICATION_KEY"];
+        private readonly CLI _cli;
+        private readonly ILogger<Mint> _logger;
 
         public Mint(ILogger<Mint> logger)
         {
-            cli = new CLI(_network, _cardano_cli_location, _working_directory, new CliLogger(logger));
+            _cli = new CLI(_network, _cardano_cli_location, _working_directory, new CliLogger(logger));
+            _logger = logger;
         }
 
-        public void MintFromDbTransaction()
+        public async Task MintFromDbTransaction()
         {
             var tx = DB.Cosmos.Transactions.GetReadyToMintTransaction();
+
+            if (tx == null)
+            {
+                _logger.LogTrace("No records to mint, waiting 5 sec");
+                await Task.Delay(TimeSpan.FromSeconds(5));               
+                return;
+            }
 
             var meta = File.ReadAllText(Path.Combine(_working_directory, "metadatatemplate.json"));
             meta = meta.Replace("NFT_NAME", tx.Metadata.TokenName);
@@ -34,10 +45,11 @@ namespace CS.MintAndRefund.Services
             meta = meta.Replace("ARWEAVE_AUDIO", tx.Metadata.ArweaveIdSound);
             meta = meta.Replace("SOUND_PROBABILITY", tx.Metadata.Probability.ToString());
             meta = meta.Replace("IPFS_PLAYER_PREVIEW", tx.Metadata.PlayerImage);
-            meta = meta.Replace("PLAYER_NAME", tx.Metadata.Player); 
+            meta = meta.Replace("PLAYER_NAME", tx.Metadata.Player);
+            meta = meta.Replace("RARITY_COLOR", tx.Metadata.Rarity);
             meta = meta.Replace("IPFS_PLAYER_PREVIEW", tx.Metadata.PlayerImage); 
 
-             meta = meta.Replace("ARWEAVE_WEBSITE", tx.Metadata.ArweaveWebsiteUri.ToString());
+            meta = meta.Replace("ARWEAVE_WEBSITE", tx.Metadata.ArweaveWebsiteUri.ToString());
             meta = meta.Replace("TRANSACTION_HASH", tx.Tx_Hash);
             for (var i = 0; i < tx.Metadata.Sounds.Length; i++)
             {
@@ -50,28 +62,19 @@ namespace CS.MintAndRefund.Services
 
             TransactionParams txParams = CreateTransactionParameters(tx);
 
-            Assets assets = new Assets(cli);
+            Assets assets = new Assets(_cli);
 
-            Console.Write(assets.MintNativeTokens(
-                new List<PolicyParams>(){ 
-                    new PolicyParams
-                    {
-                        PolicyName = "nftpolicy",
-                        TimeLimited = true,
-                        ValidForMinutes = 120,
-                        SigningKeyFile = "signing-key-2",
-                        VerificationKeyFile = "verification-key-2"
-                    }
-                }, 
+            _logger.LogInformation(assets.MintNativeTokens(
+                new List<PolicyParams>(), 
                 mintParams, 
                 txParams
                 )
             );
         }
 
-        private static TransactionParams CreateTransactionParameters(Models.FullTransaction tx) => new TransactionParams()
+        private TransactionParams CreateTransactionParameters(Models.FullTransaction tx) => new TransactionParams()
         {
-            TxFileName = $"testmintfromtx",
+            TxFileName = $"{tx.Tx_Hash}.mint",
             TransactionInputs = new List<TxIn>
                 {
                     new TxIn
@@ -107,7 +110,7 @@ namespace CS.MintAndRefund.Services
                 },
             MetadataFileName = $"metadata_{tx.Metadata.TokenName}.json",
             SendAllTxsUnspentOutput = true,
-            SigningKeyFile = "signing-key-2"
+            SigningKeyFile = _signing_key
         };
 
         private static MintParams CreateMintParamaters(Models.FullTransaction tx) => new MintParams
@@ -131,15 +134,15 @@ namespace CS.MintAndRefund.Services
 
         private void CreateNFTPolicy()
         {
-            Policies policies = new Policies(cli);
+            Policies policies = new Policies(_cli);
 
             policies.Create(new PolicyParams
             {
                 PolicyName = "nftpolicy",
                 TimeLimited = true,
                 ValidForMinutes = 120,
-                SigningKeyFile = "signing-key-2",
-                VerificationKeyFile = "verification-key-2"
+                SigningKeyFile = _signing_key,
+                VerificationKeyFile = _verif_key
             });
         }
     }

@@ -17,14 +17,14 @@ namespace CS.Models
 		[JsonProperty("player")]
 		public string Player { get; set; }
 
-		[JsonProperty("player_image")]
+		[JsonProperty("image")]
 		public string PlayerImage { get; set; }
 
-		[JsonProperty("probabilty")]
+		[JsonProperty("probability")]
 		public long Probability { get; set; }
 
 		[JsonProperty("rarity")]
-		public long Rarity { get; set; }
+		public string Rarity { get; set; }
 
 		[JsonProperty("sounds")]
 		public Sound[] Sounds { get; set; }

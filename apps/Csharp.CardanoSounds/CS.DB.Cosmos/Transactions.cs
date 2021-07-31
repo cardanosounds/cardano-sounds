@@ -92,7 +92,6 @@ namespace CS.DB.Cosmos
                     var option = new FeedOptions { EnableCrossPartitionQuery = true };
                     var txCount = client.CreateDocumentQuery<IncommingTransaction>(
                     UriFactory.CreateDocumentCollectionUri(DBName, "transactions"), option)
-                    .OrderByDescending(x => x.Created)
                     .AsEnumerable()
                     .Count();
 
@@ -114,6 +113,22 @@ namespace CS.DB.Cosmos
                 var tx = client.CreateDocumentQuery<FullTransaction>(
                 UriFactory.CreateDocumentCollectionUri(DBName, "transactions"), option)
                 .Where(x => x.Status == "generated")
+                .OrderBy(x => x.Created)
+                .AsEnumerable()
+                .FirstOrDefault();
+
+                return tx;
+            }
+        }
+
+        public static FullTransaction GetInvalidTransaction()
+        {
+            using (client = new DocumentClient(new Uri(EndpointUri), PrimaryKey))
+            {
+                var option = new FeedOptions { EnableCrossPartitionQuery = true };
+                var tx = client.CreateDocumentQuery<FullTransaction>(
+                UriFactory.CreateDocumentCollectionUri(DBName, "transactions"), option)
+                .Where(x => x.Status == "invalid")
                 .OrderBy(x => x.Created)
                 .AsEnumerable()
                 .FirstOrDefault();
