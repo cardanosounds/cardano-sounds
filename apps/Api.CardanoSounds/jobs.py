@@ -15,13 +15,14 @@ def start_sound_generation(tx: Transaction):
     sounds = Sounds()
     metadata = sounds.get_random_track(tx)
     upload = Upload()
-    metadata.ipfs_id_sound = upload.upload_to_ipfs(tx.tx_hash)
-    metadata.arweave_id_sound = upload.upload_to_arweave(tx.tx_hash)
+    metadata.ipfs_id_sound = upload.upload_to_ipfs(tx.Tx_Hash)
+    metadata.arweave_id_sound = upload.upload_to_arweave(tx.Tx_Hash)
     websites = Websites()
     metadata = websites.create_nft_website(metadata)
     deploy = ArweaveDeploy()
     #print(
-    deploy.deploy_website(tx.tx_hash)
+    deploy.deploy_website(tx.Tx_Hash)
     #)
     query = Query()
-    query.insert_metadata(metadata)
+    tx.metadata = metadata
+    query.update_transaction(tx)

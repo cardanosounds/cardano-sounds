@@ -1,3 +1,4 @@
+import sys
 from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
 from rq import Queue
 from rq.job import Job
@@ -32,12 +33,23 @@ def index():
 @app.route("/addtxtoqueue", methods=['POST'])
 def generate_sound():
     from jobs import start_sound_generation
-
-    tx = jsons.load(request.json, Transaction)
-    
-    q.enqueue_call(
-            func=start_sound_generation, args=(tx,), result_ttl=5000
-        )
+    try:                
+#         get request json object
+        request_json = request.get_json()      
+#         convert to response json object 
+        response = jsonify(request_json)
+        tx = jsons.load(request_json, Transaction)
+        
+        q.enqueue_call(
+                func=start_sound_generation, args=(tx,), result_ttl=5000
+            )
+        response.status_code = 200  
+    except:
+        exception_message = sys.exc_info()[1]
+        response = json.dumps({"content":exception_message})
+        response.status_code = 400
+    return(response)
+    #print(request.json)
 
 
 if __name__ == "__main__":

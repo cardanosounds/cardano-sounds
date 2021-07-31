@@ -10,7 +10,7 @@ class MixSound:
 	#5 signature
 	output_folder = "/home/dzcodes/sounds"
 
-	def mix_sound(self, tx_hash, enriching: SoundProbability, melody: SoundProbability, drums: SoundProbability, bass: SoundProbability, signature: SoundProbability):
+	def mix_sound(self, Tx_Hash, enriching: SoundProbability, melody: SoundProbability, drums: SoundProbability, bass: SoundProbability, signature: SoundProbability):
 		sound1 = AudioSegment.from_file(enriching.filename, format="flac")
 		sound2 = AudioSegment.from_file(melody.filename, format="flac")
 		sound3 = AudioSegment.from_file(drums.filename, format="flac")
@@ -22,6 +22,6 @@ class MixSound:
 		output = output.overlay(sound3)
 		output = output.overlay(sound4)
 		output = output.overlay(sound5)
-		out_file = os.path.join(self.output_folder, tx_hash + ".mp3")
+		out_file = os.path.join(self.output_folder, Tx_Hash + ".mp3")
 		print(out_file)
 		output.export(out_file, format="mp3")

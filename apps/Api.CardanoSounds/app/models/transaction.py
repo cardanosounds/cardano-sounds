@@ -1,14 +1,17 @@
 from dataclasses import dataclass
 from datetime import datetime
+from typing import List
 from app.models.metadata import Metadata
+from app.models.tokenvalue import TokenValue
+
 
 @dataclass
 class Transaction:
-    id: int
-    tx_hash: str
-    output_index: int
-    amount: float
-    senderAdress: str
+    id: str
+    Tx_Hash: str
+    Output_Index: int
+    Amount: List[TokenValue]
+    SenderAddress: str
     status: str
-    created: datetime
+    Created: datetime
     metadata: Metadata = None 

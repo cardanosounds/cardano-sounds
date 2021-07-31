@@ -9,7 +9,7 @@ from app.models.transaction import Transaction
 
 class Sounds:
 
-	enrich_probab_file = "enriching-sound-probability.data"
+	enrich_probab_file = "/home/azureuser/cardano-sounds/apps/enriching-sound-probability.data"
 	base_sounds_folder = "/home/azureuser/soundclips/cswaves"
 	common_color = "#22543D" #green
 	mid_rare_color = "#2A4365" #blue
@@ -110,7 +110,7 @@ class Sounds:
 			rarity = self.rare_color
 
 		mix.mix_sound(
-			tx.tx_hash,
+			tx.Tx_Hash,
 			enrich,
 			melody,
 			drums,
@@ -118,7 +118,7 @@ class Sounds:
 			signature
 		)
 
-		return Metadata(tx.tx_hash, "CSNFT" + str(tx.id), total_probability, rarity, [enrich, melody, drums, bass, signature])
+		return Metadata(tx.Tx_Hash, tx.id, total_probability, rarity, [enrich, melody, drums, bass, signature])
 
 
 	def get_sound(self, folder_path, category):
@@ -127,5 +127,3 @@ class Sounds:
 		random_num = qrandom.randint(1, melodies_count)
 		return SoundProbability(probability=round(1/melodies_count, 5), filename=filePaths[random_num - 1], category=category)
 
-sounds = Sounds()
-sounds.calc_enrich_sounds_probabilities()

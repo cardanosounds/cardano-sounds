@@ -97,8 +97,8 @@ qiskit-aqua==0.9.4
 qiskit-ibmq-provider==0.15.0
 qiskit-ignis==0.6.0
 qiskit-terra==0.18.0
-qrandom==1.0
 Quandl==3.6.1
+quantumrandom==1.9.0
 redis==3.5.3
 requests==2.26.0
 requests-ntlm==1.1.0

@@ -10,8 +10,8 @@ class Upload:
 	project_id = os.getenv('PROJECT_ID')
 
 
-	def upload_to_ipfs(self, tx_hash):
-		file_path = os.path.join(self.generated_sounds_folder, tx_hash + ".mp3")
+	def upload_to_ipfs(self, Tx_Hash):
+		file_path = os.path.join(self.generated_sounds_folder, Tx_Hash + ".mp3")
 
 		headers = {
 			'project_id': f"{self.project_id}",
@@ -37,9 +37,9 @@ class Upload:
 		return ipfs_hash
 
 
-	def upload_to_arweave(self, tx_hash):
+	def upload_to_arweave(self, Tx_Hash):
 		deployer = ArweaveDeploy()
-		return deployer.upload_sound_file(tx_hash)
+		return deployer.upload_sound_file(Tx_Hash)
 
 
 

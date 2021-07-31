@@ -15,30 +15,30 @@ class ArweaveDeploy:
 	#expect also wouldn't work on win
 	deploy_file_script = "expect-ar-deploy-site.sh"
 
-	def prepare_webdeploy_file_script(self, tx_hash):
-		webdir = os.path.join(self.websites_folder, tx_hash)
+	def prepare_webdeploy_file_script(self, Tx_Hash):
+		webdir = os.path.join(self.websites_folder, Tx_Hash)
 		filename = os.path.join(webdir, "index.html")
 		
 		with open(self.deploy_file_script) as f:
 			newText=f.read().replace('UPLOADPATH', filename)
 
-		with open(os.path.join(self.websites_folder, "webdeploy-" + tx_hash + ".sh"), "w") as f:
+		with open(os.path.join(self.websites_folder, "webdeploy-" + Tx_Hash + ".sh"), "w") as f:
 			f.write(newText)
 
 
-	def deploy_website(self, tx_hash):
-		self.prepare_webdeploy_file_script(tx_hash)
+	def deploy_website(self, Tx_Hash):
+		self.prepare_webdeploy_file_script(Tx_Hash)
 
 		#make deploy script executable 
-		command = ["chmod", "u+x", os.path.join(self.websites_folder, "webdeploy-" + tx_hash + ".sh")]
+		command = ["chmod", "u+x", os.path.join(self.websites_folder, "webdeploy-" + Tx_Hash + ".sh")]
 		subprocess.run(command)
-		outputlines = subprocess.Popen(os.path.join(self.websites_folder, "./webdeploy-" + tx_hash + ".sh"), shell=True, stdout=subprocess.PIPE).stdout.readlines()
+		outputlines = subprocess.Popen(os.path.join(self.websites_folder, "./webdeploy-" + Tx_Hash + ".sh"), shell=True, stdout=subprocess.PIPE).stdout.readlines()
 		line_n = len(outputlines)
 		return outputlines[line_n - 4].decode().replace("b\'\\x1b[96m\'", "").replace("\\x1b[39m\\r\\n\'", "")
 	
 
-	def upload_sound_file(self, tx_hash):
-		filepath = os.path.join(self.sounds_folder, tx_hash + ".mp3")
+	def upload_sound_file(self, Tx_Hash):
+		filepath = os.path.join(self.sounds_folder, Tx_Hash + ".mp3")
 		with open(filepath , 'rb') as track:
 			audio_string_data = track.read()
 			

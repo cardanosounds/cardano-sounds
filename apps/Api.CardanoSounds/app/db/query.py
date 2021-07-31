@@ -35,3 +35,12 @@ class Query:
 		tx = jsonpickle.encode(tx)
 		container.create_item(json.loads(tx))
 
+	def update_transaction(self, tx: Transaction):
+		container = self.base.get_existing_container('transactions')
+		# Query a document
+		read_item = container.read_item(item=tx.id, partition_key=tx.Tx_Hash)
+
+		read_item.metadata = tx.metadata
+		return container.replace_item(item=read_item, body=read_item)
+
+		
