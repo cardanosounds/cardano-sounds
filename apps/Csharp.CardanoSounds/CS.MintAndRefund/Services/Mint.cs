@@ -34,7 +34,7 @@ namespace CS.MintAndRefund.Services
         public async Task MintFromDbTransaction()
         {
             var tx = _dbTransactions.GetReadyToMintTransaction();
-
+            //CreateNFTPolicy();
 
             if (tx == null)
             {
@@ -51,13 +51,15 @@ namespace CS.MintAndRefund.Services
             meta = meta.Replace("IPFS_PLAYER_PREVIEW", tx.Metadata.PlayerImage);
             meta = meta.Replace("PLAYER_NAME", tx.Metadata.Player);
             meta = meta.Replace("RARITY_COLOR", tx.Metadata.Rarity);
-            meta = meta.Replace("IPFS_PLAYER_PREVIEW", tx.Metadata.PlayerImage); 
 
-            meta = meta.Replace("ARWEAVE_WEBSITE", tx.Metadata.ArweaveWebsiteUri.ToString());
+            //char[]
+            string web = tx.Metadata.ArweaveWebsiteUri.Remove(0,5);
+            web = web.Remove(web.Length - 7, 7);
+            meta = meta.Replace("ARWEAVE_WEBSITE", web);
             meta = meta.Replace("TRANSACTION_HASH", tx.Tx_Hash);
             for (var i = 0; i < tx.Metadata.Sounds.Length; i++)
             {
-                meta = meta.Replace("SOUND_" + (i + 1), tx.Metadata.Sounds[i].Filename);
+                meta = meta.Replace("SOUND_" + (i + 1), tx.Metadata.Sounds[i].Filename.Replace("/home/azureuser/soundclips/cswaves/",""));
             }
 
             File.WriteAllText(Path.Combine(_working_directory, "metadata_" + tx.Metadata.TokenName + ".json"), meta);
@@ -123,13 +125,13 @@ namespace CS.MintAndRefund.Services
                 {
                     new TokenParams()
                     {
-                        PolicyName = "nftpolicy",
+                        PolicyName = "newtestnftpolicy",
                         TokenAmount = 1,
                         TokenName = tx.Metadata.TokenName
                     },
                     new TokenParams
                     {
-                        PolicyName = "testtokenpolicy",
+                        PolicyName = "newtesttokenpolicy",
                         TokenAmount = 1,
                         TokenName = "CSCT"
                     }
@@ -142,7 +144,16 @@ namespace CS.MintAndRefund.Services
 
             policies.Create(new PolicyParams
             {
-                PolicyName = "nftpolicy",
+                PolicyName = "newtestnftpolicy",
+                TimeLimited = true,
+                ValidForMinutes = 120,
+                SigningKeyFile = _signing_key,
+                VerificationKeyFile = _verif_key
+            });
+
+            policies.Create(new PolicyParams
+            {
+                PolicyName = "newtesttokenpolicy",
                 TimeLimited = true,
                 ValidForMinutes = 120,
                 SigningKeyFile = _signing_key,

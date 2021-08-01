@@ -39,7 +39,7 @@ class Query:
 		container = self.base.get_existing_container('transactions')
 		# Query a document
 		read_item = container.read_item(item=tx.id, partition_key=tx.Tx_Hash)
-
+		read_item['status'] = "generated"
 		read_item['metadata'] = json.loads(jsonpickle.encode(tx.metadata))
 		return container.replace_item(item=read_item, body=read_item)
 
