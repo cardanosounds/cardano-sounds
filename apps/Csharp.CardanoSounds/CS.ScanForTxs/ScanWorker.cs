@@ -50,7 +50,9 @@ namespace CS.ScanForTxs
 
         private async Task Scan()
         {
-            pageCount = (transactions.GetTxCount() / 10) + 1;
+            
+            var totalTxCount = transactions.GetTxCount();
+            pageCount = ( totalTxCount / 10) + 1;
 
             var txs = await GetTransactions();
             
@@ -112,18 +114,18 @@ namespace CS.ScanForTxs
                 _logger.LogInformation("confirmed tx: " + tx.Tx_Hash);
                 _logger.LogTrace((await transactions.Create(tx)).ToString());
 
-                var content = new StringContent(tx.ToString(), Encoding.UTF8, "application/json");
+                var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(tx), Encoding.UTF8, "application/json");
 
                 //add tx queue for generating sounds & websites (metadata)
-                //var result = await queueClient.PostAsync(queueApiUrl + "/addtxtoqueue", content);
-                ////if(result.StatusCode == System.Net.HttpStatusCode.OK)
-                //{
-                //    _logger.LogInformation($"added tx {tx.Tx_Hash} to queue");
-                //}
-                //else
-                //{
-                //    _logger.LogError($"failed submitting tx {tx.Tx_Hash} to queue");
-                //}
+                var result = await queueClient.PostAsync(queueApiUrl + "/addtxtoqueue", content);
+                if(result.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    _logger.LogInformation($"added tx {tx.Tx_Hash} to queue");
+                }
+                else
+                {
+                    _logger.LogError($"failed submitting tx {tx.Tx_Hash} to queue");
+                }
             }
             else
             {
@@ -153,7 +155,7 @@ namespace CS.ScanForTxs
 
             //create request url and log
             var reqUrl = blockfrostApiUrl + "addresses/" + addr + "/utxos?" + "count=" + count + "&page=" + pageCount + "&order=asc";
-            _logger.LogInformation("Sending request to:" + Environment.NewLine + reqUrl);
+            _logger.LogTrace("Sending request to:" + Environment.NewLine + reqUrl);
 
             try
             {

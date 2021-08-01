@@ -1,27 +1,29 @@
 import os
-from models.metadata import Metadata
-import qrandom
+from app.models.metadata import Metadata
+import quantumrandom
 
 class Websites:
-	sounds_folder = "/home/dzcodes/sounds"
-	websites_folder = "/home/dzcodes/websites"
-	base_sounds_folder = "/home/dzcodes/cs-base-sounds/"
-	template_html = "/home/dzcodes/nft-web-templates/index.html"
-	glitch_template_sketch = "/home/dzcodes/nft-web-templates/glitch-sketch.js"
-	color_template_sketch = "/home/dzcodes/nft-web-templates/color-sketch.js"
-	randomdancers_template_sketch = "/home/dzcodes/nft-web-templates/randomdancers-sketch.js"
-	superformula_template_sketch = "/home/dzcodes/nft-web-templates/superformula-sketch.js"
+	sounds_folder = "/home/azureuser/sounds"
+	websites_folder = "/home/azureuser/websites"
+	base_sounds_folder = "/home/azureuser/soundclips/cswaves/"
+	template_html = "/home/azureuser/nft-web-templates/index.html"
+	glitch_template_sketch = "/home/azureuser/nft-web-templates/glitch-sketch.js"
+	color_template_sketch = "/home/azureuser/nft-web-templates/color-sketch.js"
+	randomdancers_template_sketch = "/home/azureuser/nft-web-templates/randomdancers-sketch.js"
+	superformula_template_sketch = "/home/azureuser/nft-web-templates/superformula-sketch.js"
+	dark_image = "ipfs://QmXcuQJNP5Sz4bc8nRVvGdG6t3k3X6K4uHRvuatXocjbLJ"
+	light_image = "ipfs://QmSBH3pZiRMQF5b2jQCXYFK8hg45mjT71uWTMe5LFScYXm"
 
 	def build_sketch(self, arweave_sound: str):		
 		playersketch, player = self.choose_player()
 
-		modeNum = qrandom.randint(0,7)
+		modeNum = int(round(quantumrandom.randint(0,7)))
 
 		with open(playersketch) as f:
 			sketch=f.read().replace('SOUND_ARWEAVE_LINK', "https://arweave.net/" + arweave_sound)
 
 			if player == "superformula":
-				ranNum = str(qrandom.list_picker([0,2,4,6,8,10]))
+				ranNum = str(int(round(quantumrandom.randint(0,5))) * 2)
 				player += f"-{ranNum}"
 				sketch = sketch.replace("SUPERFORMULA_M", ranNum)
 
@@ -44,7 +46,7 @@ class Websites:
 		randomdancers_nums = [2,6,11,14]
 		#superformula_nums = [3,7,8,12]
 
-		num = qrandom.randint(0,14)
+		num = int(round(quantumrandom.randint(0,14)))
 
 		if num in glitch_nums:
 			playersketch = self.glitch_template_sketch
@@ -86,12 +88,15 @@ class Websites:
 			htmlfile=htmlfile.replace('SOUND_PROBABILITY', str(metadata.probability))
 			htmlfile=htmlfile.replace('USED_SOUNDS', soundsstring)
 			htmlfile=htmlfile.replace('BUYING_TX', metadata.id)
+			htmlfile=htmlfile.replace('PLAYER', player)
 			if('-light' in player):
 				htmlfile=htmlfile.replace('BACKGROUND_COLOR', "255,245,245")
 				htmlfile=htmlfile.replace('TEXT_COLOR', "26,32,44")
+				metadata.image = self.light_image
 			else:
 				htmlfile=htmlfile.replace('BACKGROUND_COLOR', "26,32,44")
 				htmlfile=htmlfile.replace('TEXT_COLOR', "255,245,245")
+				metadata.image = self.dark_image
 
 		htmlfilename = os.path.join(webdir, "index.html")
 		with open(htmlfilename, "w") as f:

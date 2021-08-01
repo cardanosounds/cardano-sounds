@@ -1,7 +1,9 @@
-﻿namespace CS.MintAndRefund.Interfaces
+﻿using System.Threading.Tasks;
+
+namespace CS.MintAndRefund.Interfaces
 {
     public interface IRefund
     {
-        public void RefundFromInvalidDBTransaction();
+        public Task RefundFromInvalidDBTransaction();
     }
 }

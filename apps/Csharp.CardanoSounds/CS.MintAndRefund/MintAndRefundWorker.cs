@@ -24,11 +24,11 @@ namespace CS.MintAndRefund
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                await Task.Run(_mintService.MintFromDbTransaction);
+                await Task.Run(_mintService.MintFromDbTransaction, CancellationToken.None);
+                _logger.LogTrace("Finished mint");
 
-                await Task.Run(_refundService.RefundFromInvalidDBTransaction);
-
-                await Task.Delay(TimeSpan.FromSeconds(10));
+                await Task.Run(_refundService.RefundFromInvalidDBTransaction, CancellationToken.None);
+                _logger.LogTrace("Finished refund");
             }
         }
     }

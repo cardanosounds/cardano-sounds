@@ -43,10 +43,10 @@ if {$force_conservative} {
 
 
 set timeout -1
-spawn arweave deploy UPLOADPATH --package
+spawn arweave deploy UPLOADPATH --package --key-file /home/azureuser/arweave-key-uJCW-t0cfLptFzJbD1dvei6eTsQQ8fAKuGhZmpDvutU.json
 match_max 100000
-expect -exact "Enter your encryption passphrase to decrypt "
-send -- "none\r"
-expect -exact "Carefully check the above details are correct, then Type CONFIRM to complete this upload\[39m \[90G"
+
+expect -exact {Carefully check the above details are correct, then Type CONFIRM to complete this upload}
 send -- "CONFIRM\r"
 expect eof
+

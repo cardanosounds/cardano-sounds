@@ -1,11 +1,11 @@
 import json
 from azure.cosmos import CosmosClient, PartitionKey, exceptions
-from db.base import Base
+from app.db.base import Base
 import jsonpickle
 
-from models.metadata import Metadata
-from models.transaction import Transaction
-from models.soundprobability import SoundProbability
+from app.models.metadata import Metadata
+from app.models.transaction import Transaction
+from app.models.soundprobability import SoundProbability
 
 class Query:
 	base = Base()
@@ -35,3 +35,12 @@ class Query:
 		tx = jsonpickle.encode(tx)
 		container.create_item(json.loads(tx))
 
+	def update_transaction(self, tx: Transaction):
+		container = self.base.get_existing_container('transactions')
+		# Query a document
+		read_item = container.read_item(item=tx.id, partition_key=tx.Tx_Hash)
+		read_item['status'] = "generated"
+		read_item['metadata'] = json.loads(jsonpickle.encode(tx.metadata))
+		return container.replace_item(item=read_item, body=read_item)
+
+		
