@@ -105,7 +105,7 @@ namespace CS.DB.Cosmos
             }
         }
 
-        public static FullTransaction GetReadyToMintTransaction()
+        public FullTransaction GetReadyToMintTransaction()
         {
             using (client = new DocumentClient(new Uri(EndpointUri), PrimaryKey))
             {
