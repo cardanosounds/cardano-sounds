@@ -25,13 +25,13 @@ export default function SoundList({ errorCode, data }: {
   const [ collection, changeCollection ] = useState<String>("all")
 
   const loadNewPage = async () => {
-      if(data.last) return
+      //if(data.last) return
 
       data.page += 1
 
       const res: SoundListData = await fetch(apiPath + "sounds/" + collection + "/" + String(data.page)).then(rs => rs.json())
 
-      data.last = res.last
+      //data.last = res.last
 
       data.nfts = data.nfts.concat(res.nfts)
   }
@@ -46,11 +46,14 @@ export default function SoundList({ errorCode, data }: {
       <Head>
         <title>CardanoSounds - NFTs</title>
       </Head>
-   <Flex
+    <Flex
       display="column"
       align="center"
+      justify="center"
+      maxW={["95vw", "90vw", "80vw"]}
       minH="60vh"
-      mb={12}
+      mt="15vh"
+      ml="10vw"
     >
       <Select variant="outline" placeholder="Select collection">
         <option onSelect={() => { changeCollection }} value="all">All</option>
@@ -92,7 +95,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         data = await fetch(apiPath + "sounds/" + collection + "/" + page).then(res => res.json())
         if(data == null) {
             data = {
-                last: true,
                 collection: "all",
                 page: 1,
                 nfts: []
@@ -101,7 +103,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
     else {
         data = {
-            last: true,
             collection: "all",
             page: 1,
             nfts: []
@@ -115,4 +116,3 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         },
     }
 }
- 
