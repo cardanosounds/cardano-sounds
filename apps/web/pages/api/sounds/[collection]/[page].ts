@@ -9,62 +9,46 @@ const client = new CosmosClient({ endpoint, key });
 const databaseid = "databaseId"
 const containerid = "containerId"
 
-export default async function (req: NextApiRequest, res: NextApiResponse) {
+export default async function (req: NextApiRequest, res: NextApiResponse): Promise<Array<NFTData> | String> {
 
     const { collection } = req.query
     const { page } = req.query
 
-    const testData:SoundListData = 
+
+    if(collection && page && !isNaN(Number(page)))
+        var nftListData = await getSoundsNFTData(collection.toString(), Number(page))
+
+
+    if(nftListData instanceof String) return nftListData 
+
+    const data:SoundListData = 
     {
-        last: true,
         collection: collection.toString(),
         page: Number(page.toString()),
-        nfts: [{
-            player: "string",
-            ipfs: "string",
-            arweave: "string",
-            rarity: 1,
-            web:"arweavewebsite.net",
-            buyingTx: "string",
-            mintTx: "string",
-            assetHash: "string",
-            tokenName: "string",
-            attributes: [{
-                        name: "string",
-                        probability: 0.000,
-                        media: "string"
-                    }
-                ]
-            }
-        ]
+        nfts: nftListData
     }
     
-    res.json(testData)
+    res.json(data)
 
 }
 
-async function getSoundsNFTData(collection: string, page: string): Promise<Array<NFTData> | String>{
-    if(!/[^a-zA-Z0-9]/.test(collection) && isNaN(+page)){
+async function getSoundsNFTData(collection: string, page: number): Promise<Array<NFTData> | String>{
+    if(!/[^a-zA-Z0-9]/.test(collection)){
         const database = (await client.databases.createIfNotExists({ id: databaseid })).database //client.database(databaseid).read()
         const container = (await database.containers.createIfNotExists({ id: containerid })).container //client.container(containerid).read()
+
+        const offset = page == 1 ? 0 : (page - 1) * 9 
         const res = await container.items
-                    .query("SELECT * from t WHERE t.Status = 'done'")
-                    .fetchAll()
+                    .query(`SELECT * from t WHERE t.Status = 'done' ORDER BY 'created' OFFSET ${offset} LIMIT 9`)
+                    .fetchAll() 
 
         let nfts: Array<NFTData>
         if(Array.isArray(res))
         {
-            for(const nftData in res)
-            {
-                const meta = nftData["Metadata"]
-                let nft: NFTData 
-                nft.arweave = meta["arweave_id_sound"]
-                nft.ipfs = meta["ipfs_id_sound"]
-                nft.web = meta["arweave_website_uri"]
-                
-                nfts.push(nft)
-            }
+            nfts = res as unknown as Array<NFTData>
         }
+        else return "No sounds found."
+
         return nfts
     }
     else {

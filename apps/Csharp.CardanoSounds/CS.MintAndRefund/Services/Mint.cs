@@ -154,8 +154,7 @@ namespace CS.MintAndRefund.Services
             policies.Create(new PolicyParams
             {
                 PolicyName = "newtesttokenpolicy",
-                TimeLimited = true,
-                ValidForMinutes = 120,
+                TimeLimited = false,
                 SigningKeyFile = _signing_key,
                 VerificationKeyFile = _verif_key
             });

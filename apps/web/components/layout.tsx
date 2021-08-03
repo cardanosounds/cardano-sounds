@@ -47,7 +47,7 @@ export default function Layout({
           <meta name="og:title" content={siteTitle} />
           <meta name="twitter:card" content="summary_large_image" />
         </Head>
-        <header  className={mainStyles.header}>
+        <header className={mainStyles.header}>
           
           <Flex direction="column" className={mainStyles.stickyNav}>
               

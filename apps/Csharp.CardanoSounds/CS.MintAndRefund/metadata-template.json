@@ -12,7 +12,7 @@
           }
         ],
         "probability": "SOUND_PROBABILITY",
-        "sounds": "SOUND_1, SOUND_2, SOUND_3, SOUND_4, SOUND_5",
+        "sounds": [ "SOUND_1", "SOUND_2", "SOUND_3", "SOUND_4", "SOUND_5" ],
         "image": "IPFS_PLAYER_PREVIEW",
         "rarity": "RARITY_COLOR",
         "player": "PLAYER_NAME",

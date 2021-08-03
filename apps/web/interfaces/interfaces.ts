@@ -2,7 +2,7 @@ export interface ContextualHref {
     makeContextualHref: (extraQueryParams: { [key: string]: any }) => string
     returnHref: string
 }
-  
+
 export interface CollectionData {
     id: string
     date: string
@@ -17,28 +17,46 @@ export interface TxStatusData {
     status: string
 }
 
-export interface NFTData {
-    ipfs: string
-    arweave: string
-    web: string
-    rarity: number
-    buyingTx: string
-    mintTx: string
-    assetHash: string
-    tokenName: string
-    attributes: Sound []
-    player: string
-}
-
 export interface Sound {
-    name: string
-    probability: number
-    media: string
+    probability: number;
+    filename: string;
+    category: string;
 }
 
 export interface SoundListData {
     nfts: NFTData[]
-    last: boolean
     collection: string
     page: number
+}
+
+export interface Metadata {
+	id: string;
+	token_name: string;
+	player: string;
+	image: string;
+	probability: number;
+	rarity: string;
+	sounds: Sound[];
+	arweave_id_sound: string;
+	ipfs_id_sound: string;
+	arweave_website_uri: string;
+}
+
+export interface TokenValue {
+    unit: string;
+    quantity: number;
+}
+
+export interface IncommingTransaction {
+    id: string;
+    tx_Hash: string;
+    output_Index: number;
+    amount: TokenValue[];
+    senderAddress: string;
+    status: string;
+    created: string;
+}
+
+export interface NFTData extends IncommingTransaction {
+    metadata: Metadata;
 }
