@@ -1,14 +1,14 @@
 import React from 'react'
 import { NFTData } from '../interfaces/interfaces'
 import { 
-    Flex,
-    SimpleGrid,
-    Box, 
-    Stack,
-    Heading,
-    Text,
-    Spacer,
-    Image
+	Flex,
+	SimpleGrid,
+	Box, 
+	Stack,
+	Heading,
+	Text,
+	Spacer,
+	Image
 } from '@chakra-ui/react'
 
 
@@ -26,25 +26,16 @@ export default function SoundNFTPreviewSmall({soundNFTData, fullView}: { soundNF
 			w={["85vw", "85vw", "30vw", "20vw"]}
 			textAlign="center"
 			hover={ hoverShadow }  
+			mx="auto"
 		>
 			<Box
 				rounded="2xl"
-				pos="relative"
-				bg="rgba(0,0,0,0.2)"
-				h="20vw"
+				//bg="rgba(0,0,0,0.2)"
+				h={["85vw", "85vw", "30vw", "20vw"]}
+				w={["85vw", "85vw", "30vw", "20vw"]}
 				mb="1vh"
-				_before={{
-				content: '""',
-				rounded:"2xl",
-				bgImage:`url('${imageFilePath}')`,
-				bgSize: "cover",
-				pos: "absolute",
-				top: 0,
-				right: 0,
-				left: 0,
-				bottom: 0,
-				opacity:0.8
-				}}
+				bgImage={`url('${imageFilePath}')`}
+				
 			>
 				{/*<Flex
 					backgroundColor="rgb(0,0,0, 0.2)"
@@ -58,12 +49,12 @@ export default function SoundNFTPreviewSmall({soundNFTData, fullView}: { soundNF
 				></Flex>
 				<Image src="glitch-light-v1.PNG" rounded="2xl" pos="relative" />*/}
 			</Box>
-			<Heading size="sm">DEVCSNFT0</Heading>
-			<Text
+			<Heading size="sm">{soundNFTData.id}</Heading>
+			{/*<Text
 				wordBreak="break-all"
 			>
 				be3a4e111a307643783820c2bf15fcace87f161187be9301857b593a
-			</Text>
+			</Text>*/}
 		</Flex>
 			
 	)
