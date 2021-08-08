@@ -14,7 +14,7 @@ import {
   SimpleGrid,
   useColorMode
 } from "@chakra-ui/react"
- 
+
 export default function SoundList({
   page,  
   allSoundsData,

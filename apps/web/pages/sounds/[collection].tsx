@@ -1,4 +1,4 @@
-import React from "react"
+import React, { SyntheticEvent } from "react"
 import Error from 'next/error'
 
 import { GetServerSideProps } from 'next'
@@ -22,7 +22,24 @@ export default function SoundList({ errorCode, data }: {
     
 })
 {
-  const [ collection, changeCollection ] = useState<String>("all")
+  const [ collection, changeCollection ] = useState<string>("all")
+  const [ nfts, updateNfts ] = useState<NFTData[]>(data.nfts)
+
+  const changeCollectionOption = async (selectedIndex: number) => {
+    let selection: string = "wave"
+    if(selectedIndex == 0 || selectedIndex == 1)
+    {
+      selection = "all"
+    }
+    else 
+    {
+      selection += selectedIndex
+    }
+    if(selection == collection) return
+    changeCollection(selection)
+    const res: SoundListData = await fetch(apiPath + "sounds/" + selection + "/1").then(rs => rs.json())
+    updateNfts(res.nfts)   
+  }
 
   const loadNewPage = async () => {
       //if(data.last) return
@@ -33,7 +50,7 @@ export default function SoundList({ errorCode, data }: {
 
       //data.last = res.last
 
-      data.nfts = data.nfts.concat(res.nfts)
+      updateNfts(nfts.concat(res.nfts))
   }
 
 
@@ -52,14 +69,21 @@ export default function SoundList({ errorCode, data }: {
       justify="center"
       maxW={["95vw", "90vw", "80vw"]}
       minH="60vh"
-      mt={["15vh", "15vh", "25vh", "20vh"]}
+      mt={["18vh", "17vh", "25vh", "25vh", "20vh"]}
       mx="auto"
     >
-      <Select variant="outline" placeholder="Select collection" ml={["5vw", "5vw", "3vw"]} mb={["5vw", "5vw", "3vw"]} maxW={["70vw", "65vw", "50vw", "45vw"]}>
-        <option onSelect={() => { changeCollection }} value="all">All</option>
-        <option onSelect={() => { changeCollection }}  value="wave1">Wave 1</option>
-        <option onSelect={() => { changeCollection }}  value="wave2">Wave 2</option>
-        <option onSelect={() => { changeCollection }}  value="wave3">Wave 3</option>
+      <Select 
+        variant="outline" 
+        placeholder="Select collection" 
+        mt="3vw" ml={["5vw", "5vw", "3vw"]} 
+        mb={0} 
+        maxW={["70vw", "65vw", "50vw", "45vw"]}
+        onChange={async (e) => await changeCollectionOption(e.target.options.selectedIndex)} 
+      >
+        <option value="all">All</option>
+        <option value="wave1">Wave 1</option>
+        <option value="wave2">Wave 2</option>
+        <option value="wave3">Wave 3</option>
       </Select>
       <Flex
         display="column"
@@ -72,8 +96,14 @@ export default function SoundList({ errorCode, data }: {
           overflow-x="auto"
           columns={[1,1,2,3]}
         >
-          { data.nfts.map(( nftsound: NFTData ) => (
-            <NextChakraLink key={nftsound.id} href={`/sound/${nftsound.id}`}>
+          { nfts.map(( nftsound: NFTData ) => (
+            <NextChakraLink
+              rounded="2xl"
+              py={["3vh", "3vh","3vw"]}
+              maxH={["60vh", "60vh", "75vh", "29vw"]}
+              key={nftsound.id} href={`/sound/${nftsound.id}`} 
+              _hover={{ boxShadow: "dark-lg", transform: "scale(1.1)", cursor: "pointer" }}
+            >
               <SoundNFTPreviewSmall  soundNFTData={nftsound}/>
             </NextChakraLink>
           ))}
@@ -93,7 +123,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     let data: SoundListData
 
     if (errorCode === null) {
-        //data = await fetch(apiPath + "sounds/" + collection + "/" + page).then(res => res.json())
+        //data = await fetch(apiPath + "sounds/" + collection + "/1").then(res => res.json())
         if(data == null) {
             data = {
                 collection: "all",
