@@ -138,7 +138,7 @@ export default function Hero() {
               <Spacer />
               <Logo
                 size={ logoplaying ?  [null, null, "11em", "11em", "16em", "19em"] : [null, null, "10em", "10em", "15em", "18em"]}
-                color={isDark ? "red.50" : "gray.800"}
+                color={isDark ? "white" : "gray.800"}
                 pos="absolute"
                 top={[null, null, "15vh", "15vh", "15vh", "15vh"]} 
                 right={[null, null, "15vw", "18vw", "18vw", "18vw"]}

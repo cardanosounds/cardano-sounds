@@ -18,7 +18,6 @@ import {
 
 // import { MoonIcon, SunIcon } from '@chakra-ui/icons'
 
-
 export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
     const { colorMode, toggleColorMode } = useColorMode()
     const isDark = colorMode === 'dark'
@@ -40,13 +39,13 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
       var prevScrollpos = window.pageYOffset;
       window.onscroll = function() {
       var currentScrollPos = window.pageYOffset;
-     if (prevScrollpos > currentScrollPos) {
-       document.getElementById("navbar").style.marginTop = "0px";
-     } else {
-       document.getElementById("navbar").style.marginTop = "-30vh";
-     }
-     prevScrollpos = currentScrollPos;
-   }}, [])
+      if (prevScrollpos > currentScrollPos) {
+        document.getElementById("navbar").style.marginTop = "0px";
+      } else {
+        document.getElementById("navbar").style.marginTop = "-30vh";
+      }
+      prevScrollpos = currentScrollPos;
+    }}, [])
 
     return (
         <Flex
@@ -61,7 +60,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
               top="0px"
               left="0px"
               right="0px"
-              bgColor={isDark ? "gray.800" : "red.50"}
+              bgColor={isDark ? "gray.800" : "white"}
               as="nav"
               justify="center"
               wrap="wrap"
@@ -78,7 +77,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                     <DrawerContent>
                       <DrawerHeader borderBottomWidth="1px">
                         <DrawerCloseButton />
-                        <Logo size={["2em", "3em", "2em", "5em", "5em", "5em"]} color={ isDark ? "red.50" : "gray.800" }/>
+                        <Logo size={["2em", "3em", "2em", "5em", "5em", "5em"]} color={ isDark ? "white" : "gray.800" }/>
                       </DrawerHeader>
                       <DrawerBody>
                         <NextChakraLink href="/prebuy" className={mainStyles.disableEvents}>
@@ -105,7 +104,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                     <Box 
                       align="flex-start"
                       //50vw 5vh
-                      margin={["3vh 0 2vh 2vw", "3vh 0 2vh 8vw", "4vh 0.5em 0.25em 3em", "7vh 0.5em 0.25em 4em", "5vh 0.5em 0.25em 6em",  "5vh 0.5em 0.25em 11em"]}
+                      margin={["3vh 0 2vh 5vw", "3vh 0 2vh 8vw", "4vh 0.5em 0.25em 3em", "7vh 0.5em 0.25em 4em", "5vh 0.5em 0.25em 6em",  "5vh 0.5em 0.25em 11em"]}
                       aria-label="Cardano Sounds home"
                       variant="ghost"
                       
@@ -116,7 +115,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                       <Stack direction="row">
                       <Logo 
                           size={["4em", "4em", "4em", "4em", "5em" ]}
-                          color={isDark ? ("red.50") : ("gray.800")} 
+                          color={isDark ? ("white") : ("gray.800")} 
                       />
                       <Heading display={["none", "none", "flex"]} fontSize="3xl" pt="2.5vh">CARDANO SOUNDS</Heading>
                       </Stack>
@@ -129,7 +128,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                         position="absolute"
                         right={["8vw", "6vw", "5vw", "5vw"]}
                         top="5vh"
-                        color="red.50"
+                        color="gray.800"
                         isChecked={isDark}
                         onChange={toggleColorMode}
                       />
@@ -139,7 +138,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                           <IconButton 
                             aria-label="Open Menu"
                             variant="ghost"
-                            bgColor={isDark ? "rgba(26, 32, 44, 0.6)" : "rgba(255, 245, 245, 0.6)"}
+                            bgColor={isDark ? "rgba(26, 32, 44, 0.6)" : "rgba(255, 255, 255, 0.6)"}
                             size="lg"
                             icon={<FaChevronLeft/>}  
                             onClick={ onOpen } 

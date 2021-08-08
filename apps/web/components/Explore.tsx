@@ -63,7 +63,7 @@ export default function Explore({ goBackFunc } : { goBackFunc : Function }) {
                     <PopoverContent>
                       <PopoverArrow />
                       <PopoverCloseButton />
-                        <PopoverHeader><Logo size="2em" color={ isDark ? "red.50" : "gray.800" }/></PopoverHeader>
+                        <PopoverHeader><Logo size="2em" color={ isDark ? "white" : "gray.800" }/></PopoverHeader>
                       <PopoverBody><Text fontSize={["0.8em", "0.85em", "1em" ]}> By getting our NFT you are supporting development of Cardano Sounds platform</Text></PopoverBody>
                     </PopoverContent>
                   </Popover>
