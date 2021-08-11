@@ -84,6 +84,15 @@ function mouseClicked() {
 		song.loop()
 	}
 }
+
+function touchStarted() {
+	if(song.isPlaying()) {
+		song.pause()	
+	} else {
+		song.loop()
+	}
+}
+
 function windowResize() {
 	const w = getW()
 	resizeCanvas(w, w)

@@ -71,6 +71,15 @@ function mouseClicked() {
 					
 	}
 }
+
+function touchStarted() {
+	if(song.isPlaying()) {
+		song.pause()	
+	} else {
+		song.loop()
+	}
+}
+
 function windowResized() {
 	
 	const w = getW();
