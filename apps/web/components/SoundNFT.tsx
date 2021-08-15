@@ -14,8 +14,11 @@ export default function SoundNFT({nftData}: {nftData?: NFTData})
         isDark: boolean;
     }>
 
+    let playername = nftData?.metadata?.player
 
-    switch(nftData?.metadata?.player)
+    if(typeof(playername) != "undefined") playername = playername.split("-")[0]
+
+    switch(playername)
     {
         case "glitch":
             {
@@ -31,7 +34,7 @@ export default function SoundNFT({nftData}: {nftData?: NFTData})
                                 );
                 break
             }
-            case "randomDancers":
+            case "randomdancers":
             {
                 Player = dynamic(() => import("./playerRandomDancers"),
                                     { ssr: false }
@@ -53,12 +56,14 @@ export default function SoundNFT({nftData}: {nftData?: NFTData})
         return (
             <>
             
-                {nftData ?
-                <Flex minH="60vh">
-                    <Player size={{height: 400, width: 400}} isDark={false}/>
+                {Player != null ?
+                <Flex direction={["column", "column", "row"]} minH="60vh">
+                    <Flex maxW={["90%", "90%", "50%"]}>
+                        <Player size={{height: 400, width: 400}} isDark={true}/>
+                    </Flex>
                     <Spacer></Spacer>
                     <Stack 
-                        minW={["85vw", "85vw", "30vw"]}
+                        w={["90%", "90%", "49%"]}
                         align="center"
                         justify="center"
                     >
@@ -68,7 +73,7 @@ export default function SoundNFT({nftData}: {nftData?: NFTData})
                             <Heading size="sm">web:</Heading><a><Text>{nftData.metadata.arweave_website_uri}</Text></a>
                             <Heading size="sm">rarity color:</Heading><Text>{nftData.metadata.rarity}</Text>
                             <Heading size="sm">probability:</Heading><Text>{nftData.metadata.probability} %</Text>
-                            <Heading size="sm">sounds:</Heading><Text>{nftData.metadata.sounds.map(x => <p>x.filename</p>)}</Text>
+                            <Heading size="sm">sounds:</Heading>{nftData.metadata.sounds.map(x => <p key={x.filename}>x.filename</p>)}
                             <Heading size="sm">player:</Heading><Text>{nftData.metadata.player}</Text>
                             <Heading size="sm">buying tx:</Heading><Text>{nftData.tx_Hash}</Text>
                         </Flex>

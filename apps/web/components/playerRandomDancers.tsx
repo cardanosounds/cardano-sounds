@@ -19,6 +19,8 @@ let dancersArr: Array<Vector>
 let prevDancersArr: Array<Vector>			
 let bassDancersArr: Array<Vector>
 let prevBassDancersArr: Array<Vector>
+let fillColor: {r: number, g: number, b: number} = {r: 255, g: 245, b: 245}
+
 
 const myRef = useRef()
 
@@ -49,7 +51,14 @@ const Sketch = (p) => {
 		p.createCanvas(w, w)
 		p.textAlign(p.CENTER, p.CENTER);
 
-		isDark ? bgColor = {r: 26, g: 32, b: 44} : bgColor = {r: 255, g: 255, b: 255}
+		if(isDark) {
+			bgColor = {r: 26, g: 32, b: 44}
+			fillColor = {r: 255, g: 245, b: 245}
+		} else {
+			bgColor = {r: 255, g: 245, b: 245}
+			fillColor = {r: 26, g: 32, b: 44}
+		}	
+		
 		p.background(bgColor.r, bgColor.g, bgColor.b)
 
 		dancersArr = []
@@ -85,7 +94,7 @@ const Sketch = (p) => {
 		isDark ? bgColor = {r: 26, g: 32, b: 44} : bgColor = {r: 255, g: 255, b: 255}
 		//.background(bgColor.r, bgColor.g, bgColor.b)
 
-		bgColor = {r: 26, g: 32, b: 44} // bgColor = {r: 255, g: 245, b: 245}
+		//bgColor = {r: 26, g: 32, b: 44} // bgColor = {r: 255, g: 245, b: 245}
 		p.background(bgColor.r, bgColor.g, bgColor.b)
 
 		

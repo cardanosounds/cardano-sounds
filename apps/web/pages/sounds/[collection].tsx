@@ -44,7 +44,7 @@ export default function SoundList({ errorCode, data }: {
   const loadNewPage = async () => {
       //if(data.last) return
 
-      data.page += 1
+      data.page ++
 
       const res: SoundListData = await fetch(apiPath + "sounds/" + collection + "/" + String(data.page)).then(rs => rs.json())
 

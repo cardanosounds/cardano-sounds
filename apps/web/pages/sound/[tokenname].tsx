@@ -46,7 +46,7 @@ export const getServerSideProps = async (context) => {
                 {category: "enrichment", probability: 0.01, filename: "sound5"}
             ],
             token_name: "CSNFT1",
-            arweave_website_uri: ""        
+            arweave_website_uri: "arweave.net/play"        
         },
         status: "done",
         tx_Hash: "poj32ohjdf92o3heohdj293hjo2hij3hj0pihjn09o3hdoihwohj02",
