@@ -36,6 +36,7 @@ export const getServerSideProps = async (context) => {
             image: "ipfs://",
             player: "randomdancers-light",
             id: "CSNFT1",
+            policy_id: "hjdf92o3heohdj293hjo2hij3hj0pihjn09",
             probability: 0.001,
             rarity: "",
             sounds: [

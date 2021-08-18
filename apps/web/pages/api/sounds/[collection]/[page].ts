@@ -45,6 +45,7 @@ const getSoundsNFTTestData = () => {
                         metadata: {
                             arweave_id_sound: "hjdf92o3heohdj293hjo2hij3hj0pihjn09",
                             ipfs_id_sound: "ipfs://",
+                            policy_id: "hjdf92o3heohdj293hjo2hij3hj0pihjn09",
                             image: "ipfs://",
                             player: "randomdancers-light",
                             id: "CSNFT1",
@@ -74,6 +75,7 @@ const getSoundsNFTTestData = () => {
                             ipfs_id_sound: "ipfs://",
                             image: "ipfs://",
                             player: "superformula-2-dark",
+                            policy_id: "hjdf92o3heohdj293hjo2hij3hj0pihjn09",
                             id: "CSNFT2",
                             probability: 0.001,
                             rarity: "",
@@ -99,6 +101,7 @@ const getSoundsNFTTestData = () => {
                         metadata: {
                             arweave_id_sound: "hjdf92o3heohdj293hjo2hij3hj0pihjn09",
                             ipfs_id_sound: "ipfs://",
+                            policy_id: "hjdf92o3heohdj293hjo2hij3hj0pihjn09",
                             image: "ipfs://",
                             player: "randomdancers-light",
                             id: "CSNFT3",

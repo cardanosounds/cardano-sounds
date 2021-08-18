@@ -72,7 +72,7 @@ export default function SoundList({ errorCode, data }: {
       mt={["18vh", "17vh", "25vh", "25vh", "20vh"]}
       mx="auto"
     >
-      <Select 
+      {/*<Select 
         variant="outline" 
         placeholder="Select collection" 
         mt="3vw" ml={["5vw", "5vw", "3vw"]} 
@@ -84,7 +84,7 @@ export default function SoundList({ errorCode, data }: {
         <option value="wave1">Wave 1</option>
         <option value="wave2">Wave 2</option>
         <option value="wave3">Wave 3</option>
-      </Select>
+      </Select>*/}
       <Flex
         display="column"
         align="center"
@@ -135,6 +135,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                         senderAddress: "addr112233334444555666678777788888999911100000",
                         metadata: {
                             arweave_id_sound: "hjdf92o3heohdj293hjo2hij3hj0pihjn09",
+                            policy_id: "hjdf92o3heohdj293hjo2hij3hj0pihjn09",
                             ipfs_id_sound: "ipfs://",
                             image: "ipfs://",
                             player: "randomdancers-light",
@@ -163,6 +164,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                         metadata: {
                             arweave_id_sound: "hjdf92o3heohdj293hjo2hij3hj0pihjn09",
                             ipfs_id_sound: "ipfs://",
+                            policy_id: "hjdf92o3heohdj293hjo2hij3hj0pihjn09",
                             image: "ipfs://",
                             player: "superformula-2-dark",
                             id: "CSNFT2",
@@ -188,6 +190,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                         output_Index: 0,
                         senderAddress: "addr112233334444555666678777788888999911100000",
                         metadata: {
+                            policy_id: "hjdf92o3heohdj293hjo2hij3hj0pihjn09",
                             arweave_id_sound: "hjdf92o3heohdj293hjo2hij3hj0pihjn09",
                             ipfs_id_sound: "ipfs://",
                             image: "ipfs://",

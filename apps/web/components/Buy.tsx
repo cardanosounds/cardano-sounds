@@ -58,13 +58,14 @@ export default function Buy(){
                 >
                     BUY CARDANO SOUNDS NFT
                 </Heading>*/}
-                <Stack spacing={9} w={["100%", "100%", "100%", "70vw"]} direction={["column", "column", "column", "column", "row"]}>
+                <Stack w={["100%", "100%", "100%", "70vw"]} direction={["column", "column", "column", "column", "row"]}>
                     
                     <InputGroup 
                         mt={["5vh", "5vh", "5vh", "5vh", "unset"]}
                         maxW={["90vw", "85vw", "60vw", "50vw"]}
                         mx="auto"
                         display={txStatus ? "none" : mobileTxSearch ? "flex" : "none"}
+                        mb={9}
                     >
                         <Input 
                             placeholder="Check status for txid" 
@@ -77,9 +78,6 @@ export default function Buy(){
                     </InputGroup>
                     
                     <Flex direction="column"
-                        //position={mobileTxSearch ? ["unset", "unset", "absolute"] : "unset"}
-                        bottom="15vh"
-                        left="10vw"
                         maxW={["unset", "unset", "unset", "unset", "60vw"]}
 
                     > 
@@ -87,12 +85,12 @@ export default function Buy(){
                         <Transaction id={searchValue} />
                         : mobileTxSearch ? <></> :
                         <>  
-                            <List spacing={9} ml="0" marginInlineEnd="auto" mt={["3vh", "2vh", "3vh", "5vh"]} >
-                                <ListItem>
+                            <List marginInlineEnd="auto" mt={["3vh", "2vh", "3vh", "5vh"]} >
+                                <ListItem mb={9}>
                                     <ListIcon as={IoMdPricetag} color="yellow.400" />
-                                        Price 50ADA
+                                        Price 20ADA
                                 </ListItem>
-                                <ListItem>
+                                <ListItem mb={9}>
                                     <ListIcon as={RiAlarmWarningFill} color="red.400" />
                                         Use Yoroi or Daedalus, do not send ADA from an exchange! Send the exact amount without additional tokens.
                                 </ListItem>

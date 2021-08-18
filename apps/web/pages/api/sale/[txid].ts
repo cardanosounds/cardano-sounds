@@ -12,16 +12,15 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
 
     const { txid } = req.query 
 
-    //console.log(Array.isArray(txid) ? txid[0] : txid) 
-
     const randNum: number = Math.random()
 
-    if(randNum >= 0.2 ) {
-      
-          data =   'waiting for sound generation ' + txid
-    
+    if(randNum >= 0.2 ) {    
+        data =  'new'    
     }
-    else data = "NFT created"
+    else if(randNum >= 0.4 ) {
+        data = 'generated'
+    }
+    else data = "done"
 
     setTimeout(
         () => {

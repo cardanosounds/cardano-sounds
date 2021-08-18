@@ -31,6 +31,7 @@ export interface SoundListData {
 
 export interface Metadata {
 	id: string;
+	policy_id: string;
 	token_name: string;
 	player: string;
 	image: string;
