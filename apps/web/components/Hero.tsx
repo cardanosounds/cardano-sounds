@@ -205,7 +205,7 @@ export default function Hero() {
                 className={utilStyles.shadow}
                 position= {["inherit", "inherit", "absolute", "absolute", "absolute", "absolute"]}
                 right={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}
-                bottom={["12vh", "12vh", "15vh", "15vh", "15vh", "15vh"]}
+                bottom={["12vh", "12vh", "15vh", "15vh", "15vh", "25vh"]}
                 transition="all 0.3s ease-in-out"
                 display={ exploring ? ["none", "none", "flex"] : "flex"}
               >
@@ -215,18 +215,18 @@ export default function Hero() {
                     //mt={{ base: "5vh", md: "4" }}
                   height="40%"
                   aria-label="Explore CardanoSounds"
-                  //size="lg"
-                  fill="#4A5568"
+                  size={36}
+                  // fill="#4A5568"
                   //color="gray.600"
                 >
                 </FaChevronRight>
                 <Heading
                   as="h3"
-                  fontSize={["1rem", "1.125rem", "1.125rem", "1.5rem", "1.25rem", "1.5rem"]} 
+                  fontSize={["1rem", "1.125rem", "1.125rem", "1.5rem", "1.25rem", "2.25rem"]} 
                   textAlign="center"
                   fontWeight="normal"
                   lineHeight="1"
-                  textColor="gray.600"
+                  //textColor="gray.600"
                   //my={4}
                   //mx={4}
                   textDecoration="none"
@@ -242,17 +242,17 @@ export default function Hero() {
                     height="40%"
                     aria-label="Go back"
                     //size="lg"
-                    fill="#4A5568"
+                    // fill="#4A5568"
                     //color="gray.600"
                   >
                   </FaChevronLeft>
                   <Heading
                     as="h3"
-                    fontSize={["1rem", "1.125rem", "1.125rem", "1.5rem", "1.25rem", "1.5rem"]} 
+                    fontSize={["1rem", "1.125rem", "1.125rem", "1.5rem", "1.75rem", "2.25rem"]} 
                     textAlign="center"
                     fontWeight="normal"
                     lineHeight="1"
-                    textColor="gray.600"
+                    //textColor="gray.600"
                     //my={4}
                     //mx={4}
                     textDecoration="none"

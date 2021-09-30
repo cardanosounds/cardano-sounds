@@ -63,11 +63,11 @@
 
 .shadow {
    padding: 0; 
-   border-width: 0.5vh;
+   /* border-width: 0.5vh; */
 }
 .shadow:hover {
    padding: 0; 
-   border-width: 0.75vh;
+   /* border-width: 0.75vh; */
 }
 .noHovDecor {
    text-decoration: none;
