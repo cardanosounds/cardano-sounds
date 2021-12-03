@@ -24,7 +24,7 @@ export default function PreBuy() {
                 >
                     HOW TO GET ONE OF THE FIRST CARDANO SOUNDS NFTS?
                 </Heading>*/}
-                    <List spacing={3} ml="0" marginInlineEnd="auto" mt="5vh" >
+                    <List spacing={3} pl="3vw" ml="0" marginInlineEnd="auto" mt="5vh" >
                         <ListItem>
                             <ListIcon as={FaChevronRight} color="green.500" />
                                 The collection will be released in 3 <strong>short</strong> waves
