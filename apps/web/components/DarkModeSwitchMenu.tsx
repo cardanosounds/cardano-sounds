@@ -118,11 +118,11 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                   <Drawer onClose={onClose} isOpen={isOpen}>
                     <DrawerOverlay />
                     <DrawerContent>
-                      <DrawerHeader borderBottomWidth="1px" background="transparent url(http://assets.iceable.com/img/noise-transparent.png) repeat 0 0">
+                      <DrawerHeader borderBottomWidth="1px" background="transparent url(/noise.png) repeat 0 0">
                         <DrawerCloseButton />
                         <Logo size={["2em", "3em", "2em", "5em", "5em", "5em"]} color={ isDark ? "white" : "gray.800" }/>
                       </DrawerHeader>
-                      <DrawerBody background="transparent url(http://assets.iceable.com/img/noise-transparent.png) repeat 0 0">
+                      <DrawerBody background="transparent url(/noise.png) repeat 0 0">
                         <NextChakraLink href="/prebuy" className={mainStyles.disableEvents}>
                             <Heading size="lg" as="h4">BUY</Heading>
                         </NextChakraLink>
@@ -175,7 +175,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                            
                       <ModalContent 
                         backgroundColor={isDark ? ("gray.800") : ("white")}
-                        background="transparent url(http://assets.iceable.com/img/noise-transparent.png) repeat 0 0">
+                        background="transparent url(/noise.png) repeat 0 0">
                         <ModalHeader>Connect wallet</ModalHeader>
                         <ModalCloseButton />      
                         <ModalBody>
