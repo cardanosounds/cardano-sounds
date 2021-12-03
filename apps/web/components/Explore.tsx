@@ -1,11 +1,14 @@
 import React, { MouseEventHandler } from "react"
-import { Flex, Text, Spacer, IconButton, Button, Heading, useColorMode } from "@chakra-ui/react"
+import { Flex, Text, Spacer, IconButton, Button, Heading, useColorMode, List, ListItem, ListIcon, Grid } from "@chakra-ui/react"
 import {  Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverHeader } from "@chakra-ui/react"
-import { InfoIcon, QuestionIcon } from "@chakra-ui/icons"
+import { CheckIcon, EditIcon, QuestionIcon, RepeatIcon, SunIcon } from "@chakra-ui/icons"
 import Logo from "./Logo"
 import NextChakraLink from "./NextChakraLink"
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { GrDocumentSound } from 'react-icons/gr';
 import utilStyles from '../styles/utils.module.css'
+import { MdCheckCircle } from "react-icons/md"
+import { AiOutlineSound } from "react-icons/ai"
 
 
 
@@ -28,22 +31,43 @@ export default function Explore({ goBackFunc } : { goBackFunc : Function }) {
                 >
                   <Flex>
                     <Text>
-                      We are bringing audio NFTs created by you / your transaction.
+                     The common place for audio NFTs.
                     </Text>
                   </Flex>
                   <Spacer/>
-                  <Text>
-                    When we receive transaction, music clip is algorithmically put together with our original sounds, minted and sent to you.
-                  </Text>
+                  <List spacing={3}>
+                    <ListItem>
+                      <ListIcon as={EditIcon} color='green.500' />
+                      Create
+                    </ListItem>
+                    <ListItem>
+                      <ListIcon as={RepeatIcon} color='green.500' />
+                      Use
+                    </ListItem>
+                    <ListItem>
+                      <ListIcon as={CheckIcon} color='green.500' />
+                      & Earn
+                    </ListItem>  
+                  </List>
                   <Spacer/>
-                  <Text>
-                    Which makes each track unique and <strong>yours</strong>.
+                  <List spacing={3}>
+                    <ListItem>
+                      ..with sound 
+                      {/* <ListIcon as={GrDocumentSound} pl={2} width={24} height={24} stroke='#38a169' /> */}
+                    </ListItem>
+                  </List>
+                  {/* <Text display="inline"> */}
+                    {/* ...with sound <GrDocumentSound size={48} display="inline"/> */}
+                  {/* </Text> */}
+                  <Spacer/>
+                  {/* <Text>
+                    Which makes each CNFT unique and <strong>yours</strong>.
                   </Text>
-                  <Spacer/> 
+                  <Spacer/>  */}
                 </Flex>
                 <Spacer/>
-                <Flex direction="column" mt={["unset", "2.5vh", "unset"]} w={{ base: "80vw", md: "20vw" }} textColor="gray.600">
-                  <Popover>
+                <Flex direction="column" mt={["unset", "2.5vh", "unset"]} w={{ base: "80vw", md: "20vw" }}>
+                  {/* <Popover>
                     <PopoverTrigger>
                       <IconButton 
                         width={["70vw", "70vw", "25vw", "25vw", "25vw", "25vw" ]}
@@ -66,7 +90,7 @@ export default function Explore({ goBackFunc } : { goBackFunc : Function }) {
                         <PopoverHeader><Logo size="2em" color={ isDark ? "white" : "gray.800" }/></PopoverHeader>
                       <PopoverBody><Text fontSize={["0.8em", "0.85em", "1em" ]}> By getting our NFT you are supporting development of Cardano Sounds platform</Text></PopoverBody>
                     </PopoverContent>
-                  </Popover>
+                  </Popover> */}
                   <NextChakraLink href="/prebuy">
                     <Button 
                       
@@ -78,12 +102,12 @@ export default function Explore({ goBackFunc } : { goBackFunc : Function }) {
                       className={utilStyles.shadow}
                       position= {["inherit", "inherit", "absolute"]}
                       right={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}
-                      bottom={["32vh", "32vh", "47vh", "47vh", "47vh", "47vh"]}
+                      bottom={["43vh", "43vh", "63vh", "63vh", "63vh", "63vh"]}                      
                       transition="all 0.3s ease-in-out"
                     >
-                      {/* chakra color var doesn't work here */}
-                      <FaChevronRight fill="#4A5568" />
-                      <Heading as="h4" fontSize="1.5rem" textColor="gray.600"
+                      {/* chakra color var doesn't work here  fill="#4A5568" */}
+                      <FaChevronRight />
+                      <Heading as="h4" fontSize="1.5rem"
                         fontWeight="normal"
                       >
                         BUY
@@ -98,60 +122,39 @@ export default function Explore({ goBackFunc } : { goBackFunc : Function }) {
                       height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]} 
                       position= {["inherit", "inherit", "absolute"]}
                       right={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}
-                      bottom={["21vh", "21vh", "31vh", "31vh", "31vh", "31vh"]}
+                      bottom={["32vh", "32vh", "47vh", "47vh", "47vh", "47vh"]}
+                      // right={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}
+                      // bottom={["21vh", "21vh", "31vh", "31vh", "31vh", "31vh"]}
                       variant="ghost"
                       className={utilStyles.shadow}
                       transition="all 0.3s ease-in-out"
+                      disabled
                     >
                       {/* chakra color var doesn't work here */}
-                      <FaChevronRight fill="#4A5568" />
-                      <Heading as="h4" fontSize="1.5rem" textColor="gray.600"
+                      <FaChevronRight  />{/* fill="#4A5568" */}
+                      <Heading as="h4" fontSize="1.5rem"
                         fontWeight="normal"
                       >
-                        ABOUT
+                        CREATE
                       </Heading>  
                     </Button>
                   </NextChakraLink>
                   <Spacer/>
-                  {/*</Flex><NextChakraLink href="/">*/}
-                  {/*</Flex>  <Button */}
-                  {/*</Flex>    width={["70vw", "70vw", "25vw", "25vw", "25vw", "25vw" ]}*/}
-                  {/*</Flex>    mt={["1vh", "1vh", "5vh"]}*/}
-                  {/*</Flex>    height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]} */}
-                  {/*</Flex>    variant="ghost"*/}
-                  {/*</Flex>    className={utilStyles.shadow}*/}
-                  {/*</Flex>    position= {["inherit", "inherit", "absolute"]}*/}
-                  {/*</Flex>    right={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}*/}
-                  {/*</Flex>    bottom={["21vh", "21vh", "31vh", "31vh", "31vh", "31vh"]}*/}
-                  {/*</Flex>    transition="all 0.3s ease-in-out"*/}
-                  {/*</Flex>  >*/}
-                  {/*</Flex>    {/* chakra color var doesn't work here */}
-                  {/*</Flex>    <FaChevronRight fill="#4A5568"/>*/}
-                  {/*</Flex>      <Heading fontSize="1.5rem" as="h4" textColor="gray.600"*/}
-                  {/*</Flex>          fontWeight="normal"*/}
-                  {/*</Flex>      >*/}
-                  {/*</Flex>          NFTS*/}
-                  {/*</Flex>      </Heading>  */}
-                  {/*</Flex>  </Button>*/}
-                  {/*</Flex></NextChakraLink>*/}
-                  <Spacer/>
+                
                   <NextChakraLink href="/">
                     <Button 
-                      width={["70vw", "70vw", "25vw", "25vw", "25vw", "25vw" ]}
-                      mt={["1vh", "1vh", "5vh"]}
-                      height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]} 
+                      width="70vw"
+                      mt={["1vh", "1vh"]}
+                      height={["8vh", "7vh"]} 
                       variant="ghost"
                       className={utilStyles.shadow}
-                      position= {["inherit", "inherit", "absolute"]}
-                      right={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}
-                      bottom={["21vh", "21vh", "31vh", "31vh", "31vh", "31vh"]}
                       transition="all 0.3s ease-in-out"
                       display={["flex", "flex", "none"]}
                       onClick={ goBackFunc as MouseEventHandler<HTMLButtonElement>}
-                    >
+                    > 
                       {/* chakra color var doesn't work here */}
-                      <FaChevronLeft fill="#4A5568"/>
-                        <Heading fontSize="1.5rem" as="h4" textColor="gray.600"
+                      <FaChevronLeft />
+                        <Heading fontSize="1.5rem" as="h4"
                             fontWeight="normal"
                         >
                             BACK

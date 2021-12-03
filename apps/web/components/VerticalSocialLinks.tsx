@@ -76,7 +76,7 @@ export default function Footer() {
                   <IconButton
                     variant="ghost"
                     mt={2}
-                    mr={2} 
+                    mr={10} 
                     aria-label="Twitter Cardano Sounds"
                     size="lg"
                     icon={
@@ -88,7 +88,7 @@ export default function Footer() {
                   <IconButton
                     variant="ghost"
                     mt={2}
-                    mr={2} 
+                    mr={10} 
                     aria-label="Git Cardano Sounds"
                     size="lg"
                     icon={
@@ -100,7 +100,7 @@ export default function Footer() {
                   <IconButton
                     variant="ghost"
                     mt={2}
-                    mr={2} 
+                    mr={10} 
                     aria-label="Medium Cardano Sounds"
                     size="lg"
                     icon={

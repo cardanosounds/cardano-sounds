@@ -74,3 +74,51 @@
 .linkLight:hover {
   text-shadow: 1px 1px #fff;
 }
+
+.ledgreen {
+  margin: auto;
+  width: 12px;
+  height: 12px;
+  background-color: #ABFF00;
+  border-radius: 50%;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 -0.5px 3.5px 0.5px, inset #304701 0 -0.5px 4.5px, #89FF00 0 1px 6px;
+}
+
+.ledorange {
+  margin: auto;
+  width: 12px;
+  height: 12px;
+  background-color: #ffae00;
+  border-radius: 50%;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 -0.5px 3.5px 0.5px, inset #8b5f00 0 -0.5px 4.5px, #ffae00 0 1px 6px;
+}
+
+.bg {
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  right: -50%;
+  bottom: -50%;
+  width: 200%;
+  height: 200vh;
+  background: transparent url('http://assets.iceable.com/img/noise-transparent.png') repeat 0 0;
+  background-repeat: repeat;
+  animation: bg-animation .2s infinite;
+  opacity: .9;
+  visibility: visible;
+  z-index: -1;
+}
+
+@keyframes bg-animation {
+    0% { transform: translate(0,0) }
+    10% { transform: translate(-5%,-5%) }
+    20% { transform: translate(-10%,5%) }
+    30% { transform: translate(5%,-10%) }
+    40% { transform: translate(-5%,15%) }
+    50% { transform: translate(-10%,5%) }
+    60% { transform: translate(15%,0) }
+    70% { transform: translate(0,10%) }
+    80% { transform: translate(-15%,0) }
+    90% { transform: translate(10%,5%) }
+    100% { transform: translate(5%,0) }
+}

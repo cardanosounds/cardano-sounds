@@ -77,7 +77,7 @@ export default function Hero() {
           // bgColor={isDark ? ("gray.900") : ("gray.50")}
           // justify={{ base: "center", md: "space-around", xl: "space-between" }}
           direction={{ base: "column-reverse", md: "row" }}
-          minH={["85vh", "85vh", "60vh", "80vh", "90vh", "90vh"]}
+          minH={["85vh", "85vh", "80vh", "80vh", "90vh", "90vh"]}
         >
           <Stack
             w={{ base: "80vw", md: "75vw" }}
@@ -100,7 +100,9 @@ export default function Hero() {
                     !h1playing ? 
                       () => {
                         h1play(true)
-                        play({ id: 'drumbasshit' })
+                        if(window.localStorage.getItem('sound') === 'true'){
+                          play({ id: 'drumbasshit' })
+                        }
                       }
                       :
                       () => {
@@ -123,7 +125,9 @@ export default function Hero() {
                   !h2playing ? 
                     () => {
                       h2play(true)
-                      play({ id: 'futuristicbasshit' })
+                      if(window.localStorage.getItem('sound') === 'true'){
+                        play({ id: 'futuristicbasshit' })
+                      }
                     }
                     :
                     () => {
@@ -137,7 +141,7 @@ export default function Hero() {
               </Flex>
               <Spacer />
               <Logo
-                size={ logoplaying ?  [null, null, "11em", "11em", "16em", "19em"] : [null, null, "10em", "10em", "15em", "18em"]}
+                size={ logoplaying ?  [null, null, "11em", "11em", "16em", "19em"] : [null, null, "10em", "10em", "15em", "16em"]}
                 color={isDark ? "white" : "gray.800"}
                 pos="absolute"
                 top={[null, null, "15vh", "15vh", "15vh", "15vh"]} 
@@ -147,7 +151,9 @@ export default function Hero() {
                   !logoplaying ? 
                     () => {
                       logoplay(true)
-                      play({ id: 'retrogamenotif' })
+                      if(window.localStorage.getItem('sound') === 'true'){
+                        play({ id: 'retrogamenotif' })
+                      }
                     }
                     :
                     () => {
@@ -159,7 +165,7 @@ export default function Hero() {
             </Flex> 
             : 
             <>
-              <Explore goBackFunc={  goBackFunc } />
+              <Explore goBackFunc={ goBackFunc } />
             </>
             }
             <Flex
@@ -179,7 +185,9 @@ export default function Hero() {
                   !h3playing ? 
                     () => {
                       h3play(true)
-                      play({ id: 'shortbasshit' })
+                      if(window.localStorage.getItem('sound') === 'true'){
+                        play({ id: 'shortbasshit' })
+                      }
                     }
                     :
                     () => {
@@ -222,7 +230,8 @@ export default function Hero() {
                 </FaChevronRight>
                 <Heading
                   as="h3"
-                  fontSize={["1rem", "1.125rem", "1.125rem", "1.5rem", "1.25rem", "2.25rem"]} 
+                  fontSize="1.5rem"
+                  // fontSize={["1rem", "1.125rem", "1.125rem", "1.5rem", "1.25rem", "2.25rem"]} 
                   textAlign="center"
                   fontWeight="normal"
                   lineHeight="1"
@@ -248,7 +257,8 @@ export default function Hero() {
                   </FaChevronLeft>
                   <Heading
                     as="h3"
-                    fontSize={["1rem", "1.125rem", "1.125rem", "1.5rem", "1.75rem", "2.25rem"]} 
+                    fontSize="1.5rem"
+                    // fontSize={["1rem", "1.125rem", "1.125rem", "1.5rem", "1.75rem", "2.25rem"]} 
                     textAlign="center"
                     fontWeight="normal"
                     lineHeight="1"

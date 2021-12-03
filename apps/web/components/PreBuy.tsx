@@ -27,12 +27,12 @@ export default function PreBuy() {
                     <List spacing={3} ml="0" marginInlineEnd="auto" mt="5vh" >
                         <ListItem>
                             <ListIcon as={FaChevronRight} color="green.500" />
-                                Our collection will be released in 3 short waves
+                                The collection will be released in 3 <strong>short</strong> waves
                         </ListItem>
                         <Spacer/>
-                        <ListItem>
+                        {/* <ListItem>
                             <ListIcon as={FaChevronRight} color="green.500" />
-                                After we test distribution on testnet, we will announce date/time of the first sale
+                                After we test distribution on testnet and prepare demo, date/time of the first wave fill be announced
                                 <Tooltip 
                                     isOpen={isTooltipOpen}
                                     label="To not miss out, follow our socials" 
@@ -45,21 +45,38 @@ export default function PreBuy() {
                                         onClick={() => setIsTooltipOpen}
                                     />
                                 </Tooltip>
-                        </ListItem>
+                        </ListItem> */}
                         <Spacer/>
                         <ListItem>
                             <ListIcon as={FaChevronRight} color="green.500" />
                                 When time is set, an address with QR code and price will be displayed here
+                                <Tooltip 
+                                    isOpen={isTooltipOpen}
+                                    label="To not miss out, follow our socials" 
+                                    fontSize="md"
+                                >
+                                    <InfoIcon
+                                        ml="2vw"
+                                        onMouseEnter={() => setIsTooltipOpen(true)}
+                                        onMouseLeave={() => setIsTooltipOpen(false)}
+                                        onClick={() => setIsTooltipOpen(true)}
+                                    />
+                                </Tooltip>
                         </ListItem>
                         <Spacer/>
                         <ListItem>
                             <ListIcon as={FaChevronRight} color="green.500" />
-                                Never use exchange wallet to buy NFT
+                                Never use exchange wallet to buy NFT! To buy multiple NFTs, use multiple transactions
                         </ListItem>
                         <Spacer/>
                         <ListItem>
                             <ListIcon as={FaChevronRight} color="green.500" />
-                                To buy multiple NFTs, use multiple transactions
+                                Music clip and website with animated player are created for each tx
+                        </ListItem>
+                        <Spacer/>
+                        <ListItem>
+                            <ListIcon as={FaChevronRight} color="green.500" />
+                                All supporters will also get Cardano Sounds Community Token (CSCT)
                         </ListItem>
                         <Spacer/>
                         <ListItem>
@@ -79,8 +96,8 @@ export default function PreBuy() {
                               transition="all 0.3s ease-in-out"
                             >
                               {/* chakra color var doesn't work here */}
-                              <FaChevronLeft fill="#4A5568" />
-                              <Heading className={utilStyles.noHovDecor} as="h4" fontSize="1.5rem" textColor="gray.600"
+                              <FaChevronLeft />
+                              <Heading className={utilStyles.noHovDecor} as="h4" fontSize="1.5rem"
                                 fontWeight="normal"
                               >
                                 HOME
@@ -96,10 +113,11 @@ export default function PreBuy() {
                               variant="ghost"
                               className={utilStyles.shadow}
                               transition="all 0.3s ease-in-out"
+                              disabled
                             >
                                 {/* chakra color var doesn't work here */}
-                                <FaChevronRight fill="#4A5568"/>
-                                <Heading fontSize="1.5rem" as="h4" textColor="gray.600"
+                                <FaChevronRight />
+                                <Heading fontSize="1.5rem" as="h4"
                                     fontWeight="normal"
                                 >
                                     BUY

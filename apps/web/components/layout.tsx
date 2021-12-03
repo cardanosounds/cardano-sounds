@@ -23,7 +23,7 @@ export default function Layout({
      // align="top"
       w="100vw"
       h="100vh"
-      m="0 auto"
+      m="0"
     >
       <div className={mainStyles.container}>
         <Head >
@@ -55,6 +55,7 @@ export default function Layout({
           </Flex>
         </header>
           <main >{children}</main>
+          <div className={mainStyles.bg} />
           <Spacer />
           <Text 
             left="0"
