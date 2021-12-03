@@ -17,7 +17,7 @@ export default function PlayerRD() {
     
     return (
         <Layout>
-                <P5Comp  isDark={isDark} />
+                <P5Comp size={{width:300, height:300}} isDark={isDark} />
         </Layout>
     )
 }
