@@ -421,8 +421,6 @@ yarn-error.log*
 .env.production.local
 /apps/web/.next
 /apps/web/.vscode
-apps/web/p5.dom.js
-apps/web/p5.sound.js
 apps/web/public/sw.js
 apps/web/public/sw.js.map
 apps/web/public/workbox-6b19f60b.js
