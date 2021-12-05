@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { FaChevronLeft } from 'react-icons/fa';
 import { MdAccountBalanceWallet } from 'react-icons/md';
 import { GiSoundOff, GiSoundOn } from 'react-icons/gi';
+import useSound from 'use-sound';
 import { AiOutlineMenuFold } from 'react-icons/ai'
 import { CloseIcon, MoonIcon, SunIcon, HamburgerIcon, ChevronLeftIcon } from '@chakra-ui/icons'
 import NextChakraLink from './NextChakraLink'
@@ -46,17 +47,32 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
         window.localStorage.setItem('sound', 'true')
         soundAbility(true)
       }
+      playSwitchSound()
     }
+
+    const [play, { stop }] = useSound("/sounds/landingSprite.mp3", {
+     sprite: {
+       futuristicbasshit: [0, 2750],
+       drumbasshit: [4000, 1529.6825396825398],
+       shortbasshit: [7000, 1100.498866213151],
+       click: [10000, 199.47845804988697],
+       lightswitch: [12000, 166.66666666666606],
+       negativetoneui: [14000, 1254.6712018140588],
+       retrogamenotif: [17000, 1466.666666666665],
+       sweep: [20000,781.3832199546482]
+     }
+   })
 
     const enableCardano = async () => {
       const win: any = window
       if(!win.cardano) return
-      if(await win.cardano.isEnabled()) return
+      if(await win.cardano.isEnabled()) return walletModal.onClose()
 
       await win.cardano.enable()
 
       if(!await win.cardano.isEnabled()) return
       walletEnable(true)
+      playSwitchSound()
       walletModal.onClose()
     }
 
@@ -67,7 +83,34 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
       }
     }
 
+
+    const playClickSound = () => {
+      if(window.localStorage.getItem('sound') === 'false') return
+      
+      play({id: "click"})
+    }
+
+    const playSwitchSound = () => {
+      if(window.localStorage.getItem('sound') === 'false') return
+      
+      play({id: "lightswitch"})
+    }
+
     useEffect(() => { 
+      var prevScrollpos = window.pageYOffset;
+      console.log("window.pageYOffset")
+      console.log(window.pageYOffset)
+      window.onscroll = function() {
+        console.log("scroll")
+        var currentScrollPos = window.pageYOffset;
+        if (prevScrollpos > currentScrollPos) {
+          document.getElementById("navbar").style.top = "0";
+        } else {
+          document.getElementById("navbar").style.top = "-500px";
+        }
+        prevScrollpos = currentScrollPos;
+      }
+      
       const win: any = window
       checkForWallet()
       // enableCardano()
@@ -79,16 +122,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
         soundAbility(false)
       }
 
-      var prevScrollpos = window.pageYOffset;
-      window.onscroll = function() {
-      var currentScrollPos = window.pageYOffset;
-      if (prevScrollpos > currentScrollPos) {
-        document.getElementById("navbar").style.marginTop = "0px";
-      } else {
-        document.getElementById("navbar").style.marginTop = "-30vh";
-      }
-      prevScrollpos = currentScrollPos;
-    }}, [])
+    }, [])
 
     return (
         <Flex
@@ -123,7 +157,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                         <Logo size={["2em", "3em", "2em", "5em", "5em", "5em"]} color={ isDark ? "white" : "gray.800" }/>
                       </DrawerHeader>
                       <DrawerBody background="transparent url(/noise.png) repeat 0 0">
-                        <NextChakraLink href="/prebuy" className={mainStyles.disableEvents}>
+                        <NextChakraLink href="/prebuy">{/*  className={mainStyles.disableEvents} */}
                             <Heading size="lg" as="h4">BUY</Heading>
                         </NextChakraLink>
                         <NextChakraLink href="/">
@@ -131,6 +165,9 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                         </NextChakraLink>
                         <NextChakraLink href="https://cardanosounds.com">
                             <Heading size="lg" as="h4">ABOUT</Heading>
+                        </NextChakraLink>
+                        <NextChakraLink href="/create">
+                            <Heading size="lg" as="h4">CREATE</Heading>
                         </NextChakraLink>
                       </DrawerBody>
                     </DrawerContent>
@@ -212,7 +249,10 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                       right={["8vw", "6vw", "5vw", "5vw"]}
                       top="5vh"
                       // isChecked={isDark}
-                      onClick={toggleColorMode}
+                      onClick={() => {
+                        toggleColorMode()
+                        playSwitchSound()
+                      }}
                       _hover={{cursor: "pointer"}}
                     />
                     :
@@ -220,19 +260,13 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                       position="absolute"
                       right={["8vw", "6vw", "5vw", "5vw"]}
                       top="5vh"
-                      // isChecked={isDark}
-                      onClick={toggleColorMode}
+                      onClick={() => {
+                        toggleColorMode()
+                        playSwitchSound()
+                      }}
                        _hover={{cursor: "pointer"}}
                     />
                     }
-                      {/* <Switch
-                        position="absolute"
-                        right={["8vw", "6vw", "5vw", "5vw"]}
-                        top="5vh"
-                        color="gray.800"
-                        isChecked={isDark}
-                        onChange={toggleColorMode}
-                      /> */}
                         <Flex height="10vh" width="10vw" position="absolute"
                             top="15vh"
                             right="0">
@@ -242,7 +276,10 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                             bgColor={isDark ? "rgba(26, 32, 44, 0.6)" : "rgba(255, 255, 255, 0.6)"}
                             size="lg"
                             icon={<FaChevronLeft/>}  
-                            onClick={ onOpen } 
+                            onClick={ () => {
+                              playClickSound()
+                              onOpen() 
+                            }} 
                             display={["flex", "flex", "flex", "flex"]} 
                             position="absolute"
                             right={["6vw", "5vw", "5vw", "5vw"]}                      
@@ -253,7 +290,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
 
                   </Flex>
               </Flex>
-            </Flex>           
+            </Flex> 
         </Flex>
     )
 }

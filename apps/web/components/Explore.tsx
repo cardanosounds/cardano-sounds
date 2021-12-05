@@ -12,7 +12,7 @@ import { AiOutlineSound } from "react-icons/ai"
 
 
 
-export default function Explore({ goBackFunc } : { goBackFunc : Function }) {
+export default function Explore({ goBackFunc, soundFunc } : { goBackFunc : Function, soundFunc : Function  }) {
     const { colorMode } = useColorMode()
     const isDark = colorMode === 'dark'
 
@@ -67,34 +67,11 @@ export default function Explore({ goBackFunc } : { goBackFunc : Function }) {
                 </Flex>
                 <Spacer/>
                 <Flex direction="column" mt={["unset", "2.5vh", "unset"]} w={{ base: "80vw", md: "20vw" }}>
-                  {/* <Popover>
-                    <PopoverTrigger>
-                      <IconButton 
-                        width={["70vw", "70vw", "25vw", "25vw", "25vw", "25vw" ]}
-                        mt={["1vh", "1vh", "5vh"]}
-                        height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]} 
-                        variant="ghost"
-                        className={utilStyles.shadow}
-                        position= {["inherit", "inherit", "absolute"]}
-                        right={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}
-                        bottom={["43vh", "43vh", "63vh", "63vh", "63vh", "63vh"]}
-                        transition="all 0.3s ease-in-out" 
-                        size="lg" 
-                        aria-label="Sale purpouse" 
-                        color="gray.600"
-                        icon={<InfoIcon />}/>
-                    </PopoverTrigger>
-                    <PopoverContent>
-                      <PopoverArrow />
-                      <PopoverCloseButton />
-                        <PopoverHeader><Logo size="2em" color={ isDark ? "white" : "gray.800" }/></PopoverHeader>
-                      <PopoverBody><Text fontSize={["0.8em", "0.85em", "1em" ]}> By getting our NFT you are supporting development of Cardano Sounds platform</Text></PopoverBody>
-                    </PopoverContent>
-                  </Popover> */}
-                  <NextChakraLink href="/prebuy">
+                  <NextChakraLink 
+                    onClick={() => soundFunc()}
+                    href="/prebuy"
+                  >
                     <Button 
-                      
-
                       width={["70vw", "70vw", "25vw", "25vw", "25vw", "25vw" ]}
                       mt={["1vh", "1vh", "5vh"]}
                       height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]} 
@@ -104,6 +81,7 @@ export default function Explore({ goBackFunc } : { goBackFunc : Function }) {
                       right={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}
                       bottom={["43vh", "43vh", "63vh", "63vh", "63vh", "63vh"]}                      
                       transition="all 0.3s ease-in-out"
+                      onClick={() => soundFunc}
                     >
                       {/* chakra color var doesn't work here  fill="#4A5568" */}
                       <FaChevronRight />
@@ -115,7 +93,10 @@ export default function Explore({ goBackFunc } : { goBackFunc : Function }) {
                     </Button>
                   </NextChakraLink>
                   <Spacer/>
-                  <NextChakraLink href="/">
+                  <NextChakraLink 
+                    onClick={() => soundFunc()}
+                    href="/create"
+                  >
                     <Button 
                       width={["70vw", "70vw", "25vw", "25vw", "25vw", "25vw" ]}
                       mt={["1vh", "1vh", "5vh"]}
@@ -128,7 +109,6 @@ export default function Explore({ goBackFunc } : { goBackFunc : Function }) {
                       variant="ghost"
                       className={utilStyles.shadow}
                       transition="all 0.3s ease-in-out"
-                      disabled
                     >
                       {/* chakra color var doesn't work here */}
                       <FaChevronRight  />{/* fill="#4A5568" */}
@@ -141,7 +121,9 @@ export default function Explore({ goBackFunc } : { goBackFunc : Function }) {
                   </NextChakraLink>
                   <Spacer/>
                 
-                  <NextChakraLink href="/">
+                  <NextChakraLink 
+                    href="/"
+                  >
                     <Button 
                       width="70vw"
                       mt={["1vh", "1vh"]}
@@ -150,7 +132,10 @@ export default function Explore({ goBackFunc } : { goBackFunc : Function }) {
                       className={utilStyles.shadow}
                       transition="all 0.3s ease-in-out"
                       display={["flex", "flex", "none"]}
-                      onClick={ goBackFunc as MouseEventHandler<HTMLButtonElement>}
+                      onClick={() => {
+                        soundFunc()
+                        goBackFunc()
+                      }}
                     > 
                       {/* chakra color var doesn't work here */}
                       <FaChevronLeft />

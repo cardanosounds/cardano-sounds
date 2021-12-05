@@ -7,7 +7,7 @@ import dynamic from "next/dynamic";
 import { Flex, useColorMode } from '@chakra-ui/react';
 import Layout from '../components/layout';
 
-const P5Comp = dynamic(() => import("../components/playerRandomDancers"),
+const P5Comp = dynamic(() => import("../components/p5sequencer"),
   { ssr: false }
 );
 
@@ -17,7 +17,8 @@ export default function PlayerRD() {
     
     return (
         <Layout>
-                <P5Comp size={{width:300, height:300}} isDark={isDark} />
+                {/* <P5Comp size={{width:300, height:300}} isDark={isDark} /> */}
+                <P5Comp/>
         </Layout>
     )
 }

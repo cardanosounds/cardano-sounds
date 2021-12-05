@@ -105,7 +105,7 @@ export default function PreBuy() {
                             </Button>
                           </NextChakraLink>
                           <Spacer/>
-                          <NextChakraLink href="/buy">
+                          {/* <NextChakraLink href="/buy"> */}
                             <Button 
                               width={["80vw", "80vw", "25vw", "25vw", "25vw", "25vw" ]}
                               mt={["1vh", "1vh", "5vh"]}
@@ -123,7 +123,7 @@ export default function PreBuy() {
                                     BUY
                                 </Heading>  
                             </Button>
-                        </NextChakraLink>
+                        {/* </NextChakraLink> */}
                     </Flex>
             </Stack>    
         </>

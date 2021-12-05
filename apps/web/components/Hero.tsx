@@ -29,6 +29,12 @@ export default function Hero() {
       explore(false)
   }
 
+  const playClickSound = () => {
+    if(window.localStorage.getItem('sound') === 'false') return
+    
+    play({id: "click"})
+  }
+
 
   const [play, { stop }] = useSound("/sounds/landingSprite.mp3", {
      onend: function() {
@@ -165,7 +171,7 @@ export default function Hero() {
             </Flex> 
             : 
             <>
-              <Explore goBackFunc={ goBackFunc } />
+              <Explore goBackFunc={ goBackFunc } soundFunc={playClickSound}/>
             </>
             }
             <Flex
@@ -205,7 +211,10 @@ export default function Hero() {
                 //href="/"
                 variant="ghost"
                 textAlign="center"
-                onClick={ () => explore(!exploring) }
+                onClick={ () => { 
+                  explore(!exploring) 
+                  playClickSound()
+                }}
                 //padding="0 0.5vh 0.5vh 0.5vh"
                 width={["70%", "70%", "25%", "25%", "25%", "25%" ]}
                 mt={["4vh", "4vh", "5vh"]}
