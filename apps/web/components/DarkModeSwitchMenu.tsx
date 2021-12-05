@@ -1,11 +1,10 @@
-import { useColorMode, Switch, Flex, Button, IconButton, Spacer, Heading, Box, Text, Stack, useDisclosure, useColorModeValue, Modal, ModalContent, ModalHeader, ModalOverlay, ModalCloseButton, ModalFooter, ModalBody } from '@chakra-ui/react'
+import { useColorMode, Flex, Button, IconButton, Spacer, Heading, Box, Text, Stack, useDisclosure, useColorModeValue, Modal, ModalContent, ModalHeader, ModalOverlay, ModalCloseButton, ModalFooter, ModalBody } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
 import { FaChevronLeft } from 'react-icons/fa';
 import { MdAccountBalanceWallet } from 'react-icons/md';
 import { GiSoundOff, GiSoundOn } from 'react-icons/gi';
 import useSound from 'use-sound';
-import { AiOutlineMenuFold } from 'react-icons/ai'
-import { CloseIcon, MoonIcon, SunIcon, HamburgerIcon, ChevronLeftIcon } from '@chakra-ui/icons'
+import { MoonIcon, SunIcon} from '@chakra-ui/icons'
 import NextChakraLink from './NextChakraLink'
 import mainStyles from './layout.module.css'
 import Logo from './Logo'
@@ -83,17 +82,18 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
       }
     }
 
+    const playSound = (id: string) => {
+      if(window.localStorage.getItem('sound') === 'false') return
+      play({id: id})
+    }
+
 
     const playClickSound = () => {
-      if(window.localStorage.getItem('sound') === 'false') return
-      
-      play({id: "click"})
+      playSound("click")
     }
 
     const playSwitchSound = () => {
-      if(window.localStorage.getItem('sound') === 'false') return
-      
-      play({id: "lightswitch"})
+     playSound("lightswitch")
     }
 
     useEffect(() => { 
@@ -149,7 +149,10 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                   align="center"
                   w="100vw"
                 >
-                  <Drawer onClose={onClose} isOpen={isOpen}>
+                  <Drawer onClose={()=> {
+                    playClickSound()
+                    onClose()
+                  }} isOpen={isOpen}>
                     <DrawerOverlay />
                     <DrawerContent>
                       <DrawerHeader borderBottomWidth="1px" background="transparent url(/noise.png) repeat 0 0">
