@@ -42,7 +42,6 @@ async function getProtocolParameters() {
 	var slotnumber = latest_block.slot;
 	// await Loader.load()
 	const p = await parameters()
-	console.log("CardanoGlobal")
 	var value = {
 		linearFee: Loader.Cardano.LinearFee.new(
 			Loader.Cardano.BigNum.from_str(p.min_fee_a.toString()),

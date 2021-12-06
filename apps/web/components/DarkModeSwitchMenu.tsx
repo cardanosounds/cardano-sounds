@@ -36,6 +36,11 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
       getDisclosureProps: (props?: any) => any;
     } = useDisclosure()
 
+    const allowWallet = async () => {
+      walletEnable(true)
+      window.localStorage.setItem('cswallet', 'connected')
+    }
+
     const changeSound = () => {
       if(window.localStorage.getItem('sound') === 'true')
       {
@@ -70,7 +75,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
       await win.cardano.enable()
 
       if(!await win.cardano.isEnabled()) return
-      walletEnable(true)
+      allowWallet()
       playSwitchSound()
       walletModal.onClose()
     }
@@ -78,7 +83,10 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
     const checkForWallet = async () => {
       const win: any = window
       if(win.cardano && await win.cardano.isEnabled() === true){
-        walletEnable(true)
+        allowWallet()
+      }
+      else {
+        window.localStorage.setItem('cswallet', null)
       }
     }
 
@@ -86,7 +94,6 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
       if(window.localStorage.getItem('sound') === 'false') return
       play({id: id})
     }
-
 
     const playClickSound = () => {
       playSound("click")
