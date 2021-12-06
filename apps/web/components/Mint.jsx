@@ -37,7 +37,8 @@ import {
     };
 
     const checkStatus = async (toast, connected) => {
-      setConnected(window.localStorage.getItem('cswallet') === 'connected')
+      connected = window.localStorage.getItem('cswallet') === 'connected'
+      setConnected(connected)
       return (
         NoNami(toast) &&
         (await NotConnectedToast(toast, connected)) &&
