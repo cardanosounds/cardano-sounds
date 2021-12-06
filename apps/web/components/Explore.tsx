@@ -82,6 +82,7 @@ export default function Explore({ goBackFunc, soundFunc } : { goBackFunc : Funct
                       bottom={["43vh", "43vh", "63vh", "63vh", "63vh", "63vh"]}                      
                       transition="all 0.3s ease-in-out"
                       onClick={() => soundFunc}
+                      justifyContent={["flex-start", "flex-start", "center"]}
                     >
                       {/* chakra color var doesn't work here  fill="#4A5568" */}
                       <FaChevronRight />
@@ -109,6 +110,7 @@ export default function Explore({ goBackFunc, soundFunc } : { goBackFunc : Funct
                       variant="ghost"
                       className={utilStyles.shadow}
                       transition="all 0.3s ease-in-out"
+                      justifyContent={["flex-start", "flex-start", "center"]}
                     >
                       {/* chakra color var doesn't work here */}
                       <FaChevronRight  />{/* fill="#4A5568" */}
@@ -132,6 +134,7 @@ export default function Explore({ goBackFunc, soundFunc } : { goBackFunc : Funct
                       className={utilStyles.shadow}
                       transition="all 0.3s ease-in-out"
                       display={["flex", "flex", "none"]}
+                      justifyContent={["flex-start", "flex-start", "center"]}
                       onClick={() => {
                         soundFunc()
                         goBackFunc()

@@ -86,7 +86,7 @@ export default function Hero() {
           minH={["85vh", "85vh", "80vh", "80vh", "90vh", "90vh"]}
         >
           <Stack
-            w={{ base: "80vw", md: "75vw" }}
+            w={{ base: "70vw", md: "75vw" }}
             align="left"
           >
              { !exploring ?
@@ -225,14 +225,15 @@ export default function Hero() {
                 bottom={["12vh", "12vh", "15vh", "15vh", "15vh", "25vh"]}
                 transition="all 0.3s ease-in-out"
                 display={ exploring ? ["none", "none", "flex"] : "flex"}
+                justifyContent={["flex-start", "flex-start", "center"]}
               >
                 {!exploring ?
                 <>
                 <FaChevronRight
                     //mt={{ base: "5vh", md: "4" }}
-                  height="40%"
+                  // height="40%"
                   aria-label="Explore CardanoSounds"
-                  size={36}
+                  // size={36}
                   // fill="#4A5568"
                   //color="gray.600"
                 >

@@ -91,6 +91,7 @@ export default function PreBuy() {
                             variant="ghost"
                             className={utilStyles.shadow}
                             transition="all 0.3s ease-in-out"
+                            justifyContent={["flex-start", "flex-start", "center"]}
                         >
                             {/* chakra color var doesn't work here */}
                             <FaChevronLeft />
@@ -110,6 +111,7 @@ export default function PreBuy() {
                         variant="ghost"
                         className={utilStyles.shadow}
                         transition="all 0.3s ease-in-out"
+                        justifyContent={["flex-start", "flex-start", "center"]}
                         disabled
                     >
                         {/* chakra color var doesn't work here */}
