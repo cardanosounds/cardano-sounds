@@ -500,7 +500,7 @@ class NamiJs {
       ).to_bytes(),
       "hex"
     ).toString("hex");
-    return { id: policyId, script: finalScript, ttl };
+    return { id: policyId, script: finalScript, ttl: ttl, paymentKeyHash: paymentKeyHash };
   }
 }
 

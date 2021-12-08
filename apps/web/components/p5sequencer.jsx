@@ -1,12 +1,19 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import p5 from 'p5'
 import "../p5.sound.js"
 import "../p5.dom.js"
-import { Flex } from '@chakra-ui/react'
+import { Flex, Button } from '@chakra-ui/react'
+import MintBtn from './MintBtn.jsx'
+import useIpfs from "./mint/useIpfs";
 
+let ipfs;
  
 export default function P5sequencer() {
 	const myRef = useRef()
+	const initIpfs = useIpfs()
+	const [soundfile, setSoundfile] = useState()
+	const [ipfsHash, setIpfsHash] = useState(null)
+	const [canMint, setCanMint] = useState(false)
     let myP5;
 
 	var sloop;
@@ -55,7 +62,7 @@ export default function P5sequencer() {
 			// Create SoundLoop with 8th-note-long loop interval
 			sloop = new p5.SoundLoop(soundLoop, "8n");
 			sloop.bpm = bpm;
-			playPauseButton = p.createButton('PLAY/PAUSE');
+			playPauseButton = p.createButton('Record 8 sec');
 			playPauseButton.mousePressed(togglePlayPause);
 			playPauseButton.position(0, p.height*0.25);
 			playPauseButton.size(p.width/4, controlPanelHeight);
@@ -116,11 +123,31 @@ export default function P5sequencer() {
 
 	function togglePlayPause() {
 		if (sloop.isPlaying) {
-			sloop.pause();
+			// sloop.pause();
 		} else {
 			console.log("play start")
+			var soundRecorder = new p5.SoundRecorder();
+			var soundFile = new p5.SoundFile();
+			soundRecorder.record(soundFile);
 			sloop.start();
+			setTimeout(
+				async function() {
+					sloop.pause();
+					soundRecorder.stop();
+					ipfs = await initIpfs();
+					let tmp = await ipfs.add(soundFile.getBlob())
+					console.log(tmp)
+					setIpfsHash(tmp.path)
+				}, 8000);
 		}
+	}
+
+	const preparemint = async () => {
+		ipfs = await initIpfs();
+		console.log(soundfile)
+		const resp = await ipfs.add(soundfile)
+		return resp.path
+		
 	}
 
 	function clearAll() {
@@ -178,10 +205,17 @@ export default function P5sequencer() {
 		}
 	  }
 
+	  const wannaMint = () => {
+		// const ipfsRespHash = await preparemint()
+		setCanMint(!canMint)
+	  }
+
     return (
-        <>
-			<Flex mt={36}ref={myRef}>
-			</Flex>
-        </>
+        <Flex direction={"column"}>
+			<Flex mt={36}ref={myRef}></Flex>
+			{soundfile === null ? <></> :  
+			<Button onClick={wannaMint}>Do you want to mint your sound?</Button>}
+			{canMint === true ? <MintBtn ipfsHash={ipfsHash}/> : <></> }
+        </Flex>
     )
 }

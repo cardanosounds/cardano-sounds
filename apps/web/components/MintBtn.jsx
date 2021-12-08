@@ -10,18 +10,19 @@ import {
   import React from "react";
   import NamiJs from "../nami-js";
   import { ChevronRightIcon, ExternalLinkIcon } from "@chakra-ui/icons";
-  import MiddleEllipsis from "react-middle-ellipsis";
-  import ImageDrop from "./mint/imageDrop"
+  // import MiddleEllipsis from "react-middle-ellipsis";
+  // import ImageDrop from "./mint/imageDrop"
   import useIpfs from "./mint/useIpfs";
   
   let nami, ipfs;
   
-  const Send = () => {
+  const MintBtn = (ipfsHash) => {
     const toast = useToast();
-    const initIpfs = useIpfs()
+    // const initIpfs = useIpfs()
+    console.log("ipfsHash")
+    console.log(ipfsHash)
     const [connected, setConnected] = React.useState("");
     const [loading, setLoading] = React.useState(false);
-    const [rawImage, setRawImage] = React.useState("");
     const [inputs, setInputs] = React.useState({
       image: "",
       name: "",
@@ -35,7 +36,7 @@ import {
         "https://cardano-mainnet.blockfrost.io/api/v0",
         "mainnetGHf1olOJblaj5LD8rcRudajSJGKRU6IL"
       );
-      ipfs = await initIpfs();
+      // ipfs = await initIpfs();
       setConnected(window.localStorage.getItem('cswallet') === 'connected')
     };
 
@@ -51,8 +52,9 @@ import {
   
     const makeTx = async () => {
       setLoading(true);
-      const result = await ipfs.add(rawImage);
-      const hash = result.path;
+      // const result = await ipfs.add(blob);ipfsHash
+      // const hash = result.path;
+      const hash = ipfsHash;
       // (async () => {
       //   const response = await fetch(
       //     'https://ipfs2arweave.com/permapin/'+hash,
@@ -85,8 +87,15 @@ import {
         [policy.id]: {
           [inputs.name]: {
             name: inputs.metadataName,
-            image: `ipfs://${hash}`,
-            publisher: "CardanoSounds"
+            image: `ipfs://QmWbpAupVYwj7pVE6i3VMALMwngctS8F5ucCNLwg9RqCn3`,
+            publisher: "CardanoSounds.com",
+            files : [
+              { 
+                mediaType: "audio/WAV",
+                name: inputs.metadataName,
+                src: `ipfs://${ipfsHash.ipfsHash}`
+              }
+            ]
           },
         },
       };
@@ -138,25 +147,25 @@ import {
           maxWidth="500px"
           // background="white"
           rounded="lg"
-          shadow="lg"
+          // shadow="lg"
           display="flex"
           alignItems="center"
           flexDirection="column"
           padding="10"
         >
           <Text fontWeight="bold" fontSize="22">
-            Mint native assets
+            Mint the sound with
           </Text>
           <Text fontWeight="bold" fontSize="22">
-            with a Nami wallet
+            Nami wallet
           </Text>
-          <Box h="6" />
+          {/* <Box h="6" />
           <ImageDrop
             onLoadedRaw={(rawImage) => {
               console.log(rawImage);
               setRawImage(rawImage);
             }}
-          />
+          /> */}
           <Box h="10" />
           <Input
             focusBorderColor="teal.400"
@@ -212,25 +221,6 @@ import {
     );
   };
   
-  const Ellipsis = ({ connected }) => {
-    const [change, setChange] = React.useState(false);
-  
-    React.useEffect(() => {
-      setChange(true);
-      setTimeout(() => setChange(false));
-    }, [connected]);
-  
-    return (
-      !change && (
-        <div style={{ width: "200px", whiteSpace: "nowrap", fontWeight: "bold" }}>
-          <MiddleEllipsis>
-            <span>{connected}</span>
-          </MiddleEllipsis>
-        </div>
-      )
-    );
-  };
-    
   const NoNami = (toast) => {
     if (window.cardano) return true;
     toast({
@@ -326,5 +316,5 @@ import {
     });
   };
   
-  export default Send;
+  export default MintBtn;
   

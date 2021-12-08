@@ -701,4 +701,3 @@ import {
   }
   
   export default CoinSelection;
-  
