@@ -62,7 +62,7 @@ export default function P5sequencer() {
 			// Create SoundLoop with 8th-note-long loop interval
 			sloop = new p5.SoundLoop(soundLoop, "8n");
 			sloop.bpm = bpm;
-			playPauseButton = p.createButton('Record 8 sec');
+			playPauseButton = p.createButton('Record 10 sec');
 			playPauseButton.mousePressed(togglePlayPause);
 			playPauseButton.position(0, p.height*0.25);
 			playPauseButton.size(p.width/4, controlPanelHeight);
@@ -138,7 +138,7 @@ export default function P5sequencer() {
 					let tmp = await ipfs.add(soundFile.getBlob())
 					console.log(tmp)
 					setIpfsHash(tmp.path)
-				}, 8000);
+				}, 10000);
 		}
 	}
 
