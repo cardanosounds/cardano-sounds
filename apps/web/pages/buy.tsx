@@ -14,7 +14,7 @@ export default function Buy(){
                     <title>Buy Cardano Sounds NFT</title>
                 </Head>
                 
-                {/* <BuyComp /> */}
+                <BuyComp />
 
             </Layout>
         
