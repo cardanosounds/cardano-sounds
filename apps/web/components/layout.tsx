@@ -49,7 +49,8 @@ export default function Layout({
         </Head>
         <header className={mainStyles.header}>
           
-          <Flex direction="column" className={mainStyles.stickyNav}>
+          <Flex direction="column" className={mainStyles.stickyNav}
+          style={{transitionDelay: `700ms`}}>
               
               <DarkModeSwitchMenu home={home} />
           </Flex>
@@ -67,6 +68,9 @@ export default function Layout({
             fontSize={{ base: "0.5rem", md: "0.65rem" }}
             fontFamily="Share Tech Mono, monospace"
             transition="all 0.3s ease-in-out"
+            style={{transitionDelay: `700ms`}}
+        
+
           >{currentYear} &copy;CARDANOSOUNDS, ALL RIGHTS RESERVED
           </Text>
       </div>

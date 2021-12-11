@@ -3,7 +3,7 @@ import { Box } from "@chakra-ui/react";
 import utilStyles from "../styles/utils.module.css"
 import { MouseEventHandler } from "react";
 
-export default function Logo({ color, size, pos, top, right, display, onclick } : {
+export default function Logo({ color, size, pos, top, right, display, onclick, style } : {
     color?: string | Array<string | null>
     size?: string | Array<string | null>
     pos?: "absolute" | "initial" | Array<"absolute" | "initial" | null>
@@ -11,6 +11,7 @@ export default function Logo({ color, size, pos, top, right, display, onclick } 
     right?: string | Array<string | null>
     display?: "none" | "flex" | Array<"none" | "flex"| null>
     onclick?: Function
+    style?: React.CSSProperties
 }) {
     { }
     if(typeof(color) === "undefined") {
@@ -47,6 +48,7 @@ export default function Logo({ color, size, pos, top, right, display, onclick } 
       transition="all 0.6s ease-in-out" 
       className={utilStyles.pointerOnHover}
       onClick= { onclick as MouseEventHandler<HTMLDivElement> & MouseEventHandler<SVGSVGElement> }
+      style={style}
       //fill="#1f2127"
       //_hover={{
       //  fill: "brand.accent",

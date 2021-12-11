@@ -47,11 +47,11 @@ const testData: NFTData = {
 
 const valueFromStatus: (status: string) => number = (status) => {
     switch(status){
-        case "new":
+        case "confirmed":
             return 33
         case "generated":
             return 66
-        case "done":
+        case "finished":
             return 100
         default:
             return 0

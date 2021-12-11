@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { FaChevronRight, FaChevronLeft } from 'react-icons/fa';
 import utilStyles from '../styles/utils.module.css'
 import useSound from 'use-sound';
@@ -14,6 +14,7 @@ import {
 import Logo from "./Logo";
 import Explore from "./Explore";
 import VerticalSocialLinks from "./VerticalSocialLinks";
+import GlitchText from "./GlitchText";
  
 export default function Hero() {
   const { colorMode } = useColorMode()
@@ -23,8 +24,18 @@ export default function Hero() {
   const [ h2playing, h2play ]= useState<boolean>(false)
   const [ h3playing, h3play ]= useState<boolean>(false)
   const [ logoplaying, logoplay ]= useState<boolean>(false)
+  const [ glitching, setGlitching ]= useState<boolean>(true)
 
+  useEffect(() => { 
+    setTimeout(() => setGlitching(false), 1500);
+  }, [])
 
+  const glitchingText = (text: string) => {
+    if(glitching) return <GlitchText>{text}</GlitchText>
+
+    return <>{text}</>
+  }
+  
   const goBackFunc = () => {
       explore(false)
   }
@@ -34,7 +45,6 @@ export default function Hero() {
     
     play({id: "click"})
   }
-
 
   const [play, { stop }] = useSound("/sounds/landingSprite.mp3", {
      onend: function() {
@@ -117,7 +127,7 @@ export default function Hero() {
                       }
                     }
                 >
-                  CARDANO
+                  {glitchingText("CARDANO")}
                 </Heading>
                 <Heading
                   as="h2"
@@ -142,7 +152,7 @@ export default function Hero() {
                     }
                   }
                 >
-                  SOUNDS
+                  {glitchingText("SOUNDS")}
                 </Heading>
               </Flex>
               <Spacer />
@@ -153,6 +163,7 @@ export default function Hero() {
                 top={[null, null, "15vh", "15vh", "15vh", "15vh"]} 
                 right={[null, null, "15vw", "18vw", "18vw", "18vw"]}
                 display={["none", "none", "flex", "flex", "flex", "flex"]}
+                style={{transitionDelay: `700ms`}}
                 onclick={ 
                   !logoplaying ? 
                     () => {
@@ -202,7 +213,8 @@ export default function Hero() {
                     }
                 }
               >
-                NFT
+                {glitchingText("NFT")}
+                {/* <GlitchText>NFT</GlitchText> */}
               </Heading>
               
               <Spacer />
@@ -215,6 +227,7 @@ export default function Hero() {
                   explore(!exploring) 
                   playClickSound()
                 }}
+                style={{transitionDelay: `700ms`}}
                 //padding="0 0.5vh 0.5vh 0.5vh"
                 width={["70%", "70%", "25%", "25%", "25%", "25%" ]}
                 mt={["4vh", "4vh", "5vh"]}
@@ -286,7 +299,7 @@ export default function Hero() {
             </Flex>
           </Stack>   
 
-          <VerticalSocialLinks />
+          <VerticalSocialLinks/>
 
       </Flex>
 
