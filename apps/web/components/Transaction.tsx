@@ -1,49 +1,44 @@
 import { useState, useEffect } from 'react'
-import Head from 'next/head'
-import Layout, { siteTitle } from '../components/layout'
-import React from "react"
-import { NFTData, TxStatusData } from "../interfaces/interfaces"
-import NextChakraLink from '../components/NextChakraLink'
 import {
-  Button,
   Flex,
-  Heading,
   Stack,
-  IconButton, 
-  Progress,
   CircularProgress,
-  CircularProgressLabel
+  CircularProgressLabel,
+  Box
 } from "@chakra-ui/react"
 import SoundNFT from './SoundNFT'
+import { DatabaseTx } from '../interfaces/databaseTx'
+import TransactionStatus from './TransactionStatus'
 
-const testData: NFTData = {
-    amount: [{quantity: 25000000, unit: "lovelace"}],
-    id: "CSNFT1",
-    output_Index: 0,
-    senderAddress: "addr112233334444555666678777788888999911100000",
-    metadata: {
-        arweave_id_sound: "hjdf92o3heohdj293hjo2hij3hj0pihjn09",
-        ipfs_id_sound: "ipfs://",
-        image: "ipfs://",
-        player: "randomdancers-light",
-        id: "CSNFT1",
-        policy_id: "hjdf92o3heohdj293hjo2hij3hj0pihjn09",
-        probability: 0.001,
-        rarity: "",
-        sounds: [
-            {category: "enrichment", probability: 0.01, filename: "sound1"},
-            {category: "melody", probability: 0.01, filename: "sound2"},
-            {category: "bass", probability: 0.01, filename: "sound3"},
-            {category: "enrichment", probability: 0.01, filename: "sound4"},
-            {category: "enrichment", probability: 0.01, filename: "sound5"}
-        ],
-        token_name: "CSNFT1",
-        arweave_website_uri: "arweave.net/play"        
-    },
-    status: "done",
-    tx_Hash: "poj32ohjdf92o3heohdj293hjo2hij3hj0pihjn09o3hdoihwohj02",
-    created: "8/4/2021 10:00pm"
-}
+
+// const testData: NFTData = {
+//     amount: [{quantity: 25000000, unit: "lovelace"}],
+//     id: "CSNFT1",
+//     output_Index: 0,
+//     senderAddress: "addr112233334444555666678777788888999911100000",
+//     metadata: {
+//         arweave_id_sound: "hjdf92o3heohdj293hjo2hij3hj0pihjn09",
+//         ipfs_id_sound: "ipfs://",
+//         image: "ipfs://",
+//         player: "randomdancers-light",
+//         id: "CSNFT1",
+//         policy_id: "hjdf92o3heohdj293hjo2hij3hj0pihjn09",
+//         probability: 0.001,
+//         rarity: "",
+//         sounds: [
+//             {category: "enrichment", probability: 0.01, filename: "sound1"},
+//             {category: "melody", probability: 0.01, filename: "sound2"},
+//             {category: "bass", probability: 0.01, filename: "sound3"},
+//             {category: "enrichment", probability: 0.01, filename: "sound4"},
+//             {category: "enrichment", probability: 0.01, filename: "sound5"}
+//         ],
+//         token_name: "CSNFT1",
+//         arweave_website_uri: "arweave.net/play"        
+//     },
+//     status: "done",
+//     tx_Hash: "poj32ohjdf92o3heohdj293hjo2hij3hj0pihjn09o3hdoihwohj02",
+//     created: "8/4/2021 10:00pm"
+// }
 
 const valueFromStatus: (status: string) => number = (status) => {
     switch(status){
@@ -58,9 +53,22 @@ const valueFromStatus: (status: string) => number = (status) => {
     }
 }
 
+const stateNumFromStatus: (status: string) => 1|2|3|4 = (status) => {
+    switch(status){
+        case "confirmed":
+            return 2
+        case "generated":
+            return 3
+        case "finished":
+            return 4
+        default:
+            return 1
+    }
+}
+
 export default function Transaction({ id } : {id: string}) {
 
-    const [data,setData] = useState<string>(); 
+    const [data, setData] = useState<DatabaseTx>(); 
     const [isFinished, finishNFT] = useState<boolean>(false);
     
     useEffect(() => {
@@ -71,10 +79,20 @@ export default function Transaction({ id } : {id: string}) {
         // A function to parse and update the data state
         const updateData = (messageEvent: MessageEvent) => {
             console.log(messageEvent.data)
-            setData(messageEvent.data)
-            if (messageEvent.data === "done" || messageEvent.data === "error") {
-                finishNFT(true)
-                eventSource.close()
+
+            let dbtx: DatabaseTx = null
+            try {
+                dbtx = JSON.parse(messageEvent.data);
+            } catch (e) {
+                console.log("Handle error", e);
+            }
+
+            if(dbtx !== null) {
+                setData(dbtx)
+                if (dbtx.status === "finished" || dbtx.status === "error") {
+                    finishNFT(true)
+                    eventSource.close()
+                }
             }
         };
 
@@ -97,21 +115,22 @@ export default function Transaction({ id } : {id: string}) {
                     align="center"
                     margin="auto"
                 >
-                    {isFinished ?
-                    <SoundNFT nftData={testData}/>
-                    :
-                    <p>{data}</p>
-                    }
+                     {isFinished ?
+                    <SoundNFT nftData={data.Metadata}/>
+                    : 
+                    <p>{data?.status}</p>
+                    } 
 
                 </Stack>
-                { isFinished 
+                { isFinished || typeof(data) === 'undefined'
                     ?
                     <></>
-                    : 
-                    <CircularProgress value={valueFromStatus(data)} color="gray.400">
-                        <CircularProgressLabel>{data}</CircularProgressLabel>
-                    </CircularProgress>
-                }
+                    :
+                    <TransactionStatus state={stateNumFromStatus(data?.status)} />
+                    // <CircularProgress value={valueFromStatus(data.status)} color="gray.400">
+                    //     <CircularProgressLabel>{data.status}</CircularProgressLabel>
+                    // </CircularProgress>
+                } 
 
             </Flex>
         </>

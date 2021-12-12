@@ -32,3 +32,7 @@ export interface Amount {
     Unit:     string;
     Quantity: number;
 }
+
+export function instanceOfDatabaseTx(object: any): object is DatabaseTx {
+    return 'tx_hash' in object;
+}
