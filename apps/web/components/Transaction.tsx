@@ -39,19 +39,20 @@ import TransactionStatus from './TransactionStatus'
 //     tx_Hash: "poj32ohjdf92o3heohdj293hjo2hij3hj0pihjn09o3hdoihwohj02",
 //     created: "8/4/2021 10:00pm"
 // }
+// const valueFromStatus: (status: string) => number = (status) => {
+//     switch(status){
+//         case "confirmed":
+//             return 33
+//         case "generated":
+//             return 66
+//         case "finished":
+//             return 100
+//         default:
+//             return 0
+//     }
+// }
 
-const valueFromStatus: (status: string) => number = (status) => {
-    switch(status){
-        case "confirmed":
-            return 33
-        case "generated":
-            return 66
-        case "finished":
-            return 100
-        default:
-            return 0
-    }
-}
+const delay = ms => new Promise(res => setTimeout(res, ms));
 
 const stateNumFromStatus: (status: string) => 1|2|3|4 = (status) => {
     switch(status){
@@ -72,14 +73,14 @@ export default function Transaction({ id } : {id: string}) {
     const [isFinished, finishNFT] = useState<boolean>(false);
     
     useEffect(() => {
-        // An instance of EventSource by passing the events URL
         const eventSource = new EventSource(`/api/sale/${id}`);
+        // An instance of EventSource by passing the events URL
         console.log(id)
         console.log(`/api/sale/${id}`)
         // A function to parse and update the data state
-        const updateData = (messageEvent: MessageEvent) => {
-            console.log(messageEvent.data)
+        const updateData = async (messageEvent: MessageEvent) => {
 
+            console.log("updateData")
             let dbtx: DatabaseTx = null
             try {
                 dbtx = JSON.parse(messageEvent.data);
@@ -93,6 +94,12 @@ export default function Transaction({ id } : {id: string}) {
                     finishNFT(true)
                     eventSource.close()
                 }
+                // else if (dbtx.status === "generated") {
+                //     eventSource.close()
+                // }
+                // else{
+                //     await delay(5000) 
+                // }
             }
         };
 
@@ -114,6 +121,7 @@ export default function Transaction({ id } : {id: string}) {
                     spacing={6}
                     align="center"
                     margin="auto"
+                    py={24}
                 >
                      {isFinished ?
                     <SoundNFT nftData={data.Metadata}/>

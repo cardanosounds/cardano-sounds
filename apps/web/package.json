@@ -34,6 +34,7 @@
     "react-dropzone": "^11.4.2",
     "react-icons": "^4.2.0",
     "react-middle-ellipsis": "^1.2.1",
+    "react-step-progress-bar": "^1.0.3",
     "react-sticky-nav": "^4.0.6",
     "remark": "^13.0.0",
     "remark-html": "^13.0.1",

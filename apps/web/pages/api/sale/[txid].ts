@@ -9,6 +9,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
         'Connection': 'keep-alive',
+        'Content-Encoding': 'none',
     });
     const { txid } = req.query 
     
@@ -24,8 +25,9 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
 
     else data = dbres
 
-    res.write('event: message\n')
-    res.write('data: ' + data)
-    res.write('\n\n')
-    res.end()
+    setInterval(() => {
+        res.write('event: message\n')
+        res.write('data: ' + data)
+        res.write('\n\n')
+      }, 8000)
 }
