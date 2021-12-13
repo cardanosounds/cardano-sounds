@@ -2,9 +2,10 @@ import { TIMEOUT } from 'dns';
 import { NextApiRequest, NextApiResponse } from 'next'
 import { DatabaseTx, instanceOfDatabaseTx } from '../../../interfaces/databaseTx';
 import getTransaction from '../../../lib/db'
+const delay = ms => new Promise(res => setTimeout(res, ms));
 
-let data : string = "waiting for transaction"
 export default async function (req: NextApiRequest, res: NextApiResponse) {
+    let data: string = "not found"
     res.writeHead(200, {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
@@ -17,17 +18,22 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
 
     const isTxidSafe = txid.length === 64 && !format.test(txid.toString()) ? true : false 
 
-    const dbres = !isTxidSafe ? 'not found' : await getTransaction(txid.toString())
+    const reply = async () => {
+        const dbres = !isTxidSafe ? 'not found' : await getTransaction(txid.toString())
 
-    if(dbres !== 'not found' && instanceOfDatabaseTx(dbres)) {
-        data = JSON.stringify(dbres)
-    } 
+        if(dbres !== 'not found' && instanceOfDatabaseTx(dbres)) {
+            data = JSON.stringify(dbres)
+        } 
 
-    else data = dbres
-
-    setInterval(() => {
         res.write('event: message\n')
         res.write('data: ' + data)
         res.write('\n\n')
-      }, 8000)
+    }
+    
+    await reply()
+
+    setInterval(async () => {
+        await reply()
+
+    }, 8000)
 }
