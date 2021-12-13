@@ -1,8 +1,7 @@
 import { TIMEOUT } from 'dns';
 import { NextApiRequest, NextApiResponse } from 'next'
-import { DatabaseTx, instanceOfDatabaseTx } from '../../../interfaces/databaseTx';
+import { instanceOfDatabaseTx } from '../../../interfaces/databaseTx';
 import getTransaction from '../../../lib/db'
-const delay = ms => new Promise(res => setTimeout(res, ms));
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
     let data: string = "not found"
@@ -34,6 +33,5 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
 
     setInterval(async () => {
         await reply()
-
     }, 8000)
 }
