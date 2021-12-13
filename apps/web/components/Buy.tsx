@@ -73,7 +73,8 @@ export default function Buy(){
                                 <InputRightElement onClick={ search } children={<SearchIcon color="gray.600" />} />
                             </InputGroup>
                             {txStatus ? 
-                            <Flex minH="40vh">
+                            <Flex minH={["50vh", "50vh", "40vh"]}
+                            >
                                 <Transaction id={searchValue}/>
                             </Flex>
                             : txSearch ? <></> :

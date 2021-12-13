@@ -15,13 +15,15 @@ export default function TransactionStatus({state}: {state: 1|2|3|4}) {
             display="column"
             align="center"
             justify="center"
-            height="10vh"
+            height={["unset", "unset", "10vh"]}
+            margin={["20vh 0 0 -15vh", "20vh 0 0 -15vh", "initial"]}
             mb="5vh"
             transition="all 0.3s ease-out"
+            transform={["rotate(90deg)","rotate(90deg)", "none"]}
+            width={["40vh", "40vh", "40vw"]}
         >
             
-              <ProgressBar percent={progress} 
-               width="45vw">
+              <ProgressBar percent={progress} width="100%">
                 <Step width="90px"  transition="scale">
                   {({ accomplished }) => (
                     <>
@@ -30,30 +32,16 @@ export default function TransactionStatus({state}: {state: 1|2|3|4}) {
                           accomplished ? "accomplished" : null
                         }`}
                       >
+                        <Flex transform={["rotate(-90deg)","rotate(-90deg)", "none"]}>
                         {
                           state === 1 ? <Image style={{ filter: `grayscale(${accomplished ? 0 : 80}%)` }} src="/animated-icons/waitanim.gif" height="90px" width="90px"/> :
                           <Image style={{ filter: `grayscale(${accomplished ? 0 : 80}%)` }} src="/icons/wait.png" height="70px" width="70px"/>
                         }
+                        </Flex>
                       </div>
                     </>
                   )}
                 </Step>
-                {/* <Step width="90px">
-                  {({ accomplished }) => (
-                    <>
-                      <div
-                        className={`indexedStep ${
-                          accomplished ? "accomplished" : null
-                        }`}
-                      >
-                        {
-                          // state === 1 ? <Image style={{ filter: `grayscale(${accomplished ? 0 : 80}%)` }} src="/animated-icons/confirmanim.gif" height="90px" width="90px"/> : 
-                          <Image style={{ filter: `grayscale(${accomplished ? 0 : 80}%)` }} src="/icons/confirm.png" height="90px" width="90px"/>
-                        }
-                      </div>
-                    </>
-                  )}
-                </Step> */}
                 <Step width="90px"  transition="scale">
                   {({ accomplished }) => (
                     <>
@@ -62,10 +50,12 @@ export default function TransactionStatus({state}: {state: 1|2|3|4}) {
                           accomplished ? "accomplished" : null
                         }`}
                       >
+                        <Flex transform={["rotate(-90deg)","rotate(-90deg)", "none"]}>
                         {
                           state === 2 ? <Image src="/animated-icons/generateanim-flatten.gif" height="90px" width="90px"/> : 
                           <Image style={{ filter: `grayscale(${accomplished ? 0 : 80}%)` }} src="/icons/generate-flatten.png" height="75px" width="75px"/>
                         }
+                        </Flex>
                       </div>
                     </>
                   )}
@@ -79,10 +69,12 @@ export default function TransactionStatus({state}: {state: 1|2|3|4}) {
                           accomplished ? "accomplished" : null
                         }`}
                       >
+                        <Flex transform={["rotate(-90deg)","rotate(-90deg)", "none"]}>
                         {
                           state === 3 ? <Image src="/animated-icons/mintanim2.gif" height="90px" width="90px"/> : 
                           <Image style={{ filter: `grayscale(${accomplished ? 0 : 80}%)` }} src="/icons/mint.png" height="75px" width="75px !important"/>
                         }
+                        </Flex>
                       </Flex>
                     </>
                   )}

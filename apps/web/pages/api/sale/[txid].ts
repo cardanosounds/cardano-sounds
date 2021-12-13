@@ -1,4 +1,3 @@
-import { TIMEOUT } from 'dns';
 import { NextApiRequest, NextApiResponse } from 'next'
 import { instanceOfDatabaseTx } from '../../../interfaces/databaseTx';
 import getTransaction from '../../../lib/db'
@@ -13,7 +12,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     });
     const { txid } = req.query 
     
-    var format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+    const format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
 
     const isTxidSafe = txid.length === 64 && !format.test(txid.toString()) ? true : false 
 
@@ -33,5 +32,5 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
 
     setInterval(async () => {
         await reply()
-    }, 8000)
+    }, 18000)
 }
