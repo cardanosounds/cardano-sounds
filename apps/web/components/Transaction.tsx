@@ -71,7 +71,7 @@ export default function Transaction({ id } : {id: string}) {
                     margin="auto"
                     py={[0, 0, 24]}
                 >
-                     {isFinished ?
+                    {isFinished ?
                     <SoundNFT nftData={data.Metadata}/>
                     : 
                     <p>{data?.status}</p>
