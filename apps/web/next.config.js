@@ -1,4 +1,5 @@
 const withPWA = require('next-pwa')
+const runtimeCaching = require("next-pwa/cache")
  
 module.exports = withPWA({
     webpack: (config) => {
@@ -10,6 +11,10 @@ module.exports = withPWA({
         return config
     },
     pwa: {
-        dest: 'public'
+        dest: "public",
+		register: true,
+		skipWaiting: true,
+		runtimeCaching,
+		buildExcludes: [/middleware-manifest.json$/]
     }
 })
