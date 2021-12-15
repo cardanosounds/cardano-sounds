@@ -12,11 +12,10 @@ export default function TransactionStatus({state}: {state: 1|2|3|4}) {
   return (
       <>
         <Flex
-            display="column"
             align="center"
             justify="center"
             height={["unset", "unset", "10vh"]}
-            margin={["20vh 0 0 -15vh", "20vh 0 0 -15vh", "initial"]}
+            margin={["0 0 0 -15vh", "0 0 0 -15vh", "initial"]}
             mb="5vh"
             transition="all 0.3s ease-out"
             transform={["rotate(90deg)","rotate(90deg)", "none"]}

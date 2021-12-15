@@ -9,9 +9,8 @@ import { IoIosWallet, IoMdPricetag } from 'react-icons/io';
 import { FaChevronLeft } from 'react-icons/fa'
 import { RiAlarmWarningFill } from 'react-icons/ri'
 import { CopyIcon, InfoIcon, SearchIcon } from "@chakra-ui/icons";
-import NextChakraLink from "./NextChakraLink";
 import Transaction from "./Transaction";
-import { useToast } from "@chakra-ui/react"
+// import { useToast } from "@chakra-ui/react"
 import Address from "./Address";
 
 export default function Buy(){
@@ -23,7 +22,7 @@ export default function Buy(){
 
      const { isOpen, onOpen, onClose } = useDisclosure()
 
-    const toast = useToast()
+    // const toast = useToast()
 
     const handleChange = (event: { target: { value: React.SetStateAction<string>; }; }) => handleSearchValChange(event.target.value)
 
@@ -56,12 +55,12 @@ export default function Buy(){
                     > 
                         <Flex minH="40vh">
                             <InputGroup 
-                                mt={["5vh", "5vh", "5vh", "5vh", "unset"]}
+                                // mt={["5vh", "5vh", "5vh", "5vh", "unset"]}
                                 // w={["90vw", "85vw", "60vw", "50vw"]}
                                 w={["100%", "100%", "100%", "100%", "40vw"]}
-                                mx="auto"
+                                margin="auto"
                                 display={txStatus ? "none" : txSearch ? "flex" : "none"}
-                                mb={9}
+                                // mb={9}
                             >
                                 <Input 
                                     placeholder="Check status for txid" 
