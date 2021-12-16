@@ -11,7 +11,7 @@ let ipfs;
 export default function P5sequencer() {
 	const myRef = useRef()
 	const initIpfs = useIpfs()
-	const [soundfile, setSoundfile] = useState()
+	const [soundfile, setSoundfile] = useState(null)
 	const [ipfsHash, setIpfsHash] = useState(null)
 	const [canMint, setCanMint] = useState(false)
     let myP5;
@@ -32,6 +32,7 @@ export default function P5sequencer() {
 
     useEffect(() => {
 		myP5 = new p5(Sketch, myRef.current)
+		return () => {if(sloop) sloop.stop()}
     }, [])
     
     const Sketch = (p) => {
@@ -211,10 +212,10 @@ export default function P5sequencer() {
 	  }
 
     return (
-        <Flex direction={"column"}>
+        <Flex direction={"column"} >
 			<Flex mt={36}ref={myRef}></Flex>
-			{soundfile === null ? <></> :  
-			<Button onClick={wannaMint}>Do you want to mint your sound?</Button>}
+			{soundfile === null ? <></> : 
+			<Button maxW={64} mt={8} mx="auto" onClick={wannaMint}>Mint the recording</Button>}
 			{canMint === true ? <MintBtn ipfsHash={ipfsHash}/> : <></> }
         </Flex>
     )

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
-import CoinSelection from '../../nami-js/coinSelection.js'
+import CoinSelection from '../../wallet-js/coinSelection.js'
 import { Buffer } from 'buffer'
 // import Loader from '../../nami-js/loader'
 // window.$ = window.jQuery = import("jquery");

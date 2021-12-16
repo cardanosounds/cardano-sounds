@@ -3,6 +3,7 @@ import CoinSelection from "./coinSelection";
 import { Buffer } from "buffer";
 import { amountToValue, asciiToHex, assetsCount } from "./utils";
 
+
 const Cardano = async () => {
   await Loader.load();
   return Loader.Cardano;
@@ -14,10 +15,11 @@ const ERROR = {
 
 export { Buffer, Cardano };
 
-class NamiJs {
-  constructor(provider, apiKey = undefined) {
+class WalletJs {
+  constructor(provider, apiKey, wallet = undefined) {
     this.provider = provider;
     this.apiKey = apiKey;
+    this.wallet = wallet ? wallet : window.cardano
   }
   async _blockfrostRequest(endpoint, headers, body) {
     return await fetch(this.provider + endpoint, {
@@ -127,10 +129,10 @@ class NamiJs {
     }
     const protocolParameters = await this.getProtocolParameters();
     const address = Buffer.from(
-      (await window.cardano.getUsedAddresses())[0],
+      (await this.wallet.getUsedAddresses())[0],
       "hex"
     );
-    const utxos = (await window.cardano.getUtxos()).map((utxo) =>
+    const utxos = (await this.wallet.getUtxos()).map((utxo) =>
       Loader.Cardano.TransactionUnspentOutput.from_bytes(
         Buffer.from(utxo, "hex")
       )
@@ -202,7 +204,7 @@ class NamiJs {
     await Loader.load();
     const protocolParameters = await this.getProtocolParameters();
     const address = Buffer.from(
-      (await window.cardano.getUsedAddresses())[0],
+      (await this.wallet.getUsedAddresses())[0],
       "hex"
     );
     const checkValue = await amountToValue(
@@ -223,7 +225,7 @@ class NamiJs {
         Loader.Cardano.Value.new(minAda)
       )
     );
-    const utxos = (await window.cardano.getUtxos()).map((utxo) =>
+    const utxos = (await this.wallet.getUtxos()).map((utxo) =>
       Loader.Cardano.TransactionUnspentOutput.from_bytes(
         Buffer.from(utxo, "hex")
       )
@@ -381,7 +383,7 @@ class NamiJs {
 
   async signTx(transaction) {
     await Loader.load();
-    const witnesses = await window.cardano.signTx(
+    const witnesses = await this.wallet.signTx(
       Buffer.from(transaction.to_bytes(), "hex").toString("hex")
     );
     const txWitnesses = transaction.witness_set();
@@ -460,7 +462,7 @@ class NamiJs {
   async baseAddressToBech32() {
     await Loader.load();
     const address = Buffer.from(
-      (await window.cardano.getUsedAddresses())[0],
+      (await this.wallet.getUsedAddresses())[0],
       "hex"
     );
     return Loader.Cardano.BaseAddress.from_address(
@@ -475,7 +477,7 @@ class NamiJs {
     const slot = parseInt(protocolParameters.slot);
     const ttl = slot + 1000;
     const address = Buffer.from(
-      (await window.cardano.getUsedAddresses())[0],
+      (await this.wallet.getUsedAddresses())[0],
       "hex"
     );
     const paymentKeyHash = Loader.Cardano.BaseAddress.from_address(
@@ -504,4 +506,4 @@ class NamiJs {
   }
 }
 
-export default NamiJs;
+export default WalletJs;

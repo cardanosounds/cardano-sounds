@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic'
 import { useState } from "react"
 import Buy from "./nami/buy"
-import Loader from "../nami-js/loader"
+import Loader from "../wallet-js/loader"
 
 const WasmComponent = dynamic({
   loader: async () => {

@@ -8,7 +8,7 @@ import {
     useToast,
   } from "@chakra-ui/react";
   import React from "react";
-  import NamiJs from "../nami-js";
+  import NamiJs from "../wallet-js";
   import { ChevronRightIcon, ExternalLinkIcon } from "@chakra-ui/icons";
   import MiddleEllipsis from "react-middle-ellipsis";
   import ImageDrop from "./mint/imageDrop"

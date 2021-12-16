@@ -8,13 +8,10 @@ import {
     useToast,
   } from "@chakra-ui/react";
   import React from "react";
-  import NamiJs from "../nami-js";
+  import WalletJs from "../wallet-js";
   import { ChevronRightIcon, ExternalLinkIcon } from "@chakra-ui/icons";
-  // import MiddleEllipsis from "react-middle-ellipsis";
-  // import ImageDrop from "./mint/imageDrop"
-  import useIpfs from "./mint/useIpfs";
   
-  let nami, ipfs;
+  let walletjs
   
   const MintBtn = (ipfsHash) => {
     const toast = useToast();
@@ -28,13 +25,15 @@ import {
       name: "",
       metadataName: "",
       quantity: "1",
-      author: "",
+      author: ""
     });
   
     const init = async () => {
-      nami = new NamiJs(
+      // const wallet = (await window.cardano.ccvault.enable())
+      walletjs = new WalletJs(
         "https://cardano-mainnet.blockfrost.io/api/v0",
-        "mainnetGHf1olOJblaj5LD8rcRudajSJGKRU6IL"
+        "mainnetGHf1olOJblaj5LD8rcRudajSJGKRU6IL",
+        // wallet
       );
       // ipfs = await initIpfs();
       setConnected(window.localStorage.getItem('cswallet') === 'connected')
@@ -44,7 +43,7 @@ import {
       connected = window.localStorage.getItem('cswallet') === 'connected'
       setConnected(connected)
       return (
-        NoNami(toast) &&
+        NoWallet(toast) &&
         (await NotConnectedToast(toast, connected)) &&
         (await WrongNetworkToast(toast))
       );
@@ -54,7 +53,6 @@ import {
       setLoading(true);
       // const result = await ipfs.add(blob);ipfsHash
       // const hash = result.path;
-      const hash = ipfsHash;
       // (async () => {
       //   const response = await fetch(
       //     'https://ipfs2arweave.com/permapin/'+hash,
@@ -64,7 +62,7 @@ import {
       //   console.log(await response.json());
       // })();
       // const hash = 'QmWbpAupVYwj7pVE6i3VMALMwngctS8F5ucCNLwg9RqCn3'
-      const policy = await nami.createLockingPolicyScript();
+      const policy = await walletjs.createLockingPolicyScript();
       fetch(`https://pool.pm/register/policy/${policy.id}`, {
         method: "POST",
         headers: {
@@ -100,7 +98,7 @@ import {
         },
       };
       if (inputs.author) metadata[policy.id][inputs.name].author = inputs.author;
-      const tx = await nami
+      const tx = await walletjs
         .mintTx(
           [{ name: inputs.name, quantity: inputs.quantity }],
           metadata,
@@ -112,11 +110,11 @@ import {
           setLoading(false);
         });
       if (!tx) return;
-      const signedTx = await nami.signTx(tx).catch(() => setLoading(false));
+      const signedTx = await walletjs.signTx(tx).catch(() => setLoading(false));
       if (!signedTx) return;
-      const txHash = await nami.submitTx(signedTx);
+      const txHash = await walletjs.submitTx(signedTx);
       PendingTransactionToast(toast);
-      await nami.awaitConfirmation(txHash);
+      await walletjs.awaitConfirmation(txHash);
       toast.closeAll();
       SuccessTransactionToast(toast, txHash);
       setLoading(false);
@@ -129,7 +127,7 @@ import {
     React.useEffect(() => {
       if (connected)
         window.cardano.onAccountChange(async () => {
-          const address = await nami.baseAddressToBech32();
+          const address = await walletjs.baseAddressToBech32();
           setConnected(address);
         });
     });
@@ -140,14 +138,11 @@ import {
         display="flex"
         alignItems="center"
         justifyContent="center"
-        // background="gray.100"
       >       
         <Box
           width="90%"
           maxWidth="500px"
-          // background="white"
           rounded="lg"
-          // shadow="lg"
           display="flex"
           alignItems="center"
           flexDirection="column"
@@ -157,7 +152,7 @@ import {
             Mint the sound with
           </Text>
           <Text fontWeight="bold" fontSize="22">
-            Nami wallet
+           a Dapp connector wallet
           </Text>
           {/* <Box h="6" />
           <ImageDrop
@@ -168,7 +163,7 @@ import {
           /> */}
           <Box h="10" />
           <Input
-            focusBorderColor="teal.400"
+            focusBorderColor="blue.700"
             width="60%"
             placeholder="Name"
             value={inputs.metadataName}
@@ -183,7 +178,7 @@ import {
           <Box h="4" />
           <Input
             type="number"
-            focusBorderColor="teal.400"
+            focusBorderColor="blue.700"
             width="60%"
             placeholder="Quantity"
             value={inputs.quantity}
@@ -195,7 +190,7 @@ import {
           <Box h="4" />
           <Input
             value={inputs.author}
-            focusBorderColor="teal.400"
+            focusBorderColor="blue.700"
             width="60%"
             placeholder="Author (optional)"
             onInput={(e) => {
@@ -221,13 +216,13 @@ import {
     );
   };
   
-  const NoNami = (toast) => {
+  const NoWallet = (toast) => {
     if (window.cardano) return true;
     toast({
       position: "bottom-right",
       title: (
         <Box width="full" display="flex">
-          <Text>Nami not installed</Text>
+          <Text>No wallet installed</Text>
           <Button
             onClick={() => window.open("https://namiwallet.io")}
             ml="6"
@@ -237,7 +232,18 @@ import {
             color="orange.400"
             rightIcon={<ChevronRightIcon />}
           >
-            Get it
+            Get Nami
+          </Button>
+          <Button
+            onClick={() => window.open("https://ccvault.io")}
+            ml="6"
+            mr="-4"
+            size="xs"
+            // background="white"
+            color="orange.400"
+            rightIcon={<ChevronRightIcon />}
+          >
+            Get ccvault
           </Button>
         </Box>
       ),
