@@ -5,6 +5,7 @@ import {
     Spinner,
     Text,
     useToast,
+    Flex
   } from "@chakra-ui/react";
 import { useContext, useState, useEffect } from "react";
 import WalletJs from "../wallet-js";
@@ -116,12 +117,19 @@ import WalletContext from "../lib/WalletContext";
       const signedTx = await wallet.signTx(tx).catch(() => setLoading(false));
       if (!signedTx) return;
       const txHash = await wallet.submitTx(signedTx);
-      PendingTransactionToast(toast);
-      await wallet.awaitConfirmation(txHash);
-      toast.closeAll();
-      SuccessTransactionToast(toast, txHash);
-      setLoading(false);
-      console.log(txHash);
+      if(txHash.toString().length === 64){
+        PendingTransactionToast(toast);
+        await wallet.awaitConfirmation(txHash);
+        toast.closeAll();
+        SuccessTransactionToast(toast, txHash);
+        setLoading(false);
+        console.log(txHash);
+
+      } else {
+        console.log("error")
+        await TxErrorSubmitToast(toast);
+        setLoading(false);
+      }
     };
   
     useEffect(() => {
@@ -137,26 +145,26 @@ import WalletContext from "../lib/WalletContext";
     return (
       <Box
         width="100%"
-        height="100vh"
+        height="75vh"
         display="flex"
         alignItems="center"
         justifyContent="center"
       >       
         <Box
           width="90%"
-          maxWidth="500px"
+          maxWidth="65vw"
           rounded="lg"
           display="flex"
           alignItems="center"
           flexDirection="column"
           padding="10"
         >
-          <Text fontWeight="bold" fontSize="22">
-            Mint the sound with
+          <Text fontWeight="bold" fontSize="36" mb={4}>
+            Mint the sound with a Dapp connector wallet
           </Text>
-          <Text fontWeight="bold" fontSize="22">
+          {/* <Text fontWeight="bold" fontSize="22">
            a Dapp connector wallet
-          </Text>
+          </Text> */}
           {/* <Box h="6" />
           <ImageDrop
             onLoadedRaw={(rawImage) => {
@@ -164,56 +172,61 @@ import WalletContext from "../lib/WalletContext";
               setRawImage(rawImage);
             }}
           /> */}
-          <Box h="10" />
-          <Input
-            focusBorderColor="blue.700"
-            width="60%"
-            placeholder="Name"
-            value={inputs.metadataName}
-            onInput={(e) => {
-              const val = e.target.value;
-              const name = val.replace(/[^A-Z0-9]/gi, "");
-              const metadataName = val;
-              if (name.length > 32 || metadataName.length > 64) return;
-              setInputs((i) => ({ ...i, name, metadataName }));
-            }}
-          />
-          <Box h="4" />
-          <Input
-            type="number"
-            focusBorderColor="blue.700"
-            width="60%"
-            placeholder="Quantity"
-            value={inputs.quantity}
-            onInput={(e) => {
-              const val = e.target.value;
-              setInputs((i) => ({ ...i, quantity: val }));
-            }}
-          />
-          <Box h="4" />
-          <Input
-            value={inputs.author}
-            focusBorderColor="blue.700"
-            width="60%"
-            placeholder="Author (optional)"
-            onInput={(e) => {
-              const val = e.target.value;
-              if (val.length > 64) return;
-              setInputs((i) => ({ ...i, author: val }));
-            }}
-          />
-          <Box h="14" />
-          <Button
-            onClick={async () =>
-              (await checkStatus(toast, connected)) && makeTx()
-            }
-            width="100px"
-            isDisabled={!(inputs.name && inputs.quantity && inputs.metadataName)}
-            isLoading={loading}
-            variant="ghost"
-          >
-            Mint
-          </Button>
+          <Box w="10" />
+          <Flex flexDirection="row">
+            <Flex flexDirection="column" w="75%">
+              <Input
+                focusBorderColor="blue.700"
+                width="60%"
+                placeholder="Name"
+                value={inputs.metadataName}
+                onInput={(e) => {
+                  const val = e.target.value;
+                  const name = val.replace(/[^A-Z0-9]/gi, "");
+                  const metadataName = val;
+                  if (name.length > 32 || metadataName.length > 64) return;
+                  setInputs((i) => ({ ...i, name, metadataName }));
+                }}
+              />
+              <Box h="4" />
+              <Input
+                type="number"
+                focusBorderColor="blue.700"
+                width="60%"
+                placeholder="Quantity"
+                value={inputs.quantity}
+                onInput={(e) => {
+                  const val = e.target.value;
+                  setInputs((i) => ({ ...i, quantity: val }));
+                }}
+              />
+              <Box h="4" />
+              <Input
+                value={inputs.author}
+                focusBorderColor="blue.700"
+                width="60%"
+                placeholder="Author (optional)"
+                onInput={(e) => {
+                  const val = e.target.value;
+                  if (val.length > 64) return;
+                  setInputs((i) => ({ ...i, author: val }));
+                }}
+              />
+            </Flex>
+            <Box w="14" />
+            <Button
+              my="auto"
+              onClick={async () =>
+                (await checkStatus(toast, connected)) && makeTx()
+              }
+              width="100px"
+              isDisabled={!(inputs.name && inputs.quantity && inputs.metadataName)}
+              isLoading={loading}
+              variant="ghost"
+            >
+              Mint
+            </Button>
+          </Flex>
         </Box>
       </Box>
     );
@@ -253,6 +266,17 @@ import WalletContext from "../lib/WalletContext";
   
       status: "warning",
       duration: 9000,
+    });
+    return false;
+  };
+
+  const TxErrorSubmitToast = async (toast) => {
+    toast({
+      position: "bottom-right",
+      title: "Transaction submit failed",
+      description: "Try again or use a wallet with enough ADA not locked with UTXOs, and only a small amount of native assets.",
+      status: "error",
+      duration: 5000,
     });
     return false;
   };
