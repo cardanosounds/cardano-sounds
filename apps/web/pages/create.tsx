@@ -16,7 +16,6 @@ export default function Create() {
           <Flex minH="70vh">     
             <P5Comp/>
           </Flex> 
-          <Text  mx="8vw" mt={12}>This is only simple demo. More tools to create sounds, combine them with your existing media, or mint directly are being developed and will be added.</Text>
         </Layout>
     )
 }

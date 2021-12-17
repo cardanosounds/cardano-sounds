@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import p5 from 'p5'
 import "../p5.sound.js"
 import "../p5.dom.js"
-import { Flex, Button } from '@chakra-ui/react'
+import { Flex, Button, Text } from '@chakra-ui/react'
 import MintBtn from './MintBtn.jsx'
 import useIpfs from "./mint/useIpfs";
 
@@ -128,7 +128,7 @@ export default function P5sequencer() {
 		} else {
 			console.log("play start")
 			var soundRecorder = new p5.SoundRecorder();
-			var soundFile = new p5.SoundFile();
+			var soundFile = new p5.SoundFile()
 			soundRecorder.record(soundFile);
 			sloop.start();
 			setTimeout(
@@ -136,7 +136,9 @@ export default function P5sequencer() {
 					sloop.pause();
 					soundRecorder.stop();
 					ipfs = await initIpfs();
-					let tmp = await ipfs.add(soundFile.getBlob())
+					const tmpSF = soundFile.getBlob()
+					setSoundfile(tmpSF)
+					let tmp = await ipfs.add(tmpSF)
 					console.log(tmp)
 					setIpfsHash(tmp.path)
 				}, 10000);
@@ -215,8 +217,13 @@ export default function P5sequencer() {
         <Flex direction={"column"} >
 			<Flex mt={36}ref={myRef}></Flex>
 			{soundfile === null ? <></> : 
-			<Button maxW={64} mt={8} mx="auto" onClick={wannaMint}>Mint the recording</Button>}
-			{canMint === true ? <MintBtn ipfsHash={ipfsHash}/> : <></> }
+			<Button maxW={64} variant="ghost" mt={8} mx="auto" onClick={wannaMint}>Mint the recording</Button>}
+			<Text textAlign={"center"} mx="8vw" mt={12}>This is only simple demo. More tools to create sounds, combine them with your existing media, or mint directly are being developed and will be added. <br/> If transaction submit fails, try using a wallet with less Native tokens. </Text>
+			{canMint === true ? 
+			<>	
+				<MintBtn ipfsHash={ipfsHash}/>
+			</> 
+			: <></> }
         </Flex>
     )
 }

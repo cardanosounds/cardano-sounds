@@ -12,8 +12,8 @@ import {
   import { ChevronRightIcon, ExternalLinkIcon } from "@chakra-ui/icons";
   
   
-  let wallet
   const MintBtn = (ipfsHash) => {
+    let wallet
     const toast = useToast()
     // const initIpfs = useIpfs()
     console.log("ipfsHash")
@@ -33,7 +33,7 @@ import {
       wallet = new WalletJs(
         "https://cardano-mainnet.blockfrost.io/api/v0",
         "mainnetGHf1olOJblaj5LD8rcRudajSJGKRU6IL",
-        walletApi
+        // walletApi
       )
       // ipfs = await initIpfs();
       setConnected(window.localStorage.getItem('cswallet') === 'connected')

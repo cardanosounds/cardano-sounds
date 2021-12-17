@@ -16,10 +16,10 @@ const ERROR = {
 export { Buffer, Cardano };
 
 class WalletJs {
-  constructor(provider, apiKey, wallet = undefined) {
+  constructor(provider, apiKey, walletApi = undefined) {
     this.provider = provider;
     this.apiKey = apiKey;
-    this.wallet = wallet ? wallet : window.cardano
+    this.walletApi = walletApi ? walletApi : window.cardano
   }
   async _blockfrostRequest(endpoint, headers, body) {
     return await fetch(this.provider + endpoint, {
@@ -129,10 +129,10 @@ class WalletJs {
     }
     const protocolParameters = await this.getProtocolParameters();
     const address = Buffer.from(
-      (await this.wallet.getUsedAddresses())[0],
+      (await this.walletApi.getUsedAddresses())[0],
       "hex"
     );
-    const utxos = (await this.wallet.getUtxos()).map((utxo) =>
+    const utxos = (await this.walletApi.getUtxos()).map((utxo) =>
       Loader.Cardano.TransactionUnspentOutput.from_bytes(
         Buffer.from(utxo, "hex")
       )
@@ -204,7 +204,7 @@ class WalletJs {
     await Loader.load();
     const protocolParameters = await this.getProtocolParameters();
     const address = Buffer.from(
-      (await this.wallet.getUsedAddresses())[0],
+      (await this.walletApi.getUsedAddresses())[0],
       "hex"
     );
     const checkValue = await amountToValue(
@@ -225,7 +225,7 @@ class WalletJs {
         Loader.Cardano.Value.new(minAda)
       )
     );
-    const utxos = (await this.wallet.getUtxos()).map((utxo) =>
+    const utxos = (await this.walletApi.getUtxos()).map((utxo) =>
       Loader.Cardano.TransactionUnspentOutput.from_bytes(
         Buffer.from(utxo, "hex")
       )
@@ -381,9 +381,140 @@ class WalletJs {
     return transaction;
   }
 
+  async payTx(addr, adaAmount) {
+    const cardano = this.walletApi
+    const protocolParameters = await this.getProtocolParameters()
+    const lovelace = (parseFloat(adaAmount) * 1000000).toString()
+  
+  
+    const paymentAddr = Loader.Cardano.Address.from_bytes(Buffer.from(await cardano.getChangeAddress(), 'hex')).to_bech32()
+    const rawUtxo = await cardano.getUtxos()
+    const utxos = rawUtxo.map(u => Loader.Cardano.TransactionUnspentOutput.from_bytes(Buffer.from(u, 'hex')))
+    const outputs = Loader.Cardano.TransactionOutputs.new()
+  
+    outputs.add(
+      Loader.Cardano.TransactionOutput.new(
+        Loader.Cardano.Address.from_bech32(addr),
+        Loader.Cardano.Value.new(
+          Loader.Cardano.BigNum.from_str(lovelace)
+        )
+      )
+    )
+  
+    const MULTIASSET_SIZE = 5848;
+    const VALUE_SIZE = 5860;
+    const totalAssets = 0
+    CoinSelection.setProtocolParameters(
+      protocolParameters.minUtxo.to_str(),
+      protocolParameters.linearFee.coefficient().to_str(),
+      protocolParameters.linearFee.constant().to_str(),
+      protocolParameters.maxTxSize.toString()
+    );
+  
+    const selection = await CoinSelection.randomImprove(
+      utxos,
+      outputs,
+      20 + totalAssets,
+      protocolParameters.minUtxo.to_str()
+    );
+  
+    const inputs = selection.input;
+    const txBuilder = Loader.Cardano.TransactionBuilder.new(
+      protocolParameters.linearFee,
+      protocolParameters.minUtxo,
+      protocolParameters.poolDeposit,
+      protocolParameters.keyDeposit,
+      5000,
+      16384
+    );
+  
+    for (let i = 0; i < inputs.length; i++) {
+      const utxo = inputs[i];
+      txBuilder.add_input(
+        utxo.output().address(),
+        utxo.input(),
+        utxo.output().amount()
+      );
+    }
+    txBuilder.add_output(Loader.Cardano.TransactionOutput.new(
+      Loader.Cardano.Address.from_bech32(addr),
+      Loader.Cardano.Value.new(
+        Loader.Cardano.BigNum.from_str(lovelace)
+      )
+    ));
+  
+    const change = selection.change;
+    const changeMultiAssets = change.multiasset();
+  
+    // check if change value is too big for single output
+    if (changeMultiAssets && change.to_bytes().length * 2 > VALUE_SIZE) {
+      const partialChange = Loader.Cardano.Value.new(
+        Loader.Cardano.BigNum.from_str('0')
+      );
+  
+      const partialMultiAssets = Loader.Cardano.MultiAsset.new();
+      const policies = changeMultiAssets.keys();
+      const makeSplit = () => {
+        for (let j = 0; j < changeMultiAssets.len(); j++) {
+          const policy = policies.get(j);
+          const policyAssets = changeMultiAssets.get(policy);
+          const assetNames = policyAssets.keys();
+          const assets = Loader.Cardano.Assets.new();
+          for (let k = 0; k < assetNames.len(); k++) {
+            const policyAsset = assetNames.get(k);
+            const quantity = policyAssets.get(policyAsset);
+            assets.insert(policyAsset, quantity);
+            //check size
+            const checkMultiAssets = Loader.Cardano.MultiAsset.from_bytes(
+              partialMultiAssets.to_bytes()
+            );
+            checkMultiAssets.insert(policy, assets);
+            if (checkMultiAssets.to_bytes().length * 2 >= MULTIASSET_SIZE) {
+              partialMultiAssets.insert(policy, assets);
+              return;
+            }
+          }
+          partialMultiAssets.insert(policy, assets);
+        }
+      };
+      makeSplit();
+      partialChange.set_multiasset(partialMultiAssets);
+      const minAda = Loader.Cardano.min_ada_required(
+        partialChange,
+        protocolParameters.minUtxo
+      );
+      partialChange.set_coin(minAda);
+  
+      txBuilder.add_output(
+        Loader.Cardano.TransactionOutput.new(
+          Loader.Cardano.Address.from_bech32(paymentAddr),
+          partialChange
+        )
+      );
+    }
+  
+    txBuilder.add_change_if_needed(
+      Loader.Cardano.Address.from_bech32(paymentAddr)
+    );
+  
+    const transaction = Loader.Cardano.Transaction.new(
+      txBuilder.build(),
+      Loader.Cardano.TransactionWitnessSet.new(),
+    );
+  
+    const size = transaction.to_bytes().length * 2;
+    if (size > protocolParameters.maxTxSize) throw "Mmax tx size"
+    return transaction  
+    // const witneses = await cardano.signTx(Buffer.from(transaction.to_bytes(), 'hex').toString('hex'))
+    // const signedTx = Loader.Cardano.Transaction.new(transaction.body(), Loader.Cardano.TransactionWitnessSet.from_bytes(Buffer.from(witneses, "hex"))) // ,transaction.metadata()
+    // const txhash = await cardano.submitTx(Buffer.from(signedTx.to_bytes(), 'hex').toString('hex'))
+  
+    // return txhash
+  }
+
   async signTx(transaction) {
     await Loader.load();
-    const witnesses = await this.wallet.signTx(
+    const witnesses = await this.walletApi.signTx(
       Buffer.from(transaction.to_bytes(), "hex").toString("hex")
     );
     const txWitnesses = transaction.witness_set();
@@ -462,7 +593,7 @@ class WalletJs {
   async baseAddressToBech32() {
     await Loader.load();
     const address = Buffer.from(
-      (await this.wallet.getUsedAddresses())[0],
+      (await this.walletApi.getUsedAddresses())[0],
       "hex"
     );
     return Loader.Cardano.BaseAddress.from_address(
@@ -477,7 +608,7 @@ class WalletJs {
     const slot = parseInt(protocolParameters.slot);
     const ttl = slot + 1000;
     const address = Buffer.from(
-      (await this.wallet.getUsedAddresses())[0],
+      (await this.walletApi.getUsedAddresses())[0],
       "hex"
     );
     const paymentKeyHash = Loader.Cardano.BaseAddress.from_address(

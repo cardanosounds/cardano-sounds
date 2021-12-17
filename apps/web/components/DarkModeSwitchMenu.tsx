@@ -105,10 +105,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
 
     useEffect(() => { 
       var prevScrollpos = window.pageYOffset;
-      console.log("window.pageYOffset")
-      console.log(window.pageYOffset)
       window.onscroll = function() {
-        console.log("scroll")
         var currentScrollPos = window.pageYOffset;
         if (prevScrollpos > currentScrollPos) {
           document.getElementById("navbar").style.top = "0";
