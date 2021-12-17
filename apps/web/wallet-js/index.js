@@ -4,6 +4,7 @@ import { Buffer } from "buffer";
 import { amountToValue, asciiToHex, assetsCount } from "./utils";
 
 
+
 const Cardano = async () => {
   await Loader.load();
   return Loader.Cardano;
@@ -16,7 +17,7 @@ const ERROR = {
 export { Buffer, Cardano };
 
 class WalletJs {
-  constructor(provider, apiKey, walletApi = undefined) {
+  constructor(provider, apiKey, walletApi) {
     this.provider = provider;
     this.apiKey = apiKey;
     this.walletApi = walletApi ? walletApi : window.cardano

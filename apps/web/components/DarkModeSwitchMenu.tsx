@@ -1,5 +1,5 @@
-import { useColorMode, Flex, Button, IconButton, Spacer, Heading, Box, Text, Stack, useDisclosure, useColorModeValue, Modal, ModalContent, ModalHeader, ModalOverlay, ModalCloseButton, ModalFooter, ModalBody } from '@chakra-ui/react'
-import { useState, useEffect } from 'react'
+import { useColorMode, Flex, Button, IconButton, Spacer, Heading, Box, Text, Stack, useDisclosure, Modal, ModalContent, ModalHeader, ModalOverlay, ModalCloseButton, ModalFooter, ModalBody } from '@chakra-ui/react'
+import { useState, useEffect, useContext } from 'react'
 import { FaChevronLeft } from 'react-icons/fa';
 import { MdAccountBalanceWallet } from 'react-icons/md';
 import { GiSoundOff, GiSoundOn } from 'react-icons/gi';
@@ -7,6 +7,7 @@ import useSound from 'use-sound';
 import { MoonIcon, SunIcon} from '@chakra-ui/icons'
 import NextChakraLink from './NextChakraLink'
 import mainStyles from './layout.module.css'
+import WalletContext from '../lib/WalletContext';
 import Logo from './Logo'
 import {
   Drawer,
@@ -24,6 +25,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
     const { colorMode, toggleColorMode } = useColorMode()
     const [sound, soundAbility] = useState<boolean>(true)
     const isDark = colorMode === 'dark'
+    const walletCtx = useContext(WalletContext)
     const [walletEnabled, walletEnable] = useState<boolean>(false)
     const { isOpen, onOpen, onClose } = useDisclosure()
     const walletModal: {
@@ -67,14 +69,35 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
      }
    })
 
-    const enableCardano = async () => {
+    const enableCardano = async (wallet: string = 'nami') => {
       const win: any = window
       if(!win.cardano) return
-      if(await win.cardano.isEnabled()) return walletModal.onClose()
 
-      await win.cardano.enable()
+      let baseWalletApi, fullWalletApi
+      switch(wallet){
+        case 'nami':
+          baseWalletApi = win.cardano
+          break
+        case 'ccvault':
+          baseWalletApi = win.cardano.ccvault
+          break
+      }
+      // if(await baseWalletApi.isEnabled()) return walletModal.onClose()
 
-      if(!await win.cardano.isEnabled()) return
+      switch(wallet){
+        case 'nami':
+          await baseWalletApi.enable()
+          fullWalletApi = win.cardano
+          break
+        case 'ccvault':
+          fullWalletApi = await baseWalletApi.enable()
+          break
+      }
+
+      if(!await baseWalletApi.isEnabled()) return
+
+      walletCtx.update({walletApi: fullWalletApi})
+      console.log(walletCtx.walletApi)
       allowWallet()
       playSwitchSound()
       walletModal.onClose()
@@ -116,7 +139,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
       }
       
       const win: any = window
-      checkForWallet()
+      // checkForWallet()
       // enableCardano()
       if(win.localStorage.getItem('sound') === null)
       {
@@ -224,13 +247,25 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                         <ModalCloseButton />      
                         <ModalBody>
                           {walletEnabled ?
-                            <Text>Nami wallet connected</Text> : <></>}
+                            <Text>...Connected</Text>
+                            : <></>}
+                            {/* <>
+                              <Button variant={'ghost'} mr={3} onClick={() => enableCardano()}>
+                                Connect Nami
+                              </Button>
+                              <Button variant={'ghost'} mr={3} onClick={() => enableCardano('ccvault')}>
+                                Connect ccvault
+                              </Button>
+                            </> */}
+                          {/* } */}
                         </ModalBody>
                         <ModalFooter>
-                          {!walletEnabled ?
-                          <Button colorScheme='blue' mr={3} onClick={enableCardano}>
+                          <Button variant={'ghost'} mr={3} onClick={() => enableCardano()}>
                             Connect Nami
-                          </Button> : <></>}
+                          </Button>
+                          <Button variant={'ghost'} mr={3} onClick={() => enableCardano('ccvault')}>
+                            Connect ccvault
+                          </Button>
                           <Button onClick={walletModal.onClose}>Close</Button>
                         </ModalFooter>
                       </ModalContent>

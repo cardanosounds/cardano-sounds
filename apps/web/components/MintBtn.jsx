@@ -2,25 +2,27 @@ import {
     Box,
     Button,
     Input,
-    Link,
     Spinner,
     Text,
     useToast,
   } from "@chakra-ui/react";
-  import React from "react";
-  import WalletJs from "../wallet-js";
-  import { ChevronRightIcon, ExternalLinkIcon } from "@chakra-ui/icons";
+import { useContext, useState, useEffect } from "react";
+import WalletJs from "../wallet-js";
+import { ChevronRightIcon, ExternalLinkIcon } from "@chakra-ui/icons";
+import WalletContext from "../lib/WalletContext";
+  
   
   
   let wallet
   const MintBtn = (ipfsHash) => {
     const toast = useToast()
+    const walletCtx = useContext(WalletContext)
     // const initIpfs = useIpfs()
     console.log("ipfsHash")
     console.log(ipfsHash)
-    const [connected, setConnected] = React.useState("")
-    const [loading, setLoading] = React.useState(false)
-    const [inputs, setInputs] = React.useState({
+    const [connected, setConnected] = useState("")
+    const [loading, setLoading] = useState(false)
+    const [inputs, setInputs] = useState({
       image: "",
       name: "",
       metadataName: "",
@@ -29,18 +31,19 @@ import {
     })
   
     const init = async () => {
-      const walletApi = (await window.cardano.ccvault.enable())
+      // const walletApi = (await window.cardano.ccvault.enable())
       wallet = new WalletJs(
         "https://cardano-mainnet.blockfrost.io/api/v0",
         "mainnetGHf1olOJblaj5LD8rcRudajSJGKRU6IL",
-        walletApi
+        walletCtx.walletApi
       )
       // ipfs = await initIpfs();
       setConnected(window.localStorage.getItem('cswallet') === 'connected')
     }
 
     const checkStatus = async (toast, connected) => {
-      connected = window.localStorage.getItem('cswallet') === 'connected'
+      connected = walletCtx.walletApi !== null
+      wallet.walletApi = walletCtx.walletApi
       setConnected(connected)
       return (
         NoWallet(toast) &&
@@ -121,10 +124,10 @@ import {
       console.log(txHash);
     };
   
-    React.useEffect(() => {
+    useEffect(() => {
       init();
     }, []);
-    React.useEffect(() => {
+    useEffect(() => {
       if (connected)
         window.cardano.onAccountChange(async () => {
           const address = await wallet.baseAddressToBech32();
@@ -260,7 +263,7 @@ import {
     toast({
       position: "bottom-right",
       title: "Wrong network",
-      status: "info",
+      status: "warning",
       duration: 5000,
     });
     return false;
@@ -270,8 +273,8 @@ import {
     if (connected) return true;
     toast({
       position: "bottom-right",
-      title: "Connect the wallet first",
-      status: "info",
+      title: "Connect a wallet first",
+      status: "warning",
       duration: 5000,
     });
     return false;
