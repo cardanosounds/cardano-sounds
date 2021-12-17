@@ -217,7 +217,7 @@ export default function P5sequencer() {
         <Flex direction={"column"} >
 			<Flex mt={36}ref={myRef}></Flex>
 			{soundfile === null ? <></> : 
-			<Button maxW={64} variant="ghost" mt={8} mx="auto" onClick={wannaMint}>Mint the recording</Button>}
+			<Button maxW={64} variant="ghost" display={["none", "none", "flex"]} mt={8} mx="auto" onClick={wannaMint}>Mint the recording</Button>}
 			<Text textAlign={"center"} mx="8vw" mt={12}>This is only simple demo. More tools to create sounds, combine them with your existing media, or mint directly are being developed and will be added. <br/> If transaction submit fails, try using a wallet with less Native tokens. </Text>
 			{canMint === true ? 
 			<>	
