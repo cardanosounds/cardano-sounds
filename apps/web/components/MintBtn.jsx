@@ -162,18 +162,8 @@ import WalletContext from "../lib/WalletContext";
           <Text fontWeight="bold" fontSize="36" mb={4}>
             Mint the sound with a Dapp connector wallet
           </Text>
-          {/* <Text fontWeight="bold" fontSize="22">
-           a Dapp connector wallet
-          </Text> */}
-          {/* <Box h="6" />
-          <ImageDrop
-            onLoadedRaw={(rawImage) => {
-              console.log(rawImage);
-              setRawImage(rawImage);
-            }}
-          /> */}
           <Box w="10" />
-          <Flex flexDirection="row">
+          <Flex flexDirection="row" w="100%">
             <Flex flexDirection="column" w="75%">
               <Input
                 focusBorderColor="blue.700"
