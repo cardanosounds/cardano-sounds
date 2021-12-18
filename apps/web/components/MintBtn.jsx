@@ -163,7 +163,7 @@ import WalletContext from "../lib/WalletContext";
             Mint the sound with a Dapp connector wallet
           </Text>
           <Box w="10" />
-          <Flex flexDirection="row" w="100%">
+          <Flex flexDirection="row" w="80%">
             <Flex flexDirection="column" w="75%">
               <Input
                 focusBorderColor="blue.700"
