@@ -12,6 +12,7 @@ import { CopyIcon, InfoIcon, SearchIcon } from "@chakra-ui/icons";
 import Transaction from "./Transaction";
 // import { useToast } from "@chakra-ui/react"
 import Address from "./Address";
+import PayBtn from "./PayBtn.jsx";
 
 export default function Buy(){
     const [ searchValue, handleSearchValChange] = useState<string>("")
@@ -113,6 +114,24 @@ export default function Buy(){
                                LOOKUP TX
                            </Heading>  
                         </Button>
+                        <PayBtn/>
+                        {/* <Button 
+                           width={["80vw", "80vw", "80vw", "70vw", "25vw", "25vw"]}
+                           mt={["1vh", "1vh", "1vh", "1vh", "1vh", "5vh"]}
+                           height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]}
+                           variant="ghost"
+                           className={utilStyles.shadow}
+                           transition="all 0.3s ease-in-out"
+                           display={txSearch ? "none" : "flex"}
+                           onClick={ () => showTxSearch(true) }
+                        >
+                           <SearchIcon color="gray.600"/>
+                           <Heading fontSize={["1.25rem", "1.25rem", "1.5rem"]} as="h4" textColor="gray.600"
+                               fontWeight="normal"
+                           >
+                               LOOKUP TX
+                           </Heading>  
+                        </Button> */}
                        
                         <Flex direction={txStatus ? ["column", "column", "column", "column", "row-reverse"] : ["column", "column", "column", "column", "row"]}>
                             <Button 
