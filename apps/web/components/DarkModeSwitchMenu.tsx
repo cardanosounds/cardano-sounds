@@ -8,6 +8,7 @@ import { MoonIcon, SunIcon} from '@chakra-ui/icons'
 import NextChakraLink from './NextChakraLink'
 import mainStyles from './layout.module.css'
 import WalletContext from '../lib/WalletContext';
+import ConnectWalletModal from './ConnectWalletModal';
 import Logo from './Logo'
 import {
   Drawer,
@@ -237,39 +238,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                       <div className={mainStyles.ledorange}></div>
                     }
                     <MdAccountBalanceWallet />
-                    <Modal isOpen={walletModal.isOpen} onClose={walletModal.onClose}>
-                      <ModalOverlay />
-                           
-                      <ModalContent 
-                        backgroundColor={isDark ? ("gray.800") : ("white")}
-                        background="transparent url(/noise.png) repeat 0 0">
-                        <ModalHeader>Connect wallet</ModalHeader>
-                        <ModalCloseButton />      
-                        <ModalBody>
-                          {walletEnabled ?
-                            <Text>...Connected</Text>
-                            : <></>}
-                            {/* <>
-                              <Button variant={'ghost'} mr={3} onClick={() => enableCardano()}>
-                                Connect Nami
-                              </Button>
-                              <Button variant={'ghost'} mr={3} onClick={() => enableCardano('ccvault')}>
-                                Connect ccvault
-                              </Button>
-                            </> */}
-                          {/* } */}
-                        </ModalBody>
-                        <ModalFooter>
-                          <Button variant={'ghost'} mr={3} onClick={() => enableCardano()}>
-                            Connect Nami
-                          </Button>
-                          <Button variant={'ghost'} mr={3} onClick={() => enableCardano('ccvault')}>
-                            Connect ccvault
-                          </Button>
-                          <Button onClick={walletModal.onClose}>Close</Button>
-                        </ModalFooter>
-                      </ModalContent>
-                    </Modal>
+                    {ConnectWalletModal(walletModal.isOpen, walletModal.onClose, isDark, walletEnabled, enableCardano)}
                   </Flex>
                   <Flex
                    position="absolute"
