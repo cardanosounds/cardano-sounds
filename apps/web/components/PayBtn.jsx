@@ -1,40 +1,66 @@
 import {
     Box,
     Button,
-    Input,
     Spinner,
     Text,
     useToast,
-    Flex,
     useDisclosure, 
-    Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, ModalCloseButton 
+    Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, ModalCloseButton, useColorMode 
   } from "@chakra-ui/react";
 import { useContext, useState, useEffect } from "react";
 import WalletJs from "../wallet-js";
 import { ChevronRightIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import WalletContext from "../lib/WalletContext";
 import { MdAccountBalanceWallet } from 'react-icons/md';
-  
+import ConnectWalletModal from './ConnectWalletModal'
   
   
   let wallet
   const PayBtn = () => {
     const toast = useToast()
     const walletCtx = useContext(WalletContext)
-    // const initIpfs = useIpfs()
+    const { colorMode } = useColorMode()
+    const isDark = colorMode === 'dark'
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [connected, setConnected] = useState("")
     const [loading, setLoading] = useState(false)
+    const walletModal = useDisclosure()
   
     const init = async () => {
-      // const walletApi = (await window.cardano.ccvault.enable())
       wallet = new WalletJs(
         "https://cardano-mainnet.blockfrost.io/api/v0",
         "mainnetGHf1olOJblaj5LD8rcRudajSJGKRU6IL",
         walletCtx.walletApi
       )
-      // ipfs = await initIpfs();
       setConnected(window.localStorage.getItem('cswallet') === 'connected')
+    }
+
+    const enableCardano = async (wallet = 'nami') => {
+      if(!window.cardano) return
+
+      let baseWalletApi, fullWalletApi
+      switch(wallet){
+        case 'nami':
+          baseWalletApi = window.cardano
+          break
+        case 'ccvault':
+          baseWalletApi = window.cardano.ccvault
+          break
+      }
+      switch(wallet){
+        case 'nami':
+          await baseWalletApi.enable()
+          fullWalletApi = window.cardano
+          break
+        case 'ccvault':
+          fullWalletApi = await baseWalletApi.enable()
+          break
+      }
+      if(!await baseWalletApi.isEnabled()) return
+
+      walletCtx.update({walletApi: fullWalletApi})
+      window.localStorage.setItem('cswallet', 'connected')
+      walletModal.onClose()
     }
 
     const checkStatus = async (toast, connected) => {
@@ -79,7 +105,7 @@ import { MdAccountBalanceWallet } from 'react-icons/md';
         setLoading(false);
       }
     };
-  
+    
     useEffect(() => {
       init();
     }, []);
@@ -92,25 +118,28 @@ import { MdAccountBalanceWallet } from 'react-icons/md';
     });
     return (
       <Box
+        h="100%" w="100%"
       >       
-      <Button onClick={onOpen}>Pay <MdAccountBalanceWallet/></Button>
+      <Button onClick={onOpen} h="100%" w="100%">Pay <MdAccountBalanceWallet/></Button>
+      {ConnectWalletModal(walletModal.isOpen, walletModal.onClose, isDark, walletCtx.walletApi !== null, enableCardano)}
 
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
+        <ModalContent
+          backgroundColor={isDark ? ("gray.800") : ("white")}
+          background="transparent url(/noise.png) repeat 0 0"
+        >
+          <ModalHeader><Text fontWeight="bold" fontSize="36" mb={4}>
+              Pay with with a Dapp connector wallet
+            </Text></ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Text fontWeight="bold" fontSize="36" mb={4}>
-              Pay with with a Dapp connector wallet
-            </Text>
             <Button
               my="auto"
               onClick={async () =>
                 (await checkStatus(toast, connected)) && makeTx(
                   'addr1qx8p9zjyk2us3jcq4a5cn0xf8c2ydrz2cxc5280j977yvc0gtg8vh0c9sp7ce579jhpmynlk758lxhvf52sfs9mrprws3mseux',
                    1)
-                   
               }
               width="200px"
               isLoading={loading}
@@ -118,84 +147,19 @@ import { MdAccountBalanceWallet } from 'react-icons/md';
             >
               Pay
             </Button>
+            <Button
+              my="auto"
+              width="200px"
+              onClick={walletModal.onOpen}
+              variant="ghost"
+            >Connect</Button>
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme='blue' mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button variant='ghost'>Secondary Action</Button>
+            <Button variant='ghost' onClick={onClose}>Close</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
-        {/* <Box
-          width="90%"
-          maxWidth="65vw"
-          rounded="lg"
-          display="flex"
-          alignItems="center"
-          flexDirection="column"
-          padding="10"
-        >
-          <Text fontWeight="bold" fontSize="36" mb={4}>
-            Mint the sound with a Dapp connector wallet
-          </Text>
-          <Box w="10" />
-          <Flex flexDirection="row" w="80%">
-            <Flex flexDirection="column" w="75%">
-              <Input
-                focusBorderColor="blue.700"
-                width="60%"
-                placeholder="Name"
-                value={inputs.metadataName}
-                onInput={(e) => {
-                  const val = e.target.value;
-                  const name = val.replace(/[^A-Z0-9]/gi, "");
-                  const metadataName = val;
-                  if (name.length > 32 || metadataName.length > 64) return;
-                  setInputs((i) => ({ ...i, name, metadataName }));
-                }}
-              />
-              <Box h="4" />
-              <Input
-                type="number"
-                focusBorderColor="blue.700"
-                width="60%"
-                placeholder="Quantity"
-                value={inputs.quantity}
-                onInput={(e) => {
-                  const val = e.target.value;
-                  setInputs((i) => ({ ...i, quantity: val }));
-                }}
-              />
-              <Box h="4" />
-              <Input
-                value={inputs.author}
-                focusBorderColor="blue.700"
-                width="60%"
-                placeholder="Author (optional)"
-                onInput={(e) => {
-                  const val = e.target.value;
-                  if (val.length > 64) return;
-                  setInputs((i) => ({ ...i, author: val }));
-                }}
-              />
-            </Flex>
-            <Box w="14" />
-            <Button
-              my="auto"
-              onClick={async () =>
-                (await checkStatus(toast, connected)) && makeTx()
-              }
-              width="100px"
-              isDisabled={!(inputs.name && inputs.quantity && inputs.metadataName)}
-              isLoading={loading}
-              variant="ghost"
-            >
-              Mint
-            </Button> 
-          </Flex>
-        </Box>*/}
       </Box>
     );
   };
@@ -212,7 +176,6 @@ import { MdAccountBalanceWallet } from 'react-icons/md';
             ml="6"
             mr="-4"
             size="xs"
-            // background="white"
             color="orange.400"
             rightIcon={<ChevronRightIcon />}
           >
@@ -223,7 +186,6 @@ import { MdAccountBalanceWallet } from 'react-icons/md';
             ml="6"
             mr="-4"
             size="xs"
-            // background="white"
             color="orange.400"
             rightIcon={<ChevronRightIcon />}
           >
