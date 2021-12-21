@@ -16,7 +16,7 @@ import ConnectWalletModal from './ConnectWalletModal'
   
   
   let wallet
-  const PayBtn = () => {
+  const PayBtn = (successCallback) => {
     const toast = useToast()
     const walletCtx = useContext(WalletContext)
     const { colorMode } = useColorMode()
@@ -95,7 +95,7 @@ import ConnectWalletModal from './ConnectWalletModal'
         PendingTransactionToast(toast);
         await wallet.awaitConfirmation(txHash);
         toast.closeAll();
-        SuccessTransactionToast(toast, txHash, onclose);
+        SuccessTransactionToast(toast, txHash, onclose, successCallback);
         setLoading(false);
         console.log(txHash);
 
@@ -104,6 +104,28 @@ import ConnectWalletModal from './ConnectWalletModal'
         await TxErrorSubmitToast(toast);
         setLoading(false);
       }
+    };
+
+    const SuccessTransactionToast = (toast, txHash) => {
+      toast({
+        position: "bottom-right",
+        title: (
+          <Box display="flex" alignItems="center">
+            <Text>Transaction confirmed</Text>
+            <ExternalLinkIcon
+              cursor="pointer"
+              ml="4"
+              onClick={() =>
+                window.open(`https://cardanoscan.io/transaction/${txHash}`)
+              }
+            />
+          </Box>
+        ),
+        status: "success",
+        duration: 9000,
+      });
+      onClose()
+      successCallback.successCallback(txHash)
     };
     
     useEffect(() => {
@@ -120,7 +142,7 @@ import ConnectWalletModal from './ConnectWalletModal'
       <Box
         h="100%" w="100%"
       >       
-      <Button onClick={onOpen} h="100%" w="100%">Pay <MdAccountBalanceWallet/></Button>
+      <Button onClick={onOpen} variant={"ghost"} h="100%" w="100%">PAY <MdAccountBalanceWallet/></Button>
       {ConnectWalletModal(walletModal.isOpen, walletModal.onClose, isDark, walletCtx.walletApi !== null, enableCardano)}
 
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
@@ -258,27 +280,6 @@ import ConnectWalletModal from './ConnectWalletModal'
       duration: null,
     });
   };
-  
-  const SuccessTransactionToast = (toast, txHash, modalClose) => {
-    toast({
-      position: "bottom-right",
-      title: (
-        <Box display="flex" alignItems="center">
-          <Text>Transaction confirmed</Text>
-          <ExternalLinkIcon
-            cursor="pointer"
-            ml="4"
-            onClick={() =>
-              window.open(`https://cardanoscan.io/transaction/${txHash}`)
-            }
-          />
-        </Box>
-      ),
-      status: "success",
-      duration: 9000,
-    });
-    modalClose()
-  };
-  
+    
   export default PayBtn;
   

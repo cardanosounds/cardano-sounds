@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Button, Heading, List, ListIcon, ListItem, Stack, Spacer, Tooltip, Flex } from "@chakra-ui/react"
+import { Button, List, ListIcon, ListItem, Stack, Spacer, Tooltip, Flex } from "@chakra-ui/react"
 import utilStyles from "../styles/utils.module.css"
 import { FaChevronRight, FaChevronLeft } from 'react-icons/fa';
 import { InfoIcon } from "@chakra-ui/icons";
@@ -94,12 +94,12 @@ export default function PreBuy() {
                             justifyContent={["flex-start", "flex-start", "center"]}
                         >
                             {/* chakra color var doesn't work here */}
-                            <FaChevronLeft />
-                            <Heading className={utilStyles.noHovDecor} as="h4" fontSize="1.5rem"
+                            {/* <Heading className={utilStyles.noHovDecor} as="h4" fontSize="1.5rem"
                             fontWeight="normal"
-                            >
+                            > */}
                             HOME
-                            </Heading>  
+                            <FaChevronLeft />
+                            {/* </Heading>   */}
                         </Button>
                     </NextChakraLink>
                     <Spacer/>
@@ -115,12 +115,12 @@ export default function PreBuy() {
                         disabled
                     >
                         {/* chakra color var doesn't work here */}
-                        <FaChevronRight />
-                        <Heading fontSize="1.5rem" as="h4"
+                        {/* <Heading fontSize="1.5rem" as="h4"
                             fontWeight="normal"
-                        >
+                        > */}
                             BUY
-                        </Heading>  
+                        <FaChevronRight />
+                        {/* </Heading>   */}
                     </Button>
                 </Flex>
             </Stack>    

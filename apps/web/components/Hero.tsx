@@ -242,16 +242,8 @@ export default function Hero() {
               >
                 {!exploring ?
                 <>
-                <FaChevronRight
-                    //mt={{ base: "5vh", md: "4" }}
-                  // height="40%"
-                  aria-label="Explore CardanoSounds"
-                  // size={36}
-                  // fill="#4A5568"
-                  //color="gray.600"
-                >
-                </FaChevronRight>
-                <Heading
+              
+                {/* <Heading
                   as="h3"
                   fontSize="1.5rem"
                   // fontSize={["1rem", "1.125rem", "1.125rem", "1.5rem", "1.25rem", "2.25rem"]} 
@@ -263,22 +255,23 @@ export default function Hero() {
                   //mx={4}
                   textDecoration="none"
                   transition="all 0.3s ease-in-out"
-                >
+                > */}
                   EXPLORE
-                </Heading>
+                  <FaChevronRight
+                    //mt={{ base: "5vh", md: "4" }}
+                  // height="40%"
+                  aria-label="Explore CardanoSounds"
+                  // size={36}
+                  // fill="#4A5568"
+                  //color="gray.600"
+                >
+                </FaChevronRight>
+                {/* </Heading> */}
                 </> 
                 : 
                 <>
-                  <FaChevronLeft
-                    //mt={{ base: "5vh", md: "4" }}
-                    height="40%"
-                    aria-label="Go back"
-                    //size="lg"
-                    // fill="#4A5568"
-                    //color="gray.600"
-                  >
-                  </FaChevronLeft>
-                  <Heading
+                  
+                  {/* <Heading
                     as="h3"
                     fontSize="1.5rem"
                     // fontSize={["1rem", "1.125rem", "1.125rem", "1.5rem", "1.75rem", "2.25rem"]} 
@@ -290,9 +283,17 @@ export default function Hero() {
                     //mx={4}
                     textDecoration="none"
                     transition="all 0.3s ease-in-out"
-                  >
+                  > */}
                     BACK
-                  </Heading>
+                    <FaChevronLeft
+                    //mt={{ base: "5vh", md: "4" }}
+                    height="40%"
+                    aria-label="Go back"
+                    //size="lg"
+                    // fill="#4A5568"
+                    //color="gray.600"
+                  ></FaChevronLeft>
+                  {/* </Heading> */}
                 </>
                 }
               </Button>

@@ -85,12 +85,12 @@ export default function Explore({ goBackFunc, soundFunc } : { goBackFunc : Funct
                       justifyContent={["flex-start", "flex-start", "center"]}
                     >
                       {/* chakra color var doesn't work here  fill="#4A5568" */}
-                      <FaChevronRight />
-                      <Heading as="h4" fontSize="1.5rem"
+                      {/* <Heading as="h4" fontSize="1.5rem"
                         fontWeight="normal"
-                      >
+                      > */}
                         BUY
-                      </Heading>  
+                      <FaChevronRight />
+                      {/* </Heading>   */}
                     </Button>
                   </NextChakraLink>
                   <Spacer/>
@@ -113,12 +113,12 @@ export default function Explore({ goBackFunc, soundFunc } : { goBackFunc : Funct
                       justifyContent={["flex-start", "flex-start", "center"]}
                     >
                       {/* chakra color var doesn't work here */}
-                      <FaChevronRight  />{/* fill="#4A5568" */}
-                      <Heading as="h4" fontSize="1.5rem"
+                      {/* <Heading as="h4" fontSize="1.5rem"
                         fontWeight="normal"
-                      >
+                      > */}
                         CREATE
-                      </Heading>  
+                      <FaChevronRight  />{/* fill="#4A5568" */}
+                      {/* </Heading>   */}
                     </Button>
                   </NextChakraLink>
                   <Spacer/>
@@ -142,11 +142,11 @@ export default function Explore({ goBackFunc, soundFunc } : { goBackFunc : Funct
                     > 
                       {/* chakra color var doesn't work here */}
                       <FaChevronLeft />
-                        <Heading fontSize="1.5rem" as="h4"
+                        {/* <Heading fontSize="1.5rem" as="h4"
                             fontWeight="normal"
-                        >
+                        > */}
                             BACK
-                        </Heading>  
+                        {/* </Heading>   */}
                     </Button>
                   </NextChakraLink>
                   <Spacer />

@@ -38,6 +38,11 @@ export default function Buy(){
         }
     }
 
+    const successCallback = (txhash: string) => {
+        handleSearchValChange(txhash)
+        search()
+    }
+
     return(
         <>
             <Flex
@@ -108,12 +113,12 @@ export default function Buy(){
                            display={txSearch ? "none" : "flex"}
                            onClick={ () => showTxSearch(true) }
                         >
-                           <SearchIcon color="gray.600"/>
-                           <Heading fontSize={["1.25rem", "1.25rem", "1.5rem"]} as="h4" textColor="gray.600"
+                           {/* <Heading fontSize={["1.25rem", "1.25rem", "1.5rem"]} as="h4" textColor="gray.600"
                                fontWeight="normal"
-                           >
-                               LOOKUP TX
-                           </Heading>  
+                            > */}
+                            LOOKUP TX
+                            <SearchIcon />
+                           {/* </Heading>   */}
                         </Button>
                         <Flex
                             width={["80vw", "80vw", "80vw", "70vw", "25vw", "25vw"]}
@@ -123,7 +128,7 @@ export default function Buy(){
                             transition="all 0.3s ease-in-out"
                             display={txSearch ? "none" : "flex"}
                         >
-                            <PayBtn/>
+                            <PayBtn successCallback={successCallback}/>
                         </Flex>
                         </Flex>
                         <Flex direction={txStatus ? ["column", "column", "column", "column", "row-reverse"] : ["column", "column", "column", "column", "row"]}>
@@ -137,12 +142,13 @@ export default function Buy(){
                             display={txStatus ? "flex" : "none"}
                             onClick={ () => showTxStatus(false) }
                             >
-                                <SearchIcon color="gray.600"/>
-                                <Heading fontSize="1.5rem" as="h4" textColor="gray.600"
+                               
+                                {/* <Heading fontSize="1.5rem" as="h4" textColor="gray.600"
                                     fontWeight="normal"
-                                >
+                                > */}
                                     LOOKUP ANOTHER
-                                </Heading>  
+                                    <SearchIcon/>
+                                {/* </Heading>   */}
                             </Button>
                             <Button 
                                 width={["80vw", "80vw", "80vw", "70vw", "25vw", "25vw"]}
@@ -158,12 +164,12 @@ export default function Buy(){
                                 }}
                             >
                                 {/* chakra color var doesn't work here */}
-                                <FaChevronLeft fill="#4A5568" />
-                                <Heading className={utilStyles.noHovDecor} as="h4" fontSize="1.5rem" textColor="gray.600"
+                                {/* <Heading className={utilStyles.noHovDecor} as="h4" fontSize="1.5rem" textColor="gray.600"
                                     fontWeight="normal"
-                                >
+                                > */}
                                     GO BACK
-                                </Heading>  
+                                <FaChevronLeft/>
+                                {/* </Heading>   */}
                             </Button>
                             <Button 
                                 width={["80vw", "80vw", "80vw", "70vw"]}
@@ -175,12 +181,12 @@ export default function Buy(){
                                 display={["flex", "flex", "flex", "flex", "none"]}
                                 onClick={onOpen}
                             >
-                            <IoIosWallet fill="#4A5568"/>
-                            <Heading fontSize={["1.25rem", "1.25rem", "1.5rem"]} as="h4" textColor="gray.600"
+                            {/* <Heading fontSize={["1.25rem", "1.25rem", "1.5rem"]} as="h4" textColor="gray.600"
                                 fontWeight="normal"
-                            >
+                            > */}
                                 ADDRESS
-                            </Heading>  
+                                <IoIosWallet/>
+                            {/* </Heading>   */}
                         </Button>
                         </Flex>
                     </Flex>
