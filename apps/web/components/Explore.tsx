@@ -1,28 +1,31 @@
-import React, { MouseEventHandler } from "react"
-import { Flex, Text, Spacer, IconButton, Button, Heading, useColorMode, List, ListItem, ListIcon, Grid } from "@chakra-ui/react"
-import {  Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverHeader } from "@chakra-ui/react"
-import { CheckIcon, EditIcon, QuestionIcon, RepeatIcon, SunIcon } from "@chakra-ui/icons"
-import Logo from "./Logo"
+import React, { useEffect, useState } from "react"
+import { Flex, Spacer, Button, Heading, List, ListItem, ListIcon } from "@chakra-ui/react"
 import NextChakraLink from "./NextChakraLink"
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import { GrDocumentSound } from 'react-icons/gr';
 import utilStyles from '../styles/utils.module.css'
-import { MdCheckCircle } from "react-icons/md"
-import { AiOutlineSound } from "react-icons/ai"
-
-
+import GlitchText from "./GlitchText"
+import { GiTakeMyMoney, GiArtificialIntelligence } from "react-icons/gi"
+import { SiAudiomack } from "react-icons/si"
 
 export default function Explore({ goBackFunc, soundFunc } : { goBackFunc : Function, soundFunc : Function  }) {
-    const { colorMode } = useColorMode()
-    const isDark = colorMode === 'dark'
+    const [ glitching, setGlitching ]= useState<boolean>(true)
+
+    useEffect(() => { 
+      setTimeout(() => setGlitching(false), 225);
+    }, [])
+  
+    const glitchingText = (text: string, glitching: boolean) => {
+      if(glitching) return <GlitchText>{text}</GlitchText>
+  
+      return <>{text}</>
+    }
 
     return (
         <>
             <Flex w="100%" direction={{ base: "column", md: "row" }}>
-                
                 <Flex 
                     direction="column" 
-                    w={["70vw", "70vw", "46vw", "46vw", "45vw", "45vw"]} 
+                    w={["75vw", "75vw", "46vw", "46vw", "45vw", "45vw"]} 
                     fontSize={["0.825rem", "0.9rem", "0.9rem", "0.9rem", "1.25rem", "1.75rem"]} 
                     textAlign="left" 
                     minH={["40vh", "30vh", "50vh"]}
@@ -30,21 +33,29 @@ export default function Explore({ goBackFunc, soundFunc } : { goBackFunc : Funct
                     mt={["20vh", "20vh", "15vh", "15vh"]}
                 >
                   <Flex>
-                    <Heading as="h2">Creating the safe space for <br/>AUDIO and NFTs</Heading>
+                  <Heading as="h2"
+                      transition="all 0.2s ease-in-out"
+                      >{glitchingText('Creating the safe space for AUDIO and NFTs', glitching)}</Heading>
                   </Flex>
                   <Spacer/>
                   <List spacing={3}>
                     <ListItem>
-                     <Heading as="h2">Create <ListIcon as={EditIcon} /></Heading>
+                     <Heading as="h2"
+                      transition="all 0.33s ease-in-out"
+                      > CREATE <ListIcon as={GiArtificialIntelligence} /></Heading>
                     </ListItem>
                     <ListItem>
-                      <Heading as="h2">& Earn <ListIcon as={CheckIcon} /></Heading>
+                      <Heading as="h2"
+                      transition="all 0.45s ease-in-out"
+                      >& EARN <ListIcon as={GiTakeMyMoney}/></Heading>
                     </ListItem>  
                   </List>
                   <Spacer/>
                   <List spacing={3}>
                     <ListItem>
-                      <Heading as="h2">..with sound</Heading>
+                      <Heading as="h2"
+                      transition="all 0.6s ease-in-out"
+                      >..with sound <ListIcon as={SiAudiomack}/></Heading>
                     </ListItem>
                   </List>
                   <Spacer/>
@@ -68,13 +79,8 @@ export default function Explore({ goBackFunc, soundFunc } : { goBackFunc : Funct
                       onClick={() => soundFunc}
                       justifyContent={["flex-start", "flex-start", "center"]}
                     >
-                      {/* chakra color var doesn't work here  fill="#4A5568" */}
-                      {/* <Heading as="h4" fontSize="1.5rem"
-                        fontWeight="normal"
-                      > */}
-                        BUY
+                      BUY
                       <FaChevronRight />
-                      {/* </Heading>   */}
                     </Button>
                   </NextChakraLink>
                   <Spacer/>
@@ -89,24 +95,16 @@ export default function Explore({ goBackFunc, soundFunc } : { goBackFunc : Funct
                       position= {["inherit", "inherit", "absolute"]}
                       right={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}
                       bottom={["32vh", "32vh", "47vh", "47vh", "47vh", "47vh"]}
-                      // right={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}
-                      // bottom={["21vh", "21vh", "31vh", "31vh", "31vh", "31vh"]}
                       variant="ghost"
                       className={utilStyles.shadow}
                       transition="all 0.3s ease-in-out"
                       justifyContent={["flex-start", "flex-start", "center"]}
                     >
-                      {/* chakra color var doesn't work here */}
-                      {/* <Heading as="h4" fontSize="1.5rem"
-                        fontWeight="normal"
-                      > */}
-                        CREATE
-                      <FaChevronRight  />{/* fill="#4A5568" */}
-                      {/* </Heading>   */}
+                      CREATE
+                      <FaChevronRight  />
                     </Button>
                   </NextChakraLink>
                   <Spacer/>
-                
                   <NextChakraLink 
                     href="/"
                   >
@@ -124,13 +122,8 @@ export default function Explore({ goBackFunc, soundFunc } : { goBackFunc : Funct
                         goBackFunc()
                       }}
                     > 
-                      {/* chakra color var doesn't work here */}
                       <FaChevronLeft />
-                        {/* <Heading fontSize="1.5rem" as="h4"
-                            fontWeight="normal"
-                        > */}
-                            BACK
-                        {/* </Heading>   */}
+                        BACK
                     </Button>
                   </NextChakraLink>
                   <Spacer />
