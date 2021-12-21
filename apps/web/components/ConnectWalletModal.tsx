@@ -2,6 +2,8 @@
 import {
   Button,
   Text,
+  Image,
+  Flex,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -30,14 +32,16 @@ export default function ConnectWalletModal(
         {walletEnabled ?
           <Text>...Connected</Text>
           : <></>}
+        <Flex direction="column" mx="auto" w="90%">
+          <Button w="100%" h={24} variant={'ghost'} mr={3} onClick={() => enableCardano()}> 
+            <Image src="/icons/Nami-icon.svg" w="48px" h="48px"/>Connect Nami
+          </Button>
+          <Button w="100%" h={24} variant={'ghost'} mr={3} onClick={() => enableCardano('ccvault')}>
+            <Image src="/icons/ccvault-icon.png" w="48px" h="48px"/>Connect ccvault
+          </Button>
+        </Flex>
       </ModalBody>
       <ModalFooter>
-        <Button variant={'ghost'} mr={3} onClick={() => enableCardano()}>
-          Connect Nami
-        </Button>
-        <Button variant={'ghost'} mr={3} onClick={() => enableCardano('ccvault')}>
-          Connect ccvault
-        </Button>
         <Button onClick={onClose}>Close</Button>
       </ModalFooter>
     </ModalContent>
