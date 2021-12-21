@@ -30,40 +30,24 @@ export default function Explore({ goBackFunc, soundFunc } : { goBackFunc : Funct
                     mt={["20vh", "20vh", "15vh", "15vh"]}
                 >
                   <Flex>
-                    <Text>
-                     The common place for audio NFTs.
-                    </Text>
+                    <Heading as="h2">Creating the safe space for <br/>AUDIO and NFTs</Heading>
                   </Flex>
                   <Spacer/>
                   <List spacing={3}>
                     <ListItem>
-                      <ListIcon as={EditIcon} color='green.500' />
-                      Create
+                     <Heading as="h2">Create <ListIcon as={EditIcon} /></Heading>
                     </ListItem>
                     <ListItem>
-                      <ListIcon as={RepeatIcon} color='green.500' />
-                      Use
-                    </ListItem>
-                    <ListItem>
-                      <ListIcon as={CheckIcon} color='green.500' />
-                      & Earn
+                      <Heading as="h2">& Earn <ListIcon as={CheckIcon} /></Heading>
                     </ListItem>  
                   </List>
                   <Spacer/>
                   <List spacing={3}>
                     <ListItem>
-                      ..with sound 
-                      {/* <ListIcon as={GrDocumentSound} pl={2} width={24} height={24} stroke='#38a169' /> */}
+                      <Heading as="h2">..with sound</Heading>
                     </ListItem>
                   </List>
-                  {/* <Text display="inline"> */}
-                    {/* ...with sound <GrDocumentSound size={48} display="inline"/> */}
-                  {/* </Text> */}
                   <Spacer/>
-                  {/* <Text>
-                    Which makes each CNFT unique and <strong>yours</strong>.
-                  </Text>
-                  <Spacer/>  */}
                 </Flex>
                 <Spacer/>
                 <Flex direction="column" mt={["unset", "2.5vh", "unset"]} w={{ base: "80vw", md: "20vw" }}>
