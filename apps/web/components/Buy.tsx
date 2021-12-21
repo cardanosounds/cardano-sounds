@@ -172,14 +172,14 @@ export default function Buy(){
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader>Cardano address</ModalHeader>
+                    <ModalHeader><Heading as="h3">Cardano address</Heading></ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
                         <Address/>
                     </ModalBody>
                     <ModalFooter>
                         <Button colorScheme="blue" onClick={onClose}>
-                            Close
+                            CLOSE
                         </Button>
                     </ModalFooter>
                 </ModalContent>

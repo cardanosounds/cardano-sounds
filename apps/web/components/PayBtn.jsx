@@ -5,6 +5,7 @@ import {
     Text,
     useToast,
     useDisclosure, 
+    Heading,
     Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, ModalCloseButton, useColorMode 
   } from "@chakra-ui/react";
 import { useContext, useState, useEffect } from "react";
@@ -151,9 +152,9 @@ import ConnectWalletModal from './ConnectWalletModal'
           backgroundColor={isDark ? ("gray.800") : ("white")}
           background="transparent url(/noise.png) repeat 0 0"
         >
-          <ModalHeader><Text fontWeight="bold" fontSize="36" mb={4}>
+          <ModalHeader><Heading as="h3">
               Pay with with a Dapp connector wallet
-            </Text></ModalHeader>
+            </Heading></ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Button
@@ -167,18 +168,18 @@ import ConnectWalletModal from './ConnectWalletModal'
               isLoading={loading}
               variant="ghost"
             >
-              Pay
+              PAY
             </Button>
             <Button
               my="auto"
               width="200px"
               onClick={walletModal.onOpen}
               variant="ghost"
-            >Connect</Button>
+            >CONNECT</Button>
           </ModalBody>
 
           <ModalFooter>
-            <Button variant='ghost' onClick={onClose}>Close</Button>
+            <Button variant='ghost' onClick={onClose}>CLOSE</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
