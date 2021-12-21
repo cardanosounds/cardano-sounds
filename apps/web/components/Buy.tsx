@@ -8,9 +8,8 @@ import utilStyles from "../styles/utils.module.css"
 import { IoIosWallet, IoMdPricetag } from 'react-icons/io';
 import { FaChevronLeft } from 'react-icons/fa'
 import { RiAlarmWarningFill } from 'react-icons/ri'
-import { CopyIcon, InfoIcon, SearchIcon } from "@chakra-ui/icons";
+import { InfoIcon, SearchIcon } from "@chakra-ui/icons";
 import Transaction from "./Transaction";
-// import { useToast } from "@chakra-ui/react"
 import Address from "./Address";
 import PayBtn from "./PayBtn.jsx";
 
@@ -21,9 +20,7 @@ export default function Buy(){
     const [ mobileAddress, showMobileAddress] = useState<boolean>(false)
     const [ txStatus, showTxStatus ] = useState<boolean>(false)
 
-     const { isOpen, onOpen, onClose } = useDisclosure()
-
-    // const toast = useToast()
+    const { isOpen, onOpen, onClose } = useDisclosure()
 
     const handleChange = (event: { target: { value: React.SetStateAction<string>; }; }) => handleSearchValChange(event.target.value)
 
@@ -55,18 +52,14 @@ export default function Buy(){
             >   
                 <Stack w={["100%", "100%", "100%", "70vw"]} direction={["column", "column", "column", "column", "row"]}>
                     <Flex direction="column"
-                        // maxW={["unset", "unset", "unset", "unset", "60vw"]}
                         w={["100%", "100%", "100%", "100%", "40vw"]}
                         mr={48}
                     > 
                         <Flex minH="40vh">
                             <InputGroup 
-                                // mt={["5vh", "5vh", "5vh", "5vh", "unset"]}
-                                // w={["90vw", "85vw", "60vw", "50vw"]}
                                 w={["100%", "100%", "100%", "100%", "40vw"]}
                                 margin="auto"
                                 display={txStatus ? "none" : txSearch ? "flex" : "none"}
-                                // mb={9}
                             >
                                 <Input 
                                     placeholder="Check status for txid" 
@@ -84,17 +77,17 @@ export default function Buy(){
                             </Flex>
                             : txSearch ? <></> :
                             <>  
-                                <List marginInlineEnd="auto" mt={["3vh", "2vh", "3vh", "5vh"]} w={["80vw","80vw", "80vw", "80vw", "45vw"]}>
+                                <List marginInlineEnd="auto" my="auto" w={["80vw","80vw", "80vw", "80vw", "45vw"]}>
                                     <ListItem mb={9}>
-                                        <ListIcon as={IoMdPricetag} color="yellow.400" />
+                                        <ListIcon as={IoMdPricetag} />{/* color="yellow.400" */}
                                             Price 20ADA
                                     </ListItem>
                                     <ListItem mb={9}>
-                                        <ListIcon as={RiAlarmWarningFill} color="red.400" />
+                                        <ListIcon as={RiAlarmWarningFill} />{/* color="red.400"" */}
                                             Use Yoroi or Daedalus, do not send ADA from an exchange! Send the exact amount without additional tokens.
                                     </ListItem>
                                     <ListItem>
-                                        <ListIcon as={InfoIcon} color="teal.400" />
+                                        <ListIcon as={InfoIcon} />{/* color="teal.400"" */}
                                             If you want to buy more NFTs, send multiple transactions with 50ADA. 
                                     </ListItem>
                                     <Spacer/>
@@ -113,12 +106,8 @@ export default function Buy(){
                            display={txSearch ? "none" : "flex"}
                            onClick={ () => showTxSearch(true) }
                         >
-                           {/* <Heading fontSize={["1.25rem", "1.25rem", "1.5rem"]} as="h4" textColor="gray.600"
-                               fontWeight="normal"
-                            > */}
                             LOOKUP TX
                             <SearchIcon />
-                           {/* </Heading>   */}
                         </Button>
                         <Flex
                             width={["80vw", "80vw", "80vw", "70vw", "25vw", "25vw"]}
@@ -143,12 +132,8 @@ export default function Buy(){
                             onClick={ () => showTxStatus(false) }
                             >
                                
-                                {/* <Heading fontSize="1.5rem" as="h4" textColor="gray.600"
-                                    fontWeight="normal"
-                                > */}
-                                    LOOKUP ANOTHER
-                                    <SearchIcon/>
-                                {/* </Heading>   */}
+                                LOOKUP ANOTHER
+                                <SearchIcon/>
                             </Button>
                             <Button 
                                 width={["80vw", "80vw", "80vw", "70vw", "25vw", "25vw"]}
@@ -163,13 +148,8 @@ export default function Buy(){
                                     showTxStatus(false)
                                 }}
                             >
-                                {/* chakra color var doesn't work here */}
-                                {/* <Heading className={utilStyles.noHovDecor} as="h4" fontSize="1.5rem" textColor="gray.600"
-                                    fontWeight="normal"
-                                > */}
-                                    GO BACK
+                                GO BACK
                                 <FaChevronLeft/>
-                                {/* </Heading>   */}
                             </Button>
                             <Button 
                                 width={["80vw", "80vw", "80vw", "70vw"]}
@@ -181,16 +161,11 @@ export default function Buy(){
                                 display={["flex", "flex", "flex", "flex", "none"]}
                                 onClick={onOpen}
                             >
-                            {/* <Heading fontSize={["1.25rem", "1.25rem", "1.5rem"]} as="h4" textColor="gray.600"
-                                fontWeight="normal"
-                            > */}
                                 ADDRESS
                                 <IoIosWallet/>
-                            {/* </Heading>   */}
                         </Button>
                         </Flex>
                     </Flex>
-                    {/* <Address display={txSearch ? "none" : mobileAddress ? "flex" : ["none", "none", "none", "none", "flex"]} /> */}
                     <Address display={mobileAddress ? "flex" : ["none", "none", "none", "none", "flex"]} />
                 </Stack>
             </Flex>
@@ -206,7 +181,6 @@ export default function Buy(){
                         <Button colorScheme="blue" onClick={onClose}>
                             Close
                         </Button>
-                        {/*<Button variant="ghost">Secondary Action</Button>*/}
                     </ModalFooter>
                 </ModalContent>
             </Modal>

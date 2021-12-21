@@ -122,8 +122,8 @@ export default function Explore({ goBackFunc, soundFunc } : { goBackFunc : Funct
                         goBackFunc()
                       }}
                     > 
-                      <FaChevronLeft />
                         BACK
+                      <FaChevronLeft />
                     </Button>
                   </NextChakraLink>
                   <Spacer />
