@@ -24,12 +24,16 @@ export default function Buy(){
 
     const handleChange = (event: { target: { value: React.SetStateAction<string>; }; }) => handleSearchValChange(event.target.value)
 
-    const search = () => {
-        if(searchValue.length < 5){
+    const search = (txhash: string = '') => {
+        let searchVal
+        if(txhash === '') searchVal = searchValue
+        else {
+            searchVal = txhash
+        }
+        if(searchVal.length < 5){
             invalidateSearchString(true)
         }
         else {
-
             invalidateSearchString(false)
             showTxStatus(true)
         }
@@ -37,7 +41,8 @@ export default function Buy(){
 
     const successCallback = (txhash: string) => {
         handleSearchValChange(txhash)
-        search()
+        search(txhash)
+        showTxSearch(true) 
     }
 
     return(
@@ -68,7 +73,7 @@ export default function Buy(){
                                     value={searchValue}
                                     onChange={ handleChange }
                                 />
-                                <InputRightElement onClick={ search } children={<SearchIcon color="gray.600" />} />
+                                <InputRightElement onClick={() => search() } children={<SearchIcon color="gray.600" />} />
                             </InputGroup>
                             {txStatus ? 
                             <Flex minH={["50vh", "50vh", "40vh"]}
@@ -96,42 +101,43 @@ export default function Buy(){
                         }
                         </Flex>
                         <Flex direction={["column", "column", "column", "column", "row"]}>
-                        <Button 
-                           width={["80vw", "80vw", "80vw", "70vw", "25vw", "25vw"]}
-                           mt={["1vh", "1vh", "1vh", "1vh", "1vh", "5vh"]}
-                           height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]}
-                           variant="ghost"
-                           className={utilStyles.shadow}
-                           transition="all 0.3s ease-in-out"
-                           display={txSearch ? "none" : "flex"}
-                           onClick={ () => showTxSearch(true) }
-                        >
-                            LOOKUP TX
-                            <SearchIcon />
-                        </Button>
-                        <Flex
-                            width={["80vw", "80vw", "80vw", "70vw", "25vw", "25vw"]}
-                            mt={["1vh", "1vh", "1vh", "1vh", "1vh", "5vh"]}
-                            height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]}
-                            className={utilStyles.shadow}
-                            transition="all 0.3s ease-in-out"
-                            display={txSearch ? "none" : "flex"}
-                        >
-                            <PayBtn successCallback={successCallback}/>
-                        </Flex>
+                            <Button 
+                                width={["80vw", "80vw", "80vw", "70vw", "25vw", "25vw"]}
+                                mt={["1vh", "1vh", "1vh", "1vh", "1vh", "5vh"]}
+                                height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]}
+                                variant="ghost"
+                                className={utilStyles.shadow}
+                                transition="all 0.3s ease-in-out"
+                                display={txSearch ? "none" : "flex"}
+                                justifyContent={["flex-start", "flex-start", "center"]}
+                                onClick={ () => showTxSearch(true) }
+                            >
+                                LOOKUP TX
+                                <SearchIcon />
+                            </Button>
+                            <Flex
+                                width={["80vw", "80vw", "80vw", "70vw", "25vw", "25vw"]}
+                                mt={["1vh", "1vh", "1vh", "1vh", "1vh", "5vh"]}
+                                height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]}
+                                className={utilStyles.shadow}
+                                transition="all 0.3s ease-in-out"
+                                display={txSearch ? "none" : ["none", "none", "none", "flex"]}
+                            >
+                                <PayBtn successCallback={successCallback}/>
+                            </Flex>
                         </Flex>
                         <Flex direction={txStatus ? ["column", "column", "column", "column", "row-reverse"] : ["column", "column", "column", "column", "row"]}>
                             <Button 
-                            width={!txStatus ? "0px" : ["80vw", "80vw", "80vw", "70vw", "25vw", "25vw"]}
-                            mt={["1vh", "1vh", "1vh", "1vh", "1vh", "5vh"]}
-                            height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]}
-                            variant="ghost"
-                            className={utilStyles.shadow}
-                            transition="all 0.3s ease-in-out"
-                            display={txStatus ? "flex" : "none"}
-                            onClick={ () => showTxStatus(false) }
+                                width={!txStatus ? "0px" : ["80vw", "80vw", "80vw", "70vw", "25vw", "25vw"]}
+                                mt={["1vh", "1vh", "1vh", "1vh", "1vh", "5vh"]}
+                                height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]}
+                                variant="ghost"
+                                className={utilStyles.shadow}
+                                transition="all 0.3s ease-in-out"
+                                display={txStatus ? "flex" : "none"}
+                                justifyContent={["flex-start", "flex-start", "center"]}
+                                onClick={ () => showTxStatus(false) }
                             >
-                               
                                 LOOKUP ANOTHER
                                 <SearchIcon/>
                             </Button>
@@ -143,6 +149,7 @@ export default function Buy(){
                                 className={utilStyles.shadow}
                                 transition="all 0.3s ease-in-out"
                                 display={txSearch ? "flex" : "none"}
+                                justifyContent={["flex-start", "flex-start", "center"]}
                                 onClick={ () => { 
                                     showTxSearch(!txSearch) 
                                     showTxStatus(false)
@@ -159,6 +166,7 @@ export default function Buy(){
                                 className={utilStyles.shadow}
                                 transition="all 0.3s ease-in-out"
                                 display={["flex", "flex", "flex", "flex", "none"]}
+                                justifyContent={["flex-start", "flex-start", "center"]}
                                 onClick={onOpen}
                             >
                                 ADDRESS
@@ -166,7 +174,8 @@ export default function Buy(){
                         </Button>
                         </Flex>
                     </Flex>
-                    <Address display={mobileAddress ? "flex" : ["none", "none", "none", "none", "flex"]} />
+                    <Address display={["none", "none", "none", "none", "flex"]} />
+                    {/* <Address display={mobileAddress ? "flex" : ["none", "none", "none", "none", "flex"]} /> */}
                 </Stack>
             </Flex>
             <Modal isOpen={isOpen} onClose={onClose}>

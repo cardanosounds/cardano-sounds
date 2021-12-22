@@ -18,7 +18,7 @@ export default function Address( { display } : { display?: "flex" | "none" | Arr
         >
             <Box >
                 <Image 
-                    src="/images/qr.png" 
+                    src="/images/qr-code.png" 
                     ml={["5vw", "5vw", "unset"]} 
                     w={["70vw", "70vw", "20vw"]} 
                     h={["70vw", "70vw", "20vw"]}

@@ -29,8 +29,8 @@ import ConnectWalletModal from './ConnectWalletModal'
   
     const init = async () => {
       wallet = new WalletJs(
-        "https://cardano-mainnet.blockfrost.io/api/v0",
-        "mainnetGHf1olOJblaj5LD8rcRudajSJGKRU6IL",
+        "https://cardano-testnet.blockfrost.io/api/v0",
+        "testnetRvOtxC8BHnZXiBvdeM9b3mLbi8KQPwzA",
         walletCtx.walletApi
       )
       setConnected(window.localStorage.getItem('cswallet') === 'connected')
@@ -117,7 +117,7 @@ import ConnectWalletModal from './ConnectWalletModal'
               cursor="pointer"
               ml="4"
               onClick={() =>
-                window.open(`https://cardanoscan.io/transaction/${txHash}`)
+                window.open(`https://testnet.cardanoscan.io/transaction/${txHash}`)
               }
             />
           </Box>
@@ -161,8 +161,8 @@ import ConnectWalletModal from './ConnectWalletModal'
               my="auto"
               onClick={async () =>
                 (await checkStatus(toast, connected)) && makeTx(
-                  'addr1qx8p9zjyk2us3jcq4a5cn0xf8c2ydrz2cxc5280j977yvc0gtg8vh0c9sp7ce579jhpmynlk758lxhvf52sfs9mrprws3mseux',
-                   1)
+                  'addr_test1vz0j2fn0m4jnrrp6806trv4fk3amz9wkuujreat0j5tse5g3ns8pu',
+                   5)
               }
               width="200px"
               isLoading={loading}
@@ -236,7 +236,7 @@ import ConnectWalletModal from './ConnectWalletModal'
   
   const WrongNetworkToast = async (toast) => {
     console.log(await window.cardano.getNetworkId());
-    if ((await window.cardano.getNetworkId()) === 1) return true;
+    if ((await window.cardano.getNetworkId()) === 0) return true;
     toast({
       position: "bottom-right",
       title: "Wrong network",
