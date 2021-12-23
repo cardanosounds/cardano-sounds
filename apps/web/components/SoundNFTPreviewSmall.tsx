@@ -1,20 +1,15 @@
 import React from 'react'
-import { NFTData } from '../interfaces/interfaces'
 import { 
 	Flex,
-	SimpleGrid,
 	Box, 
-	Stack,
 	Heading,
-	Text,
-	Spacer,
-	Image
 } from '@chakra-ui/react'
+import { DatabaseTx } from '../interfaces/databaseTx'
 
 
 
 
-export default function SoundNFTPreviewSmall({soundNFTData, fullView}: { soundNFTData: NFTData, fullView?: boolean } ) {
+export default function SoundNFTPreviewSmall({soundNFTData, fullView}: { soundNFTData: DatabaseTx, fullView?: boolean } ) {
 	const imageFilePath = fullView ? "glitch-light-v1.PNG" : "../../../glitch-light-v1.PNG"
 
 	const hoverShadow = fullView ? {boxShadow: "unset" } : { boxShadow: "dark-lg", transform: "scale(1.1)", cursor: "pointer" }
@@ -49,7 +44,7 @@ export default function SoundNFTPreviewSmall({soundNFTData, fullView}: { soundNF
 				></Flex>
 				<Image src="glitch-light-v1.PNG" rounded="2xl" pos="relative" />*/}
 			</Box>
-			<Heading size="sm">{soundNFTData.id}</Heading>
+			<Heading size="sm">{soundNFTData.Metadata?.token_name}</Heading>
 			{/*<Text
 				wordBreak="break-all"
 			>

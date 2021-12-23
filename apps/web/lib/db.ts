@@ -1,4 +1,5 @@
 const CosmosClient = require("@azure/cosmos").CosmosClient;
+import { Container } from "@azure/cosmos";
 import { DatabaseTx } from "../interfaces/databaseTx"
 
 
@@ -31,8 +32,31 @@ const getTransaction = async (txid: string): Promise<DatabaseTx | string>  => {
 
 export default getTransaction
 
-const container = () => {
+export function container(): Container {
     const client = new CosmosClient({ endpoint, key })
     return  client.database(databaseId).container(containerId);
 }
 
+
+
+const queryFinishedSpec = () => {
+    return {
+        query: "SELECT * FROM t WHERE  t.status = @status",
+        parameters: [{
+            name: "@status",
+            value: "Finished" 
+        }]
+    }
+};
+
+const getFinishedTransactions = async (page: number): Promise<Array<DatabaseTx> | string>  => {
+    let cont = container()
+    const { resources: items } = await cont.items.query(queryFinishedSpec()).fetchAll();
+    
+    if(items.length > 0) { 
+        const txs: Array<DatabaseTx> = items 
+        return txs
+    } else {
+        return "not found"
+    }
+}

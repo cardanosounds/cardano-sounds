@@ -1,3 +1,5 @@
+import { DatabaseTx } from "./databaseTx"
+
 export interface ContextualHref {
     makeContextualHref: (extraQueryParams: { [key: string]: any }) => string
     returnHref: string
@@ -24,7 +26,7 @@ export interface Sound {
 }
 
 export interface SoundListData {
-    nfts: NFTData[]
+    nfts: DatabaseTx[]
     collection: string
     page: number
 }
