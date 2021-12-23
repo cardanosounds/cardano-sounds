@@ -14,10 +14,13 @@ export default function SoundNFT({nftData}: {nftData?: Metadata})
         isDark: boolean;
     }>
 
+    console.log("nftData")
+    console.log(nftData)
     let playername = nftData?.player
 
     if(typeof(playername) != "undefined") playername = playername.split("-")[0]
-
+    console.log("playername")
+    console.log(playername)
     switch(playername)
     {
         case "glitch":
