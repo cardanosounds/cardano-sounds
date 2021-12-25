@@ -38,7 +38,7 @@ export default function Explore({ goBackFunc, soundFunc } : { goBackFunc : Funct
                       >{glitchingText('Creating the safe space for AUDIO and NFTs', glitching)}</Heading>
                   </Flex>
                   <Spacer/>
-                  <List spacing={3}>
+                  <List spacing={3} m={8}>
                     <ListItem>
                      <Heading as="h2"
                       transition="all 0.33s ease-in-out"
