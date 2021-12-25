@@ -25,21 +25,21 @@ export default function Create() {
             <Flex direction="column"w="100%" h="100%" rounded="sm" _hover={{
             }}>
               <Flex w="100%" h="100%" p={2} direction="column" textAlign={"center"}>
-                <NextChakraLink href={'/create'} w="100%" h="100%">
-                  <Button variant={"ghost"} w="100%" rounded="sm" h="100%">CREATE <RiSoundModuleFill/></Button>
+                <NextChakraLink href={'/create-sound-demo'} w="100%" h="100%">
+                  <Button justifyContent={["flex-start", "flex-start", "center"]} variant={"ghost"} w="100%" rounded="sm" h="100%">CREATE <RiSoundModuleFill/></Button>
                 </NextChakraLink>
               </Flex> 
               <Flex w="100%" h="100%" direction="column" p={2} textAlign={"center"}>
-                <Button variant={"ghost"}  w="100%" h="100%" disabled>USE<RiFileMusicLine/></Button>
+                <Button justifyContent={["flex-start", "flex-start", "center"]} variant={"ghost"}  w="100%" h="100%" disabled>USE<RiFileMusicLine/></Button>
                 {/* <Text mx="auto" fontWeight={"semibold"} fontSize={"md"}>SOUND</Text> */}
               </Flex>
             </Flex> 
             <Flex direction="column" w="100%" h="100%">
               <Flex w="100%" h="100%" direction="column" p={2} textAlign={"center"}>
-                <Button variant={"ghost"} w="100%" disabled h="100%">CREATE <RiArtboardLine/></Button>
+                <Button justifyContent={["flex-start", "flex-start", "center"]} variant={"ghost"} w="100%" disabled h="100%">CREATE <RiArtboardLine/></Button>
               </Flex> 
               <Flex w="100%" h="100%" p={2} direction="column" textAlign={"center"}>
-                <Button variant={"ghost"}  w="100%" h="100%" disabled>USE <FaFileImage/></Button>
+                <Button justifyContent={["flex-start", "flex-start", "center"]} variant={"ghost"}  w="100%" h="100%" disabled>USE <FaFileImage/></Button>
               </Flex>
               {/* <Text mx="auto" fontWeight={"semibold"} fontSize={"md"}>VISUAL</Text> */}
             </Flex>

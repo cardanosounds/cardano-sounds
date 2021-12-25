@@ -1,13 +1,12 @@
 import Head from 'next/head'
 import Layout, { siteTitle } from '../components/layout'
-
 import { Flex, Stack } from '@chakra-ui/react'
 import dynamic from 'next/dynamic';
-const P5Comp = dynamic(() => import("../components/playerColors.jsx"),
+const P5Comp = dynamic(() => import("../components/p5sequencer"),
   { ssr: false }
 );
 
-export default function CreatePlayerDemo() {
+export default function CreateSoundDemo() {
   return (
     <>
       <Stack 
