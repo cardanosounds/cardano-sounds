@@ -31,8 +31,7 @@ export default function Create() {
               </Flex> 
               <Flex w="100%" h="100%" direction="column" p={2} textAlign={"center"}>
                 <Button variant={"ghost"}  w="100%" h="100%" disabled>USE<RiFileMusicLine/></Button>
-              <Text mx="auto" fontWeight={"semibold"} fontSize={"md"}>SOUND</Text>
-
+                {/* <Text mx="auto" fontWeight={"semibold"} fontSize={"md"}>SOUND</Text> */}
               </Flex>
             </Flex> 
             <Flex direction="column" w="100%" h="100%">
@@ -42,8 +41,7 @@ export default function Create() {
               <Flex w="100%" h="100%" p={2} direction="column" textAlign={"center"}>
                 <Button variant={"ghost"}  w="100%" h="100%" disabled>USE <FaFileImage/></Button>
               </Flex>
-              <Text mx="auto" fontWeight={"semibold"} fontSize={"md"}>VISUAL</Text>
-
+              {/* <Text mx="auto" fontWeight={"semibold"} fontSize={"md"}>VISUAL</Text> */}
             </Flex>
           </Flex> 
         </Layout>
