@@ -35,7 +35,7 @@ export default function ConnectWalletModal(
     }, [walletCtx])
 
     const addressToBech32 = async () => {
-      console.log(walletCtx.walletApi)
+      // console.log(walletCtx.walletApi)
       if(walletCtx.walletApi) {
           await loader.load()
           const address = (await walletCtx.walletApi.getUsedAddresses())[0]

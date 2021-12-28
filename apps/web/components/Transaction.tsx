@@ -6,6 +6,7 @@ import {
 import SoundNFT from './SoundNFT'
 import { DatabaseTx, instanceOfDatabaseTx } from '../interfaces/databaseTx'
 import TransactionStatus from './TransactionStatus'
+import SoundNFTPreviewSmall from './SoundNFTPreviewSmall'
 
 
 const stateNumFromStatus: (status?: string) => 1|2|3|4 = (status) => {
@@ -29,14 +30,14 @@ export default function Transaction({ id } : {id: string}) {
     useEffect(() => {
         const eventSource = new EventSource(`/api/sale/${id}`);
         // An instance of EventSource by passing the events URL
-        console.log(id)
-        console.log(`/api/sale/${id}`)
+        // console.log(id)
+        // console.log(`/api/sale/${id}`)
         // A function to parse and update the data state
         const updateData = async (messageEvent: MessageEvent) => {
 
-            console.log("updateData")
+            // console.log("updateData")
             if(messageEvent.data === "not found") {
-                console.log(messageEvent.data)
+                // console.log(messageEvent.data)
                 setData(messageEvent.data.toString())
             } else {
                 let dbtx: DatabaseTx = null
@@ -80,7 +81,7 @@ export default function Transaction({ id } : {id: string}) {
                     py={[0, 0, 24]}
                 >
                     {isFinished && instanceOfDatabaseTx(data) ?
-                    <SoundNFT nftData={data.Metadata}/>
+                    <SoundNFTPreviewSmall soundNFTData={data}/>
                     : 
                     <>
                         {statusFullText(typeof(data) === 'undefined' || data === 'not found' ? data : instanceOfDatabaseTx(data) ? data.status : '' )}

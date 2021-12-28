@@ -98,7 +98,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
       if(!await baseWalletApi.isEnabled()) return
 
       walletCtx.update({walletApi: fullWalletApi})
-      console.log(walletCtx.walletApi)
+      // console.log(walletCtx.walletApi)
       allowWallet()
       playSwitchSound()
       walletModal.onClose()
