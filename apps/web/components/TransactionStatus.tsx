@@ -70,7 +70,7 @@ export default function TransactionStatus({state}: {state: 1|2|3|4}) {
                       >
                         <Flex transform={["rotate(-90deg)","rotate(-90deg)", "none"]}>
                         {
-                          state === 3 ? <Image src="/animated-icons/mintanim2.gif" height="90px" width="90px"/> : 
+                          state === 3 ? <Image src="/animated-icons/mint-new.gif" height="90px" width="90px"/> : 
                           <Image style={{ filter: `grayscale(${accomplished ? 0 : 80}%)` }} src="/icons/mint.png" height="75px" width="75px !important"/>
                         }
                         </Flex>

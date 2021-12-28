@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { NFTData, SoundListData } from "../../../../interfaces/interfaces"
 
-import { CosmosClient, DatabaseResponse } from "@azure/cosmos"
+// import { CosmosClient, DatabaseResponse } from "@azure/cosmos"
 
 // const endpoint = "https://your-account.documents.azure.com";
 // const key = "<database account masterkey>";
@@ -22,8 +22,8 @@ export default async function (req: NextApiRequest, res: NextApiResponse): Promi
     {
         const nftListData = await getSoundsNFTData(collection.toString(), Number(page))
         // var nftListData = getSoundsNFTData()
-        console.log("nftListData")
-        console.log(nftListData)
+        // console.log("nftListData")
+        // console.log(nftListData)
 
         if(nftListData instanceof String) return nftListData 
 

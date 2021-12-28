@@ -15,7 +15,7 @@ export default function SoundNFTPreview(soundNFTData: { nftData: DatabaseTx } ) 
 			direction="row"
 			fontSize="xs"
 			w="55vw"
-			rounded="2xl"
+			rounded="lg"
 			padding="1em"
 			bgColor="gray.800"
 			_hover={{ boxShadow: "dark-lg", transform: "scale(1.1)", cursor: "pointer", zIndex: "999"}}

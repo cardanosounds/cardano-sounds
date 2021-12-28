@@ -22,11 +22,11 @@ export default function Create() {
             h={["90vh", "90vh", "80vh"]} 
             pt={["25vh", "25vh", "20vh"]} mx="auto"
           >
-            <Flex direction="column"w="100%" h="100%" rounded="sm" _hover={{
+            <Flex direction="column"w="100%" h="100%" rounded="lg" _hover={{
             }}>
               <Flex w="100%" h="100%" p={2} direction="column" textAlign={"center"}>
                 <NextChakraLink href={'/create-sound-demo'} w="100%" h="100%">
-                  <Button justifyContent={["flex-start", "flex-start", "center"]} variant={"ghost"} w="100%" rounded="sm" h="100%">CREATE <RiSoundModuleFill/></Button>
+                  <Button justifyContent={["flex-start", "flex-start", "center"]} variant={"ghost"} w="100%" rounded="lg" h="100%">CREATE <RiSoundModuleFill/></Button>
                 </NextChakraLink>
               </Flex> 
               <Flex w="100%" h="100%" direction="column" p={2} textAlign={"center"}>

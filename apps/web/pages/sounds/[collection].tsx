@@ -101,15 +101,16 @@ export default function SoundList({ errorCode, data }: {
         >
           {/* {nfts} */}
           { nfts.map(( nftsound: DatabaseTx ) => (
-            <NextChakraLink
-              rounded="2xl"
+            <Flex
+              rounded="lg"
               py={["3vh", "3vh","3vw"]}
               maxH={["60vh", "60vh", "75vh", "29vw"]}
-              key={nftsound.id} href={`/sound/${nftsound.id}`} 
-              _hover={{ boxShadow: "dark-lg", transform: "scale(1.1)", cursor: "pointer" }}
-            >
+              key={nftsound.id} 
+              // _hover={{ boxShadow: "dark-lg", transform: "scale(1.1)", cursor: "pointer" }}
+              >
+              {/*href={`/sound/${nftsound.id}`} */}
               <SoundNFTPreviewSmall  soundNFTData={nftsound}/>
-            </NextChakraLink>
+            </Flex>
           ))}
         </SimpleGrid>
         <Button isLoading={loadingMore} display="flex" variant={"ghost"} mx="auto" title="Load more" onClick={loadNewPage}><ChevronDownIcon/></Button>
@@ -129,8 +130,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     if (errorCode === null) {
         data = await fetch(apiPath + "sounds/" + collection + "/1").then(res => res.json())
-        console.log("data")
-        console.log(data)
+        // console.log("data")
+        // console.log(data)
         if(data == null) {
             data = {
               collection: "all",
