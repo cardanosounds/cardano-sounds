@@ -104,15 +104,15 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
       walletModal.onClose()
     }
 
-    const checkForWallet = async () => {
-      const win: any = window
-      if(win.cardano && await win.cardano.isEnabled() === true){
-        allowWallet()
-      }
-      else {
-        window.localStorage.setItem('cswallet', null)
-      }
-    }
+    // const checkForWallet = async () => {
+    //   const win: any = window
+    //   if(win.cardano && await win.cardano.isEnabled() === true){
+    //     allowWallet()
+    //   }
+    //   else {
+    //     window.localStorage.setItem('cswallet', null)
+    //   }
+    // }
 
     const playSound = (id: string) => {
       if(window.localStorage.getItem('sound') === 'false') return
