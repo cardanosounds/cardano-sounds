@@ -75,22 +75,13 @@ function draw() {
 		endShape();
 		
 	}
-					
-}
-function mouseClicked() {
-	if(song.isPlaying()) {
-		song.pause()	
-	} else {
-		song.loop()
-	}
 }
 
-function touchStarted() {
-	if(song.isPlaying()) {
-		song.pause()	
-	} else {
-		song.loop()
-	}
+function mouseClicked(){
+	if(windowWidth > 600){song.isPlaying()?song.pause():song.loop()}
+}
+function touchStarted(){
+	if(windowWidth < 600){song.isPlaying()?song.pause():song.loop()}
 }
 
 function windowResize() {
@@ -98,7 +89,7 @@ function windowResize() {
 	resizeCanvas(w, w)
 }
 
-function r (theta, a, b, m, n1, n2, n3) {
+function r(theta, a, b, m, n1, n2, n3) {
 	return pow(pow(abs(cos(m * theta / 4.0) / a), n2) 
 		+ pow(abs(sin(m * theta / 4.0) / b), n3), -1.0 / n1)
 }

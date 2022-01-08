@@ -88,6 +88,7 @@ function draw() {
 					step.mult(random(1, 10))
 				} else {
 					random(100) > 10 ? step.mult(1) : step.mult(10)
+
 				}
 
 				prevd.set(sd)
@@ -123,22 +124,27 @@ function draw() {
 	}
 					
 }
-function mouseClicked() {
-	if(song.isPlaying()) {
-		song.pause()	
-	} else {
-		song.loop()
-	}
+function mouseClicked(){
+	if(windowWidth > 600){song.isPlaying()?song.pause():song.loop()}
+}
+function touchStarted(){
+	if(windowWidth < 600){song.isPlaying()?song.pause():song.loop()}
 }
 
-function touchStarted() {
-	if(song.isPlaying()) {
-		song.pause()	
-	} else {
-		song.loop()
-	}
-}
-
+// function touchStarted() {
+// 	if(song.isPlaying()) {
+// 		song.pause()	
+// 	} else {
+// 		song.loop()
+// 	}
+// }
+// function mouseClicked() {
+// 	if(song.isPlaying()) {
+// 		song.pause()	
+// 	} else {
+// 		song.loop()
+// 	}
+// }
 function windowResize() {
 	const w = getW()
 	resizeCanvas(w, w)
