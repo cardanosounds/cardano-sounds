@@ -82,6 +82,13 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
         case 'ccvault':
           baseWalletApi = win.cardano.ccvault
           break
+        case 'gerowallet':
+          if(!win.cardano.gerowallet){ 
+            console.log("gero not inserted")
+            return 
+          }
+          baseWalletApi = win.cardano.gerowallet
+          break
       }
       // if(await baseWalletApi.isEnabled()) return walletModal.onClose()
 
@@ -92,6 +99,10 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
           break
         case 'ccvault':
           fullWalletApi = await baseWalletApi.enable()
+          break
+        case 'gerowallet':
+          await baseWalletApi.enable()
+          fullWalletApi = win.cardano.gerowallet
           break
       }
 
@@ -188,7 +199,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                         <Logo size={["2em", "3em", "2em", "5em", "5em", "5em"]} color={ isDark ? "white" : "gray.800" }/>
                       </DrawerHeader>
                       <DrawerBody background="transparent url(/noise.png) repeat 0 0">
-                        <NextChakraLink href="/prebuy">{/*  className={mainStyles.disableEvents} */}
+                        <NextChakraLink href="/buy">{/*  className={mainStyles.disableEvents} */}
                             <Heading size="lg" as="h4">BUY</Heading>
                         </NextChakraLink>
                         <NextChakraLink href="/">

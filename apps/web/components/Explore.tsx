@@ -64,7 +64,7 @@ export default function Explore({ goBackFunc, soundFunc } : { goBackFunc : Funct
                 <Flex direction="column" mt={["unset", "2.5vh", "unset"]} w={{ base: "80vw", md: "20vw" }}>
                   <NextChakraLink 
                     onClick={() => soundFunc()}
-                    href="/prebuy"
+                    href="/buy"
                   >
                     <Button 
                       width={["70vw", "70vw", "25vw", "25vw", "25vw", "25vw" ]}

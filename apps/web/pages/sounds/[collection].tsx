@@ -17,7 +17,7 @@ import NextChakraLink from "../../components/NextChakraLink"
 import { DatabaseTx } from "../../interfaces/databaseTx"
 import { ChevronDownIcon } from "@chakra-ui/icons"
 
-const apiPath = "http://localhost:3000/api/"
+const apiPath = "/api/"
 
 export default function SoundList({ errorCode, data }: {
     errorCode: number

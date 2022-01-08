@@ -4,7 +4,7 @@ import Layout from "../../components/layout";
 import SoundNFT from "../../components/SoundNFT";
 import { DatabaseTx, Metadata } from "../../interfaces/databaseTx";
 
-const apiPath = "http://localhost:3000/api/"
+const apiPath = "/api/"
 
 export default function Sound({nftData}: {nftData?: Metadata})
 {
