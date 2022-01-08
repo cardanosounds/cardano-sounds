@@ -71,7 +71,7 @@ import ConnectWalletModal from './ConnectWalletModal'
       return (
         NoWallet(toast) &&
         (await NotConnectedToast(toast, connected)) &&
-        (await WrongNetworkToast(toast))
+        (await WrongNetworkToast(toast, walletCtx.walletApi))
       )
     }
   
@@ -92,11 +92,11 @@ import ConnectWalletModal from './ConnectWalletModal'
       const signedTx = await wallet.signTx(tx).catch(() => setLoading(false));
       if (!signedTx) return;
       const txHash = await wallet.submitTx(signedTx);
+      PendingTransactionToast(toast);
       if(txHash.toString().length === 64){
-        PendingTransactionToast(toast);
-        await wallet.awaitConfirmation(txHash);
         toast.closeAll();
         SuccessTransactionToast(toast, txHash, onclose, successCallback);
+        // await wallet.awaitConfirmation(txHash);
         setLoading(false);
         console.log(txHash);
 
@@ -112,7 +112,7 @@ import ConnectWalletModal from './ConnectWalletModal'
         position: "bottom-right",
         title: (
           <Box display="flex" alignItems="center">
-            <Text>Transaction confirmed</Text>
+            <Text>Transaction submitted</Text>
             <ExternalLinkIcon
               cursor="pointer"
               ml="4"
@@ -234,9 +234,9 @@ import ConnectWalletModal from './ConnectWalletModal'
     return false;
   };
   
-  const WrongNetworkToast = async (toast) => {
-    console.log(await window.cardano.getNetworkId());
-    if ((await window.cardano.getNetworkId()) === 0) return true;
+  const WrongNetworkToast = async (toast, walletApi) => {
+    console.log(await walletApi.getNetworkId());
+    if ((await walletApi.getNetworkId()) === 1) return true;
     toast({
       position: "bottom-right",
       title: "Wrong network",

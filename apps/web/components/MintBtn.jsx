@@ -49,7 +49,7 @@ import WalletContext from "../lib/WalletContext";
       return (
         NoWallet(toast) &&
         (await NotConnectedToast(toast, connected)) &&
-        (await WrongNetworkToast(toast))
+        (await WrongNetworkToast(toast, walletCtx.walletApi))
       )
     }
   
@@ -136,11 +136,11 @@ import WalletContext from "../lib/WalletContext";
       init();
     }, []);
     useEffect(() => {
-      if (connected)
-        window.cardano.onAccountChange(async () => {
-          const address = await wallet.baseAddressToBech32();
-          setConnected(address);
-        });
+      // if (connected)
+      //   window.cardano.onAccountChange(async () => {
+      //     const address = await wallet.baseAddressToBech32();
+      //     setConnected(address);
+      //   });
     });
     return (
       <Box
@@ -271,9 +271,9 @@ import WalletContext from "../lib/WalletContext";
     return false;
   };
   
-  const WrongNetworkToast = async (toast) => {
-    console.log(await window.cardano.getNetworkId());
-    if ((await window.cardano.getNetworkId()) === 1) return true;
+  const WrongNetworkToast = async (toast, walletApi) => {
+    console.log(await walletApi.getNetworkId());
+    if ((await walletApi.getNetworkId()) === 1) return true;
     toast({
       position: "bottom-right",
       title: "Wrong network",
