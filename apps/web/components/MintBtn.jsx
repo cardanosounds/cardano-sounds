@@ -48,8 +48,8 @@ import WalletContext from "../lib/WalletContext";
       setConnected(connected)
       return (
         NoWallet(toast) &&
-        (await NotConnectedToast(toast, connected)) &&
-        (await WrongNetworkToast(toast, walletCtx.walletApi))
+        (await NotConnectedToast(toast, connected)) //&&
+        // (await WrongNetworkToast(toast, walletCtx.walletApi))
       )
     }
   
