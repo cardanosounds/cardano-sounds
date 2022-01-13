@@ -16,8 +16,9 @@ import SoundNFTPreviewSmall from "../../components/SoundNFTPreviewSmall"
 import NextChakraLink from "../../components/NextChakraLink"
 import { DatabaseTx } from "../../interfaces/databaseTx"
 import { ChevronDownIcon } from "@chakra-ui/icons"
+import GlitchText from "../../components/GlitchText"
 
-const apiPath = "/api/"
+const apiPath = "http://localhost:3000/api/"
 
 export default function SoundList({ errorCode, data }: {
     errorCode: number
@@ -54,7 +55,6 @@ export default function SoundList({ errorCode, data }: {
       updateNfts(nfts.concat(res.nfts))
       loadMore(false)
   }
-
 
   if (errorCode !== null) {
     return <Error statusCode={errorCode} title="Something is wrong."/>

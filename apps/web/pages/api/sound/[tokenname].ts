@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { NFTData } from '../../../interfaces/interfaces'
 import { CosmosClient } from "@azure/cosmos"
 import { container } from '../../../lib/db'
-import { Metadata } from '../../../interfaces/databaseTx'
+import { DatabaseTx, Metadata } from '../../../interfaces/databaseTx'
 
 // const endpoint = "https://your-account.documents.azure.com";
 // const key = "<database account masterkey>";
@@ -13,11 +13,11 @@ import { Metadata } from '../../../interfaces/databaseTx'
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
 	const { tokenname } = req.query
-    console.log(tokenname)
+    // console.log(tokenname)
     
 	if (typeof(tokenname) === "undefined") res.status(400).json("no id provided")
 
-	let nftData: Metadata
+	let nftData: DatabaseTx
 
 	const sound = await getSoundNFTData(tokenname as string)
 
@@ -25,16 +25,16 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
 		res.status(404).json(sound)
 	}
 	else {
-		nftData = sound as unknown as Metadata
+		nftData = sound as unknown as DatabaseTx
 		res.status(200).json(nftData)
 	}
 }
 const getByTokenNameQuery = (tokenName: string) => {
     return (
-        { query: "SELECT t.Metadata from t WHERE t.Metadata.token_name = @tokenname",
+        { query: "SELECT * from t WHERE LOWER(t.Metadata.token_name) = @tokenname",
             parameters: [{
                 name: "@tokenname",
-                value: tokenName 
+                value: tokenName.toLowerCase() 
             }]
         }
     )
