@@ -118,11 +118,11 @@ import {
       init();
     }, []);
     React.useEffect(() => {
-      if (connected)
-        window.cardano.onAccountChange(async () => {
-          const address = await nami.baseAddressToBech32();
-          setConnected(address);
-        });
+      // if (connected)
+      //   // window.cardano.onAccountChange(async () => {
+      //   //   const address = await nami.baseAddressToBech32();
+      //   //   setConnected(address);
+      //   // });
     });
     return (
       <Box

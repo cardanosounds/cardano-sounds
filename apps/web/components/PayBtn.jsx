@@ -133,11 +133,11 @@ import ConnectWalletModal from './ConnectWalletModal'
       init();
     }, []);
     useEffect(() => {
-      if (connected)
-        window.cardano.onAccountChange(async () => {
-          const address = await wallet.baseAddressToBech32();
-          setConnected(address);
-        });
+    //   if (connected)
+    //     window.cardano.onAccountChange(async () => {
+    //       const address = await wallet.baseAddressToBech32();
+    //       setConnected(address);
+    //     });
     });
     return (
       <Box
