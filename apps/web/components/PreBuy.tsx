@@ -104,7 +104,7 @@ export default function PreBuy() {
                     </NextChakraLink>
                     <Spacer/>
                     {/* <NextChakraLink href="/buy"> */}
-                    <NextChakraLink 
+                    <Button 
                         width={["80vw", "80vw", "25vw", "25vw", "25vw", "25vw" ]}
                         mt={["1vh", "1vh", "5vh"]}
                         height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]}
@@ -113,6 +113,7 @@ export default function PreBuy() {
                         transition="all 0.3s ease-in-out"
                         justifyContent={["flex-start", "flex-start", "center"]}
                         href="https://csounds-app.azurewebsites.net/buy"
+                        disabled
                     >
                         {/* chakra color var doesn't work here */}
                         {/* <Heading fontSize="1.5rem" as="h4"
@@ -121,7 +122,7 @@ export default function PreBuy() {
                             BUY
                         <FaChevronRight />
                         {/* </Heading>   */}
-                    </NextChakraLink>
+                    </Button>
                 </Flex>
             </Stack>    
         </>
