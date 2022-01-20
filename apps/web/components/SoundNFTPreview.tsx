@@ -34,7 +34,7 @@ export default function SoundNFTPreview(soundNFTData: { nftData: DatabaseTx } ) 
 					wordBreak="break-all"
 				>
 					{/* <Heading size="sm">token name:</Heading><a><Text>{soundNFTData.nftData.Metadata.token_name}</Text></a> */}
-					<Heading size="sm">policy:</Heading><Text>be3a4e111a307643783820c2bf15fcace87f161187be9301857b593a</Text>
+					<Heading size="sm">policy:</Heading><Text>97de3506172e572d4e7ba9874af2616c41ae3027c9894fde2c484a62</Text>
 					<Heading size="sm">web:</Heading><a href={soundNFTData.nftData.Metadata.arweave_website_uri}><Text>{soundNFTData.nftData.Metadata.arweave_website_uri}</Text></a>
 					<Heading size="sm">rarity color:</Heading><Text>{soundNFTData.nftData.Metadata.rarity}</Text>
 					<Heading size="sm">probability:</Heading><Text>{soundNFTData.nftData.Metadata.probability} %</Text>

@@ -17,8 +17,8 @@ import NextChakraLink from "../../components/NextChakraLink"
 import { DatabaseTx } from "../../interfaces/databaseTx"
 import { ChevronDownIcon } from "@chakra-ui/icons"
 import GlitchText from "../../components/GlitchText"
-
-const apiPath = "http://localhost:3000/api/"
+const apiPath = "https://csounds-app.azurewebsites.net/api/"
+// const apiPath = "http://localhost:3000/api/"
 
 export default function SoundList({ errorCode, data }: {
     errorCode: number

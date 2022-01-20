@@ -118,7 +118,7 @@ export default function SoundNFTPreviewSmall({soundNFTData, fullView}: { soundNF
 				{/*<Text
 					wordBreak="break-all"
 				>
-					be3a4e111a307643783820c2bf15fcace87f161187be9301857b593a
+					97de3506172e572d4e7ba9874af2616c41ae3027c9894fde2c484a62
 				</Text>*/}
 			</Flex>
 	)

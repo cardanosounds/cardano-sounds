@@ -6,7 +6,8 @@ import SoundNFT from "../../components/SoundNFT";
 import SoundNFTPreview from "../../components/SoundNFTPreview";
 import { DatabaseTx, Metadata } from "../../interfaces/databaseTx";
 
-const apiPath = "http://localhost:3000/api/"
+// const apiPath = "http://localhost:3000/api/"
+const apiPath = "https://csounds-app.azurewebsites.net/api/"
 
 export default function Sound({nftData}: {nftData?: DatabaseTx})
 {
