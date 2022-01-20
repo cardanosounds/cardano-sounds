@@ -112,7 +112,6 @@ export default function PreBuy() {
                         className={utilStyles.shadow}
                         transition="all 0.3s ease-in-out"
                         justifyContent={["flex-start", "flex-start", "center"]}
-                        href="https://csounds-app.azurewebsites.net/buy"
                         disabled
                     >
                         {/* chakra color var doesn't work here */}
