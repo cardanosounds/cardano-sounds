@@ -6,10 +6,14 @@ export default function Mint() {
     
     return (
         <Layout>
-            <Flex align="center" direction="column" justify="center" minH="85vh" maxW="50rem" mx="auto">
+            <Flex align="center" direction="column" justify="center" minH="85vh" maxW="50rem" mt="15vh" mx="auto">
             <Heading>Info about mainnet dapp connector minting</Heading>
 
                 <List spacing={3} pl="3vw" ml="0" marginInlineEnd="auto" mt="5vh" >
+                    <ListItem>
+                        <Image mx="auto" src="/how-to-mint.gif"/>
+                    </ListItem>
+                    <Spacer/>
                     <ListItem>
                         To use this tool, you need to store your files on <strong>IPFS</strong> and preferably also <strong>Arweave</strong>
                     </ListItem>
@@ -24,11 +28,7 @@ export default function Mint() {
                     <ListItem>
                         All fees go to network. If you want to support the development of this and more tools, you can tip some ADA to addr1qx0l7rcp9qkzyy53w5wkk55wgz0hpmst00revasatvrz3evp5y5y0lja4ujq7geynu5as5fcrtjcdju69pfsvv8hhdpq9ep7x9
                     </ListItem>
-                    <Spacer/>
-                    <ListItem>
-                        <Image mx="auto" src="/how-to-mint.gif"/>
-                    </ListItem>
-                    <Spacer/>
+                    <Spacer/>                   
                     <a href="/mint">Go to mint</a>
                 </List>
             </Flex>
