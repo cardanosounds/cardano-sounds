@@ -21,7 +21,7 @@ namespace CS.Models
 		public string PlayerImage { get; set; }
 
 		[JsonProperty("probability")]
-		public long Probability { get; set; }
+		public string Probability { get; set; }
 
 		[JsonProperty("rarity")]
 		public string Rarity { get; set; }
@@ -42,7 +42,7 @@ namespace CS.Models
 	public partial class Sound
 	{
 		[JsonProperty("probability")]
-		public long Probability { get; set; }
+		public string Probability { get; set; }
 
 		[JsonProperty("filename")]
 		public string Filename { get; set; }
@@ -56,20 +56,20 @@ namespace CS.Models
 		public static Metadata FromJson(string json) => JsonConvert.DeserializeObject<Metadata>(json, Converter.Settings);
 	}
 
-	public static class Serialize
-	{
-		public static string ToJson(this Metadata self) => JsonConvert.SerializeObject(self, Converter.Settings);
-	}
+	// public static class Serialize
+	// {
+	// 	public static string ToJson(this Metadata self) => JsonConvert.SerializeObject(self, Converter.Settings);
+	// }
 
-	internal static class Converter
-	{
-		public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
-		{
-			MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
-			DateParseHandling = DateParseHandling.None,
-			Converters = {
-				new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
-			},
-		};
-	}
+	// internal static class Converter
+	// {
+	// 	public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
+	// 	{
+	// 		MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
+	// 		DateParseHandling = DateParseHandling.None,
+	// 		Converters = {
+	// 			new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
+	// 		},
+	// 	};
+	// }
 }

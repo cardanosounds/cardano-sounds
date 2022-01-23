@@ -55,9 +55,14 @@ namespace CS.DB.Cosmos
         
         public async Task Setup()
         {
+            Console.WriteLine("SETUP DB");
             CreateCosmosClient();
+            Console.WriteLine("SETUP CLIENT");
             await CreateCosmosDatabase();
+            Console.WriteLine("SETUP DB");
             await CreateTxContainer();
+            Console.WriteLine("SETUP Container");
+
             //await CreateMetadataContainer();
         }
 
@@ -73,7 +78,7 @@ namespace CS.DB.Cosmos
 
         private async Task CreateTxContainer()
         {
-            txContainer = await database.CreateContainerIfNotExistsAsync("transactions", "/Tx_Hash");
+            txContainer = await database.CreateContainerIfNotExistsAsync("transactions", "/tx_hash");
         }
 
         private async Task CreateMetadataContainer()

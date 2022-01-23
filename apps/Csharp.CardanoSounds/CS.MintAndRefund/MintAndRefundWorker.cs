@@ -24,11 +24,26 @@ namespace CS.MintAndRefund
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                await Task.Run(_mintService.MintFromDbTransaction, CancellationToken.None);
-                _logger.LogTrace("Finished mint");
+                try
+                {
+                    await Task.Run(_mintService.MintFromDbTransaction, CancellationToken.None);
+                    _logger.LogTrace("Finished mint");
+                }
+                catch(Exception ex)
+                {
+                    _logger.LogError(ex, "Mint failed: " +  ex.Message);
+                }
 
-                await Task.Run(_refundService.RefundFromInvalidDBTransaction, CancellationToken.None);
-                _logger.LogTrace("Finished refund");
+                try
+                {
+                    await Task.Run(_refundService.RefundFromInvalidDBTransaction, CancellationToken.None);
+                    _logger.LogTrace("Finished refund");
+                }
+                catch(Exception ex)
+                {
+                    _logger.LogError(ex, "Refund failed: " + ex.Message);
+                }
+                await Task.Delay(10000);
             }
         }
     }
