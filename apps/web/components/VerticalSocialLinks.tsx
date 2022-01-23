@@ -27,6 +27,7 @@ export default function Footer() {
             right={["0vw", "4vw", "5vw", "5vw", "3vw", "2vw"]}
             bottom={[ "5vh", "10vh", "10vh", "15vh", "15vh", "15vh" ]}
             transition="all 0.3s ease-in-out"
+            style={{transitionDelay: `700ms`}}
             //mt={{ base: "10vh", md: "15vh" }}
           >
             <Flex display={{ base: "none", md: "flex"}} direction="column" h="50vh">
@@ -76,7 +77,7 @@ export default function Footer() {
                   <IconButton
                     variant="ghost"
                     mt={2}
-                    mr={2} 
+                    mr={10} 
                     aria-label="Twitter Cardano Sounds"
                     size="lg"
                     icon={
@@ -88,7 +89,7 @@ export default function Footer() {
                   <IconButton
                     variant="ghost"
                     mt={2}
-                    mr={2} 
+                    mr={10} 
                     aria-label="Git Cardano Sounds"
                     size="lg"
                     icon={
@@ -100,7 +101,7 @@ export default function Footer() {
                   <IconButton
                     variant="ghost"
                     mt={2}
-                    mr={2} 
+                    mr={10} 
                     aria-label="Medium Cardano Sounds"
                     size="lg"
                     icon={

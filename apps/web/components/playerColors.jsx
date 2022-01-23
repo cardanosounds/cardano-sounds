@@ -1,24 +1,25 @@
 import React, { useEffect, useRef } from 'react'
-import p5, { FFT, Image, SoundFile, Vector, Color } from 'p5'
+import p5, {FFT} from 'p5'
+
 import "../p5.sound.js"
 
-
-export default function PlayerColors({ size, isDark } : { size: { width: number, height: number}, isDark: boolean}) {
-    let myP5: p5
-    let song: SoundFile
-    let fft: FFT
-    let amp: number
-    let ampBass: number
-    let ampMid: number
-    let ampHigh: number
-    let t: number = 0
-    let bgColor: {r: number, g: number, b: number} = {r: 26, g: 32, b: 44}
+// } //{ size//{ width//number, height//number}, isDark//boolean}
+export default function PlayerColors() {
+    let myP5//p5
+    let song//SoundFile
+    let fft//FFT
+    let amp//number
+    let ampBass//number
+    let ampMid//number
+    let ampHigh//number
+    let t//number = 0
+    let bgColor//{r//number, g//number, b//number} = {r//26, g//32, b//44}
     let fa
 
     const myRef = useRef()
 
     useEffect(() => {
-	myP5 = new p5(Sketch, myRef.current)
+		myP5 = new p5(Sketch, myRef.current)
     }, [])
     
 
@@ -36,8 +37,8 @@ export default function PlayerColors({ size, isDark } : { size: { width: number,
 		p.createCanvas(w, w)
 		p.textAlign(p.CENTER, p.CENTER);
 	
-		isDark ? bgColor = {r: 26, g: 32, b: 44} : bgColor = {r: 255, g: 255, b: 255}
-	
+		// isDark ? bgColor = {r:26, g:32, b:44} : bgColor = {r:255, g:255, b:255}
+		bgColor = {r:26, g:32, b:44} 
 		p.noFill()
 	
 		p.stroke(255)
@@ -54,7 +55,8 @@ export default function PlayerColors({ size, isDark } : { size: { width: number,
 	}
     
 	p.draw = () => {
-		let bgColor = {r: 26, g: 32, b: 44} // bgColor = {r: 255, g: 245, b: 245}
+		// {r:26, g:32, b:44} : bgColor = {r:255, g:255, b:255}
+		let bgColor = {r:26, g:32, b:44} // bgColor = {r//255, g//245, b//245}
 		p.background(bgColor.r, bgColor.g, bgColor.b)
 
 		
@@ -105,29 +107,29 @@ export default function PlayerColors({ size, isDark } : { size: { width: number,
 
     return (
         <>
-		<div ref={myRef}>
+		{/* <div ref={myRef}>
 
-		</div>
+		</div> */}
         </>
     )
 }
 
-const x1 = (t: number, p: p5, a: number) => {
+const x1 = (t) => {//number, p//p5, a//number) 
 	return p.sin(t / 10) + p.sin(t / 5) * a
 }
-const y1 = (t: number, p: p5, a: number) => {
+const y1 = (t) => {//number, p//p5, a//number)
 	return  p.cos(t /10) + p.cos(t / 4) * a
 }
-const x2 = (t: number, p: p5, a: number) => {
+const x2 = (t) => {//number, p//p5, a//number)x
 	return p.sin(t / 10) + p.sin(t) * a
 }
-const y2 = (t: number, p: p5, a: number) => {
+const y2 = (t) => {//number, p//p5, a//number)
 	return  p.cos(t / 20) + p.cos(t / 12) * a
 }
 
 
 
-const getW = (p: p5) => {
+const getW = (p) => { //p5) => {
 	if(p.windowWidth < 600){		
 		return p.windowWidth * 0.9;
 	} else {

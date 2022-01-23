@@ -1,6 +1,7 @@
 let song, fft, amp, ampBass, ampMid, ampHigh, fa
 let t = 0
 
+
 function preload() {
 	
 	fa = loadFont('https://arweave.net/2sAqaLM2Dx4kl-4cDfjym2DOylAKi1F7vi-Gy1ndw9U');
@@ -62,15 +63,32 @@ function draw() {
 		t+= map(amp, 0, 250, 0, 0.75)
 	}
 }
-function mouseClicked() {
-	if(song.isPlaying()) {
-		song.pause();
-		
-	} else {
-		song.loop();
-					
-	}
+function mouseClicked(){
+	if(windowWidth > 600){song.isPlaying()?song.pause():song.loop()}
 }
+function touchStarted(){
+	if(windowWidth < 600){song.isPlaying()?song.pause():song.loop()}
+}
+
+
+// function touchStarted() {
+// 	if(song.isPlaying()) {
+// 		song.pause()	
+// 	} else {
+// 		song.loop()
+// 	}
+// }
+// function mouseClicked() {
+// 	if(song.isPlaying()) {
+// 		song.pause();
+// 		//noLoop();
+		
+// 	} else {
+// 		song.loop();
+// 		//loop();
+					
+// 	}
+// }
 function windowResized() {
 	
 	const w = getW();

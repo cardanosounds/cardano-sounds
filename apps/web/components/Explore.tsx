@@ -1,25 +1,31 @@
-import React, { MouseEventHandler } from "react"
-import { Flex, Text, Spacer, IconButton, Button, Heading, useColorMode } from "@chakra-ui/react"
-import {  Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverHeader } from "@chakra-ui/react"
-import { InfoIcon, QuestionIcon } from "@chakra-ui/icons"
-import Logo from "./Logo"
+import React, { useEffect, useState } from "react"
+import { Flex, Spacer, Button, Heading, List, ListItem, ListIcon } from "@chakra-ui/react"
 import NextChakraLink from "./NextChakraLink"
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import utilStyles from '../styles/utils.module.css'
+import GlitchText from "./GlitchText"
+import { GiTakeMyMoney, GiArtificialIntelligence } from "react-icons/gi"
+import { SiAudiomack } from "react-icons/si"
 
+export default function Explore({ goBackFunc, soundFunc } : { goBackFunc : Function, soundFunc : Function  }) {
+    const [ glitching, setGlitching ]= useState<boolean>(true)
 
-
-export default function Explore({ goBackFunc } : { goBackFunc : Function }) {
-    const { colorMode } = useColorMode()
-    const isDark = colorMode === 'dark'
+    useEffect(() => { 
+      setTimeout(() => setGlitching(false), 225);
+    }, [])
+  
+    const glitchingText = (text: string, glitching: boolean) => {
+      if(glitching) return <GlitchText>{text}</GlitchText>
+  
+      return <>{text}</>
+    }
 
     return (
         <>
             <Flex w="100%" direction={{ base: "column", md: "row" }}>
-                
                 <Flex 
                     direction="column" 
-                    w={["70vw", "70vw", "46vw", "46vw", "45vw", "45vw"]} 
+                    w={["75vw", "75vw", "46vw", "46vw", "45vw", "45vw"]} 
                     fontSize={["0.825rem", "0.9rem", "0.9rem", "0.9rem", "1.25rem", "1.75rem"]} 
                     textAlign="left" 
                     minH={["40vh", "30vh", "50vh"]}
@@ -27,135 +33,97 @@ export default function Explore({ goBackFunc } : { goBackFunc : Function }) {
                     mt={["20vh", "20vh", "15vh", "15vh"]}
                 >
                   <Flex>
-                    <Text>
-                      We are bringing audio NFTs created by you / your transaction.
-                    </Text>
+                  <Heading as="h2"
+                      transition="all 0.2s ease-in-out"
+                      >{glitchingText('The safe space for AUDIO and NFTs', glitching)}</Heading>
                   </Flex>
                   <Spacer/>
-                  <Text>
-                    When we receive transaction, music clip is algorithmically put together with our original sounds, minted and sent to you.
-                  </Text>
+                  <List spacing={3} m={8}>
+                    <ListItem>
+                     <Heading as="h2"
+                      transition="all 0.33s ease-in-out"
+                      > CREATE <ListIcon as={GiArtificialIntelligence} /></Heading>
+                    </ListItem>
+                    <ListItem>
+                      <Heading as="h2"
+                      transition="all 0.45s ease-in-out"
+                      >& EARN <ListIcon as={GiTakeMyMoney}/></Heading>
+                    </ListItem>  
+                  </List>
                   <Spacer/>
-                  <Text>
-                    Which makes each track unique and <strong>yours</strong>.
-                  </Text>
-                  <Spacer/> 
+                  <List spacing={3}>
+                    <ListItem>
+                      <Heading as="h2"
+                      transition="all 0.6s ease-in-out"
+                      >..with sound <ListIcon as={SiAudiomack}/></Heading>
+                    </ListItem>
+                  </List>
+                  <Spacer/>
                 </Flex>
                 <Spacer/>
-                <Flex direction="column" mt={["unset", "2.5vh", "unset"]} w={{ base: "80vw", md: "20vw" }} textColor="gray.600">
-                  <Popover>
-                    <PopoverTrigger>
-                      <IconButton 
-                        width={["70vw", "70vw", "25vw", "25vw", "25vw", "25vw" ]}
-                        mt={["1vh", "1vh", "5vh"]}
-                        height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]} 
-                        variant="ghost"
-                        className={utilStyles.shadow}
-                        position= {["inherit", "inherit", "absolute"]}
-                        right={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}
-                        bottom={["43vh", "43vh", "63vh", "63vh", "63vh", "63vh"]}
-                        transition="all 0.3s ease-in-out" 
-                        size="lg" 
-                        aria-label="Sale purpouse" 
-                        color="gray.600"
-                        icon={<InfoIcon />}/>
-                    </PopoverTrigger>
-                    <PopoverContent>
-                      <PopoverArrow />
-                      <PopoverCloseButton />
-                        <PopoverHeader><Logo size="2em" color={ isDark ? "red.50" : "gray.800" }/></PopoverHeader>
-                      <PopoverBody><Text fontSize={["0.8em", "0.85em", "1em" ]}> By getting our NFT you are supporting development of Cardano Sounds platform</Text></PopoverBody>
-                    </PopoverContent>
-                  </Popover>
-                  <NextChakraLink href="/prebuy">
+                <Flex direction="column" mt={["unset", "2.5vh", "unset"]} w={{ base: "80vw", md: "20vw" }}>
+                  <NextChakraLink 
+                    onClick={() => soundFunc()}
+                    href="/buy"
+                  >
                     <Button 
-                      
-
                       width={["70vw", "70vw", "25vw", "25vw", "25vw", "25vw" ]}
                       mt={["1vh", "1vh", "5vh"]}
                       height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]} 
                       variant="ghost"
                       className={utilStyles.shadow}
+                      position= {["inherit", "inherit", "absolute"]}
+                      right={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}
+                      bottom={["43vh", "43vh", "63vh", "63vh", "63vh", "63vh"]}                      
+                      transition="all 0.3s ease-in-out"
+                      onClick={() => soundFunc}
+                      justifyContent={["flex-start", "flex-start", "center"]}
+                    >
+                      BUY
+                      <FaChevronRight />
+                    </Button>
+                  </NextChakraLink>
+                  <Spacer/>
+                  <NextChakraLink 
+                    onClick={() => soundFunc()}
+                    href="/create"
+                  >
+                    <Button 
+                      width={["70vw", "70vw", "25vw", "25vw", "25vw", "25vw" ]}
+                      mt={["1vh", "1vh", "5vh"]}
+                      height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]} 
                       position= {["inherit", "inherit", "absolute"]}
                       right={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}
                       bottom={["32vh", "32vh", "47vh", "47vh", "47vh", "47vh"]}
-                      transition="all 0.3s ease-in-out"
-                    >
-                      {/* chakra color var doesn't work here */}
-                      <FaChevronRight fill="#4A5568" />
-                      <Heading as="h4" fontSize="1.5rem" textColor="gray.600"
-                        fontWeight="normal"
-                      >
-                        BUY
-                      </Heading>  
-                    </Button>
-                  </NextChakraLink>
-                  <Spacer/>
-                  <NextChakraLink href="/">
-                    <Button 
-                      width={["70vw", "70vw", "25vw", "25vw", "25vw", "25vw" ]}
-                      mt={["1vh", "1vh", "5vh"]}
-                      height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]} 
-                      position= {["inherit", "inherit", "absolute"]}
-                      right={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}
-                      bottom={["21vh", "21vh", "31vh", "31vh", "31vh", "31vh"]}
                       variant="ghost"
                       className={utilStyles.shadow}
                       transition="all 0.3s ease-in-out"
+                      justifyContent={["flex-start", "flex-start", "center"]}
                     >
-                      {/* chakra color var doesn't work here */}
-                      <FaChevronRight fill="#4A5568" />
-                      <Heading as="h4" fontSize="1.5rem" textColor="gray.600"
-                        fontWeight="normal"
-                      >
-                        ABOUT
-                      </Heading>  
+                      CREATE
+                      <FaChevronRight  />
                     </Button>
                   </NextChakraLink>
                   <Spacer/>
-                  {/*</Flex><NextChakraLink href="/">*/}
-                  {/*</Flex>  <Button */}
-                  {/*</Flex>    width={["70vw", "70vw", "25vw", "25vw", "25vw", "25vw" ]}*/}
-                  {/*</Flex>    mt={["1vh", "1vh", "5vh"]}*/}
-                  {/*</Flex>    height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]} */}
-                  {/*</Flex>    variant="ghost"*/}
-                  {/*</Flex>    className={utilStyles.shadow}*/}
-                  {/*</Flex>    position= {["inherit", "inherit", "absolute"]}*/}
-                  {/*</Flex>    right={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}*/}
-                  {/*</Flex>    bottom={["21vh", "21vh", "31vh", "31vh", "31vh", "31vh"]}*/}
-                  {/*</Flex>    transition="all 0.3s ease-in-out"*/}
-                  {/*</Flex>  >*/}
-                  {/*</Flex>    {/* chakra color var doesn't work here */}
-                  {/*</Flex>    <FaChevronRight fill="#4A5568"/>*/}
-                  {/*</Flex>      <Heading fontSize="1.5rem" as="h4" textColor="gray.600"*/}
-                  {/*</Flex>          fontWeight="normal"*/}
-                  {/*</Flex>      >*/}
-                  {/*</Flex>          NFTS*/}
-                  {/*</Flex>      </Heading>  */}
-                  {/*</Flex>  </Button>*/}
-                  {/*</Flex></NextChakraLink>*/}
-                  <Spacer/>
-                  <NextChakraLink href="/">
+                  <NextChakraLink 
+                    href="/"
+                  >
                     <Button 
-                      width={["70vw", "70vw", "25vw", "25vw", "25vw", "25vw" ]}
-                      mt={["1vh", "1vh", "5vh"]}
-                      height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]} 
+                      width="70vw"
+                      mt={["1vh", "1vh"]}
+                      height={["8vh", "7vh"]} 
                       variant="ghost"
                       className={utilStyles.shadow}
-                      position= {["inherit", "inherit", "absolute"]}
-                      right={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}
-                      bottom={["21vh", "21vh", "31vh", "31vh", "31vh", "31vh"]}
                       transition="all 0.3s ease-in-out"
                       display={["flex", "flex", "none"]}
-                      onClick={ goBackFunc as MouseEventHandler<HTMLButtonElement>}
-                    >
-                      {/* chakra color var doesn't work here */}
-                      <FaChevronLeft fill="#4A5568"/>
-                        <Heading fontSize="1.5rem" as="h4" textColor="gray.600"
-                            fontWeight="normal"
-                        >
-                            BACK
-                        </Heading>  
+                      justifyContent={["flex-start", "flex-start", "center"]}
+                      onClick={() => {
+                        soundFunc()
+                        goBackFunc()
+                      }}
+                    > 
+                        BACK
+                      <FaChevronLeft />
                     </Button>
                   </NextChakraLink>
                   <Spacer />

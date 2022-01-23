@@ -6,6 +6,16 @@ body {
     Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   line-height: 1.6;
   font-size: 18px;
+  /* background:url("/cool-background.svg") no-repeat center center fixed !important; */
+  /* background-size: cover; */
+  /* background-color: #fff; */
+  margin: 0;
+  /* overflow-x: hidden; */
+}
+/* body {
+} */
+main {
+  min-height: 60vh;
 }
 
 * {

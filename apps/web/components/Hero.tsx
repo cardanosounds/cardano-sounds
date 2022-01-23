@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { FaChevronRight, FaChevronLeft } from 'react-icons/fa';
 import utilStyles from '../styles/utils.module.css'
 import useSound from 'use-sound';
@@ -14,6 +14,7 @@ import {
 import Logo from "./Logo";
 import Explore from "./Explore";
 import VerticalSocialLinks from "./VerticalSocialLinks";
+import GlitchText from "./GlitchText";
  
 export default function Hero() {
   const { colorMode } = useColorMode()
@@ -23,12 +24,27 @@ export default function Hero() {
   const [ h2playing, h2play ]= useState<boolean>(false)
   const [ h3playing, h3play ]= useState<boolean>(false)
   const [ logoplaying, logoplay ]= useState<boolean>(false)
+  const [ glitching, setGlitching ]= useState<boolean>(true)
 
+  useEffect(() => { 
+    setTimeout(() => setGlitching(false), 1500);
+  }, [])
 
+  const glitchingText = (text: string) => {
+    if(glitching) return <GlitchText>{text}</GlitchText>
+
+    return <>{text}</>
+  }
+  
   const goBackFunc = () => {
       explore(false)
   }
 
+  const playClickSound = () => {
+    if(window.localStorage.getItem('sound') === 'false') return
+    
+    play({id: "click"})
+  }
 
   const [play, { stop }] = useSound("/sounds/landingSprite.mp3", {
      onend: function() {
@@ -77,10 +93,10 @@ export default function Hero() {
           // bgColor={isDark ? ("gray.900") : ("gray.50")}
           // justify={{ base: "center", md: "space-around", xl: "space-between" }}
           direction={{ base: "column-reverse", md: "row" }}
-          minH={["85vh", "85vh", "60vh", "80vh", "90vh", "90vh"]}
+          minH={["85vh", "85vh", "80vh", "80vh", "90vh", "90vh"]}
         >
           <Stack
-            w={{ base: "80vw", md: "75vw" }}
+            w={{ base: "70vw", md: "75vw" }}
             align="left"
           >
              { !exploring ?
@@ -100,7 +116,9 @@ export default function Hero() {
                     !h1playing ? 
                       () => {
                         h1play(true)
-                        play({ id: 'drumbasshit' })
+                        if(window.localStorage.getItem('sound') === 'true'){
+                          play({ id: 'drumbasshit' })
+                        }
                       }
                       :
                       () => {
@@ -109,7 +127,7 @@ export default function Hero() {
                       }
                     }
                 >
-                  CARDANO
+                  {glitchingText("CARDANO")}
                 </Heading>
                 <Heading
                   as="h2"
@@ -123,7 +141,9 @@ export default function Hero() {
                   !h2playing ? 
                     () => {
                       h2play(true)
-                      play({ id: 'futuristicbasshit' })
+                      if(window.localStorage.getItem('sound') === 'true'){
+                        play({ id: 'futuristicbasshit' })
+                      }
                     }
                     :
                     () => {
@@ -132,22 +152,25 @@ export default function Hero() {
                     }
                   }
                 >
-                  SOUNDS
+                  {glitchingText("SOUNDS")}
                 </Heading>
               </Flex>
               <Spacer />
               <Logo
-                size={ logoplaying ?  [null, null, "11em", "11em", "16em", "19em"] : [null, null, "10em", "10em", "15em", "18em"]}
-                color={isDark ? "red.50" : "gray.800"}
+                size={ logoplaying ?  [null, null, "11em", "11em", "16em", "19em"] : [null, null, "10em", "10em", "15em", "16em"]}
+                color={isDark ? "white" : "gray.800"}
                 pos="absolute"
                 top={[null, null, "15vh", "15vh", "15vh", "15vh"]} 
                 right={[null, null, "15vw", "18vw", "18vw", "18vw"]}
                 display={["none", "none", "flex", "flex", "flex", "flex"]}
+                style={{transitionDelay: `700ms`}}
                 onclick={ 
                   !logoplaying ? 
                     () => {
                       logoplay(true)
-                      play({ id: 'retrogamenotif' })
+                      if(window.localStorage.getItem('sound') === 'true'){
+                        play({ id: 'retrogamenotif' })
+                      }
                     }
                     :
                     () => {
@@ -159,7 +182,7 @@ export default function Hero() {
             </Flex> 
             : 
             <>
-              <Explore goBackFunc={  goBackFunc } />
+              <Explore goBackFunc={ goBackFunc } soundFunc={playClickSound}/>
             </>
             }
             <Flex
@@ -179,7 +202,9 @@ export default function Hero() {
                   !h3playing ? 
                     () => {
                       h3play(true)
-                      play({ id: 'shortbasshit' })
+                      if(window.localStorage.getItem('sound') === 'true'){
+                        play({ id: 'shortbasshit' })
+                      }
                     }
                     :
                     () => {
@@ -188,7 +213,8 @@ export default function Hero() {
                     }
                 }
               >
-                NFT
+                {glitchingText("NFT")}
+                {/* <GlitchText>NFT</GlitchText> */}
               </Heading>
               
               <Spacer />
@@ -197,7 +223,11 @@ export default function Hero() {
                 //href="/"
                 variant="ghost"
                 textAlign="center"
-                onClick={ () => explore(!exploring) }
+                onClick={ () => { 
+                  explore(!exploring) 
+                  playClickSound()
+                }}
+                style={{transitionDelay: `700ms`}}
                 //padding="0 0.5vh 0.5vh 0.5vh"
                 width={["70%", "70%", "25%", "25%", "25%", "25%" ]}
                 mt={["4vh", "4vh", "5vh"]}
@@ -205,68 +235,72 @@ export default function Hero() {
                 className={utilStyles.shadow}
                 position= {["inherit", "inherit", "absolute", "absolute", "absolute", "absolute"]}
                 right={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}
-                bottom={["12vh", "12vh", "15vh", "15vh", "15vh", "15vh"]}
+                bottom={["12vh", "12vh", "15vh", "15vh", "15vh", "25vh"]}
                 transition="all 0.3s ease-in-out"
                 display={ exploring ? ["none", "none", "flex"] : "flex"}
+                justifyContent={["flex-start", "flex-start", "center"]}
               >
                 {!exploring ?
                 <>
-                <FaChevronRight
-                    //mt={{ base: "5vh", md: "4" }}
-                  height="40%"
-                  aria-label="Explore CardanoSounds"
-                  //size="lg"
-                  fill="#4A5568"
-                  //color="gray.600"
-                >
-                </FaChevronRight>
-                <Heading
+              
+                {/* <Heading
                   as="h3"
-                  fontSize={["1rem", "1.125rem", "1.125rem", "1.5rem", "1.25rem", "1.5rem"]} 
+                  fontSize="1.5rem"
+                  // fontSize={["1rem", "1.125rem", "1.125rem", "1.5rem", "1.25rem", "2.25rem"]} 
                   textAlign="center"
                   fontWeight="normal"
                   lineHeight="1"
-                  textColor="gray.600"
+                  //textColor="gray.600"
                   //my={4}
                   //mx={4}
                   textDecoration="none"
                   transition="all 0.3s ease-in-out"
-                >
+                > */}
                   EXPLORE
-                </Heading>
+                  <FaChevronRight
+                    //mt={{ base: "5vh", md: "4" }}
+                  // height="40%"
+                  aria-label="Explore CardanoSounds"
+                  // size={36}
+                  // fill="#4A5568"
+                  //color="gray.600"
+                >
+                </FaChevronRight>
+                {/* </Heading> */}
                 </> 
                 : 
                 <>
-                  <FaChevronLeft
-                    //mt={{ base: "5vh", md: "4" }}
-                    height="40%"
-                    aria-label="Go back"
-                    //size="lg"
-                    fill="#4A5568"
-                    //color="gray.600"
-                  >
-                  </FaChevronLeft>
-                  <Heading
+                  
+                  {/* <Heading
                     as="h3"
-                    fontSize={["1rem", "1.125rem", "1.125rem", "1.5rem", "1.25rem", "1.5rem"]} 
+                    fontSize="1.5rem"
+                    // fontSize={["1rem", "1.125rem", "1.125rem", "1.5rem", "1.75rem", "2.25rem"]} 
                     textAlign="center"
                     fontWeight="normal"
                     lineHeight="1"
-                    textColor="gray.600"
+                    //textColor="gray.600"
                     //my={4}
                     //mx={4}
                     textDecoration="none"
                     transition="all 0.3s ease-in-out"
-                  >
+                  > */}
                     BACK
-                  </Heading>
+                    <FaChevronLeft
+                    //mt={{ base: "5vh", md: "4" }}
+                    height="40%"
+                    aria-label="Go back"
+                    //size="lg"
+                    // fill="#4A5568"
+                    //color="gray.600"
+                  ></FaChevronLeft>
+                  {/* </Heading> */}
                 </>
                 }
               </Button>
             </Flex>
           </Stack>   
 
-          <VerticalSocialLinks />
+          <VerticalSocialLinks/>
 
       </Flex>
 

@@ -1,36 +1,36 @@
-import { TIMEOUT } from 'dns';
 import { NextApiRequest, NextApiResponse } from 'next'
+import { instanceOfDatabaseTx } from '../../../interfaces/databaseTx';
+import getTransaction from '../../../lib/db'
 
-let data : string = "waiting for transaction"
-let dataNum: number = 0
 export default async function (req: NextApiRequest, res: NextApiResponse) {
+    let data: string = "not found"
     res.writeHead(200, {
         'Content-Type': 'text/event-stream',
         'Cache-Control': 'no-cache',
         'Connection': 'keep-alive',
+        'Content-Encoding': 'none',
     });
-
     const { txid } = req.query 
-
-    //console.log(Array.isArray(txid) ? txid[0] : txid) 
-
-    const randNum: number = Math.random()
-
-    if(randNum >= 0.2 ) {
-      
-          data =   'waiting for sound generation ' + txid
     
-    }
-    else data = "NFT created"
+    const format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
 
-    setTimeout(
-        () => {
-            res.write('event: message\n')
-            res.write('data: ' + data)
-            res.write('\n\n')
-            res.end()
-        },
-        1000
-    )
-    dataNum++
+    const isTxidSafe = txid.length === 64 && !format.test(txid.toString()) ? true : false 
+
+    const reply = async () => {
+        const dbres = !isTxidSafe ? 'not found' : await getTransaction(txid.toString())
+
+        if(dbres !== 'not found' && instanceOfDatabaseTx(dbres)) {
+            data = JSON.stringify(dbres)
+        } 
+
+        res.write('event: message\n')
+        res.write('data: ' + data)
+        res.write('\n\n')
+    }
+    
+    await reply()
+
+    setInterval(async () => {
+        await reply()
+    }, 9000)
 }

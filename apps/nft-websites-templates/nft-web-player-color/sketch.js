@@ -60,15 +60,29 @@ function draw() {
 		t+= map(amp, 0, 250, 0, 0.05)
 		
 	}
-					
 }
-function mouseClicked() {
-	if(song.isPlaying()) {
-		song.pause()	
-	} else {
-		song.loop()
-	}
+
+// function touchStarted() {
+// 	if(song.isPlaying()) {
+// 		song.pause()	
+// 	} else {
+// 		song.loop()
+// 	}
+// }
+function mouseClicked(){
+	if(windowWidth > 600){song.isPlaying()?song.pause():song.loop()}
 }
+function touchStarted(){
+	if(windowWidth < 600){song.isPlaying()?song.pause():song.loop()}
+}
+
+// function mouseClicked() {
+// 	if(song.isPlaying()) {
+// 		song.pause()	
+// 	} else {
+// 		song.loop()
+// 	}
+// }
 function windowResize() {
 	const w = getW()
 	resizeCanvas(w, w)

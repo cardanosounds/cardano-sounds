@@ -4,7 +4,7 @@ import Layout, { siteTitle } from '../components/layout'
 import React from "react"
 import PreBuy from '../components/PreBuy'
 
-export default function Buy(){
+export default function Prebuy(){
     
     return (
         <>

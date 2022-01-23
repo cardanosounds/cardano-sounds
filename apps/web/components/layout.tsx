@@ -23,7 +23,7 @@ export default function Layout({
      // align="top"
       w="100vw"
       h="100vh"
-      m="0 auto"
+      m="0"
     >
       <div className={mainStyles.container}>
         <Head >
@@ -49,12 +49,14 @@ export default function Layout({
         </Head>
         <header className={mainStyles.header}>
           
-          <Flex direction="column" className={mainStyles.stickyNav}>
+          <Flex direction="column" className={mainStyles.stickyNav}
+          style={{transitionDelay: `700ms`}}>
               
               <DarkModeSwitchMenu home={home} />
           </Flex>
         </header>
           <main >{children}</main>
+          <div className={mainStyles.bg} />
           <Spacer />
           <Text 
             left="0"
@@ -66,6 +68,9 @@ export default function Layout({
             fontSize={{ base: "0.5rem", md: "0.65rem" }}
             fontFamily="Share Tech Mono, monospace"
             transition="all 0.3s ease-in-out"
+            style={{transitionDelay: `700ms`}}
+        
+
           >{currentYear} &copy;CARDANOSOUNDS, ALL RIGHTS RESERVED
           </Text>
       </div>

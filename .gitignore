@@ -421,8 +421,6 @@ yarn-error.log*
 .env.production.local
 /apps/web/.next
 /apps/web/.vscode
-apps/web/p5.dom.js
-apps/web/p5.sound.js
 apps/web/public/sw.js
 apps/web/public/sw.js.map
 apps/web/public/workbox-6b19f60b.js
@@ -430,3 +428,6 @@ apps/web/public/workbox-6b19f60b.js.map
 apps/web/public/workbox-ea903bce.js
 apps/Csharp.CardanoSounds/CS.ScanForTxs/App.config
 apps/Api.CardanoSounds/dump.rdb
+apps/web/next.config.js
+apps/web/public/workbox-9a8b0a38.js.map
+apps/web/public/workbox-9a8b0a38.js

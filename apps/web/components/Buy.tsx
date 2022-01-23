@@ -8,34 +8,41 @@ import utilStyles from "../styles/utils.module.css"
 import { IoIosWallet, IoMdPricetag } from 'react-icons/io';
 import { FaChevronLeft } from 'react-icons/fa'
 import { RiAlarmWarningFill } from 'react-icons/ri'
-import { CopyIcon, InfoIcon, SearchIcon } from "@chakra-ui/icons";
-import NextChakraLink from "./NextChakraLink";
+import { InfoIcon, SearchIcon } from "@chakra-ui/icons";
 import Transaction from "./Transaction";
-import { useToast } from "@chakra-ui/react"
 import Address from "./Address";
+import PayBtn from "./PayBtn.jsx";
 
 export default function Buy(){
     const [ searchValue, handleSearchValChange] = useState<string>("")
     const [ isSearchInValid, invalidateSearchString] = useState<boolean>(true)
-    const [ mobileTxSearch, showMobileTxSearch] = useState<boolean>(false)
+    const [ txSearch, showTxSearch] = useState<boolean>(false)
     const [ mobileAddress, showMobileAddress] = useState<boolean>(false)
     const [ txStatus, showTxStatus ] = useState<boolean>(false)
 
-     const { isOpen, onOpen, onClose } = useDisclosure()
-
-    const toast = useToast()
+    const { isOpen, onOpen, onClose } = useDisclosure()
 
     const handleChange = (event: { target: { value: React.SetStateAction<string>; }; }) => handleSearchValChange(event.target.value)
 
-    const search = () => {
-        if(searchValue.length < 5){
+    const search = (txhash: string = '') => {
+        let searchVal
+        if(txhash === '') searchVal = searchValue
+        else {
+            searchVal = txhash
+        }
+        if(searchVal.length < 5){
             invalidateSearchString(true)
         }
         else {
-
             invalidateSearchString(false)
             showTxStatus(true)
         }
+    }
+
+    const successCallback = (txhash: string) => {
+        handleSearchValChange(txhash)
+        search(txhash)
+        showTxSearch(true) 
     }
 
     return(
@@ -48,160 +55,141 @@ export default function Buy(){
                 direction="column"
                 minH="65vh"
             >   
-                {/*<Heading
-                    as="h1"
-                    size="xl"
-                    textAlign={["left", "left", "left", "center", "center", "center"]}
-                    w="100%"
-                    mb={["unset", "unset", "unset", "unset", "5vh"]}
-                    mt={["unset"]}
-                >
-                    BUY CARDANO SOUNDS NFT
-                </Heading>*/}
-                <Stack spacing={9} w={["100%", "100%", "100%", "70vw"]} direction={["column", "column", "column", "column", "row"]}>
-                    
-                    <InputGroup 
-                        mt={["5vh", "5vh", "5vh", "5vh", "unset"]}
-                        maxW={["90vw", "85vw", "60vw", "50vw"]}
-                        mx="auto"
-                        display={txStatus ? "none" : mobileTxSearch ? "flex" : "none"}
-                    >
-                        <Input 
-                            placeholder="Check status for txid" 
-                            id="searchInput"
-                            isInvalid={isSearchInValid}
-                            value={searchValue}
-                            onChange={ handleChange }
-                        />
-                        <InputRightElement onClick={ search } children={<SearchIcon color="gray.600" />} />
-                    </InputGroup>
-                    
+                <Stack w={["100%", "100%", "100%", "70vw"]} direction={["column", "column", "column", "column", "row"]}>
                     <Flex direction="column"
-                        //position={mobileTxSearch ? ["unset", "unset", "absolute"] : "unset"}
-                        bottom="15vh"
-                        left="10vw"
-                        maxW={["unset", "unset", "unset", "unset", "60vw"]}
-
+                        w={["100%", "100%", "100%", "100%", "40vw"]}
+                        mr={48}
                     > 
-                        {txStatus ? 
-                        <Transaction id={searchValue} />
-                        : mobileTxSearch ? <></> :
-                        <>  
-                            <List spacing={9} ml="0" marginInlineEnd="auto" mt={["3vh", "2vh", "3vh", "5vh"]} >
-                                <ListItem>
-                                    <ListIcon as={IoMdPricetag} color="yellow.400" />
-                                        Price 50ADA
-                                </ListItem>
-                                <ListItem>
-                                    <ListIcon as={RiAlarmWarningFill} color="red.400" />
-                                        Use Yoroi or Daedalus, do not send ADA from an exchange! Send the exact amount without additional tokens.
-                                </ListItem>
-                                <ListItem>
-                                    <ListIcon as={InfoIcon} color="teal.400" />
-                                        If you want to buy more NFTs, send multiple transactions with 50ADA. 
-                                </ListItem>
-                                <Spacer/>
-                            </List>
-                        </>
+                        <Flex minH="40vh">
+                            <InputGroup 
+                                w={["100%", "100%", "100%", "100%", "40vw"]}
+                                margin="auto"
+                                display={txStatus ? "none" : txSearch ? "flex" : "none"}
+                            >
+                                <Input 
+                                    placeholder="Check status for txid" 
+                                    id="searchInput"
+                                    isInvalid={isSearchInValid}
+                                    value={searchValue}
+                                    onChange={ handleChange }
+                                />
+                                <InputRightElement onClick={() => search() } children={<SearchIcon color="gray.600" />} />
+                            </InputGroup>
+                            {txStatus ? 
+                            <Flex minH={["50vh", "50vh", "40vh"]}
+                            >
+                                <Transaction id={searchValue}/>
+                            </Flex>
+                            : txSearch ? <></> :
+                            <>  
+                                <List marginInlineEnd="auto" my="auto" w={["80vw","80vw", "80vw", "80vw", "45vw"]}>
+                                    <ListItem mb={9}>
+                                        <ListIcon as={IoMdPricetag} />{/* color="yellow.400" */}
+                                            Price 20ADA
+                                    </ListItem>
+                                    <ListItem mb={9}>
+                                        <ListIcon as={RiAlarmWarningFill} />{/* color="red.400"" */}
+                                            Use Yoroi or Daedalus, do not send ADA from an exchange! Send the exact amount without additional tokens.
+                                    </ListItem>
+                                    <ListItem>
+                                        <ListIcon as={InfoIcon} />{/* color="teal.400"" */}
+                                            If you want to buy more NFTs, send multiple transactions with 50ADA. 
+                                    </ListItem>
+                                    <Spacer/>
+                                </List>
+                            </>
                         }
-                        <Button 
-                           width={["80vw", "80vw", "80vw", "70vw", "25vw", "25vw"]}
-                           mt={["1vh", "1vh", "1vh", "1vh", "1vh", "5vh"]}
-                           height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]}
-                           variant="ghost"
-                           className={utilStyles.shadow}
-                           transition="all 0.3s ease-in-out"
-                           display={mobileTxSearch ? "none" : "flex"}
-                           onClick={ () => showMobileTxSearch(true) }
-                        >
-                           <SearchIcon color="gray.600"/>
-                           <Heading fontSize={["1.25rem", "1.25rem", "1.5rem"]} as="h4" textColor="gray.600"
-                               fontWeight="normal"
-                           >
-                               LOOKUP TX
-                           </Heading>  
-                        </Button>
-                        <Button 
-                           width={["80vw", "80vw", "80vw", "70vw"]}
-                           mt={["1vh", "1vh", "1vh"]}
-                           height={["8vh", "7vh", "15vh"]}
-                           variant="ghost"
-                           className={utilStyles.shadow}
-                           transition="all 0.3s ease-in-out"
-                           display={mobileTxSearch ? "none" : ["flex", "flex", "flex", "flex", "none"]}
-                           onClick={onOpen}
-                        >
-                            <IoIosWallet fill="#4A5568"/>
-                            <Heading fontSize={["1.25rem", "1.25rem", "1.5rem"]} as="h4" textColor="gray.600"
-                                fontWeight="normal"
-                            >
-                                ADDRESS
-                            </Heading>  
-                        </Button>
-                        
-                        <Button 
-                           width={["80vw", "80vw", "80vw", "70vw", "25vw", "25vw"]}
-                           mt={["1vh", "1vh", "1vh", "1vh", "1vh", "5vh"]}
-                           height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]}
-                           variant="ghost"
-                           className={utilStyles.shadow}
-                           transition="all 0.3s ease-in-out"
-                           display={txStatus ? "flex" : "none"}
-                           position= {["inherit", "inherit", "inherit", "inherit", "absolute"]}
-                           right={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}
-                           bottom={["10vh", "10vh", "15vh", "15vh", "15vh", "15vh"]}
-                           onClick={ () => showTxStatus(false) }
-                        >
-                            <SearchIcon color="gray.600"/>
-                            <Heading fontSize="1.5rem" as="h4" textColor="gray.600"
-                               fontWeight="normal"
-                            >
-                               LOOKUP ANOTHER
-                            </Heading>  
-                        </Button>
-                        <NextChakraLink href="/buy">
+                        </Flex>
+                        <Flex direction={["column", "column", "column", "column", "row"]}>
                             <Button 
                                 width={["80vw", "80vw", "80vw", "70vw", "25vw", "25vw"]}
-                                mt={["1vh", "1vh", "1vh", "1vh", "5vh"]}
+                                mt={["1vh", "1vh", "1vh", "1vh", "1vh", "5vh"]}
                                 height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]}
                                 variant="ghost"
-                                display={mobileTxSearch ? "flex" : "none"}
                                 className={utilStyles.shadow}
                                 transition="all 0.3s ease-in-out"
-                                position= {["inherit", "inherit", "inherit", "inherit", "absolute"]}
-                                left={["20vw", "20vw", "15vw", "15vw", "15vw", "15vw"]}
-                                bottom={["10vh", "10vh", "15vh", "15vh", "15vh", "15vh"]}
+                                display={txSearch ? "none" : "flex"}
+                                justifyContent={["flex-start", "flex-start", "center"]}
+                                onClick={ () => showTxSearch(true) }
+                            >
+                                LOOKUP TX
+                                <SearchIcon />
+                            </Button>
+                            <Flex
+                                width={["80vw", "80vw", "80vw", "70vw", "25vw", "25vw"]}
+                                mt={["1vh", "1vh", "1vh", "1vh", "1vh", "5vh"]}
+                                height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]}
+                                className={utilStyles.shadow}
+                                transition="all 0.3s ease-in-out"
+                                display={txSearch ? "none" : ["none", "none", "none", "flex"]}
+                            >
+                                <PayBtn successCallback={successCallback}/>
+                            </Flex>
+                        </Flex>
+                        <Flex direction={txStatus ? ["column", "column", "column", "column", "row-reverse"] : ["column", "column", "column", "column", "row"]}>
+                            <Button 
+                                width={!txStatus ? "0px" : ["80vw", "80vw", "80vw", "70vw", "25vw", "25vw"]}
+                                mt={["1vh", "1vh", "1vh", "1vh", "1vh", "5vh"]}
+                                height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]}
+                                variant="ghost"
+                                className={utilStyles.shadow}
+                                transition="all 0.3s ease-in-out"
+                                display={txStatus ? "flex" : "none"}
+                                justifyContent={["flex-start", "flex-start", "center"]}
+                                onClick={ () => showTxStatus(false) }
+                            >
+                                LOOKUP ANOTHER
+                                <SearchIcon/>
+                            </Button>
+                            <Button 
+                                width={["80vw", "80vw", "80vw", "70vw", "25vw", "25vw"]}
+                                mt={["1vh", "1vh", "1vh", "1vh", "1vh", "5vh"]}
+                                height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]}
+                                variant="ghost"
+                                className={utilStyles.shadow}
+                                transition="all 0.3s ease-in-out"
+                                display={txSearch ? "flex" : "none"}
+                                justifyContent={["flex-start", "flex-start", "center"]}
                                 onClick={ () => { 
-                                    showMobileTxSearch(!mobileTxSearch) 
+                                    showTxSearch(!txSearch) 
                                     showTxStatus(false)
                                 }}
                             >
-                                {/* chakra color var doesn't work here */}
-                                <FaChevronLeft fill="#4A5568" />
-                                <Heading className={utilStyles.noHovDecor} as="h4" fontSize="1.5rem" textColor="gray.600"
-                                    fontWeight="normal"
-                                >
-                                    BACK
-                                </Heading>  
+                                GO BACK
+                                <FaChevronLeft/>
                             </Button>
-                        </NextChakraLink>
+                            <Button 
+                                width={["80vw", "80vw", "80vw", "70vw"]}
+                                mt={["1vh", "1vh", "1vh"]}
+                                height={["8vh", "7vh", "15vh"]}
+                                variant="ghost"
+                                className={utilStyles.shadow}
+                                transition="all 0.3s ease-in-out"
+                                display={["flex", "flex", "flex", "flex", "none"]}
+                                justifyContent={["flex-start", "flex-start", "center"]}
+                                onClick={onOpen}
+                            >
+                                ADDRESS
+                                <IoIosWallet/>
+                        </Button>
+                        </Flex>
                     </Flex>
-                    <Address display={mobileTxSearch ? "none" : mobileAddress ? "flex" : ["none", "none", "none", "none", "flex"]} />
+                    <Address display={["none", "none", "none", "none", "flex"]} />
+                    {/* <Address display={mobileAddress ? "flex" : ["none", "none", "none", "none", "flex"]} /> */}
                 </Stack>
             </Flex>
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader>Cardano address</ModalHeader>
+                    <ModalHeader><Heading as="h3">Cardano address</Heading></ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
                         <Address/>
                     </ModalBody>
                     <ModalFooter>
                         <Button colorScheme="blue" onClick={onClose}>
-                            Close
+                            CLOSE
                         </Button>
-                        {/*<Button variant="ghost">Secondary Action</Button>*/}
                     </ModalFooter>
                 </ModalContent>
             </Modal>
