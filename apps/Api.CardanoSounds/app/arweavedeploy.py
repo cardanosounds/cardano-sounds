@@ -8,7 +8,7 @@ from arweave.arweave_lib import Wallet, Transaction
 #this class uses Linux specific commands
 class ArweaveDeploy:
 
-	wallet = Wallet("/home/azureuser/arweave-key-uJCW-t0cfLptFzJbD1dvei6eTsQQ8fAKuGhZmpDvutU.json")
+	wallet = Wallet("/home/azureuser/arweave-key.json")
 	sounds_folder = "/home/azureuser/sounds"
 	websites_folder = "/home/azureuser/websites"
 
@@ -34,7 +34,11 @@ class ArweaveDeploy:
 		subprocess.run(command)
 		outputlines = subprocess.Popen(os.path.join(self.websites_folder, "webdeploy-" + Tx_Hash + ".sh"), shell=True, stdout=subprocess.PIPE).stdout.readlines()
 		line_n = len(outputlines)
-		return outputlines[line_n - 4].decode().replace("\\u001b[96m", "").replace("\\u001b[39m\\r\\n", "")
+		permawebUri = outputlines[line_n - 4].decode().replace("\\u001b[96m", "").replace("\\u001b[39m\\r\\n", "")
+		permawebUri = permawebUri[5:]
+		permawebUri = permawebUri[:len(permawebUri) - 7]
+		return permawebUri
+
 	
 
 	def upload_sound_file(self, Tx_Hash):

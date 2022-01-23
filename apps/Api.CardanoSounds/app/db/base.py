@@ -2,8 +2,6 @@ from azure.cosmos import CosmosClient, PartitionKey, exceptions
 
 class Base:
      
-    # A simple class
-    # attribute
     db_key = "cosmos_db_key"
     acc_uri = "cosmos_db_uri"
     db_name = "cstest"

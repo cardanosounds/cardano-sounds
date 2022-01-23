@@ -6,11 +6,15 @@ from app.mixsound import MixSound
 from app.models.soundprobability import SoundProbability
 from app.models.metadata import Metadata
 from app.models.transaction import Transaction
+import numpy as np
+
+def format_float(num):
+    return np.format_float_positional(num, trim='-')
 
 class Sounds:
 
-	enrich_probab_file = "/home/azureuser/cardano-sounds/apps/enriching-sound-probability.data"
-	base_sounds_folder = "/home/azureuser/soundclips/cswaves"
+	enrich_probab_file = "/home/azureuser/enriching-sound-probability.data"
+	base_sounds_folder = "/home/azureuser/cswaves"
 	common_color = "#22543D" #green
 	mid_rare_color = "#2A4365" #blue
 	rare_color = "#000" #basic black
@@ -92,6 +96,7 @@ class Sounds:
 		return self.get_sound(os.path.join(self.base_sounds_folder, "signatures/"), category="signature")
 
 	def get_random_track(self, tx: Transaction):
+	# def get_random_track(self, tx_hash):
 		mix = MixSound()
 
 		enrich = self.get_enrich_sound()
@@ -101,6 +106,13 @@ class Sounds:
 		signature = self.get_signature()
 
 		total_probability = enrich.probability * melody.probability * drums.probability * bass.probability * signature.probability * 100
+		total_probability = format_float(total_probability)
+
+		enrich.probability = format_float(enrich.probability)
+		melody.probability = format_float(melody.probability)
+		drums.probability = format_float(drums.probability)
+		bass.probability = format_float(bass.probability)
+		signature.probability = format_float(signature.probability)
 
 		if(enrich.category == "enriching-common"):
 			rarity = self.common_color
@@ -110,15 +122,22 @@ class Sounds:
 			rarity = self.rare_color
 
 		mix.mix_sound(
-			tx.Tx_Hash,
+			tx.tx_hash,
+			# tx_hash,
 			enrich,
 			melody,
 			drums,
 			bass,
 			signature
 		)
-
-		return Metadata(tx.Tx_Hash, tx.id, total_probability, rarity, [enrich, melody, drums, bass, signature])
+		ext = '.flac'
+		enrich.filename = enrich.filename.replace("/home/azureuser/cswaves/enriching-common/", "enriching:").replace("/home/azureuser/cswaves/enriching-rarest/", "enriching: ").replace("/home/azureuser/cswaves/enriching-mid-rare/", "enriching: ").replace(ext, "")
+		melody.filename = melody.filename.replace("/home/azureuser/cswaves/melodies/", "melody: ").replace(ext, "")
+		drums.filename = drums.filename.replace("/home/azureuser/cswaves/drums/", "drums: ").replace(ext, "")
+		bass.filename = bass.filename.replace("/home/azureuser/cswaves/bass/", "bass: ").replace(ext, "")
+		signature.filename = signature.filename.replace("/home/azureuser/cswaves/signatures/", "signatures: ").replace(ext, "")
+		# return rarity	
+		return Metadata(tx.tx_hash, tx.id, total_probability, rarity, [enrich, melody, drums, bass, signature])
 
 
 	def get_sound(self, folder_path, category):
@@ -127,3 +146,5 @@ class Sounds:
 		random_num = int(round(quantumrandom.randint(1, melodies_count)))
 		return SoundProbability(probability=round(1/melodies_count, 5), filename=filePaths[int(random_num - 1)], category=category)
 
+# sounds = Sounds()
+# print(sounds.get_random_track("txhash2454654684565464654"))

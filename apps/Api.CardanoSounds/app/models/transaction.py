@@ -9,12 +9,12 @@ import json
 @dataclass
 class Transaction:
     id: str
-    Tx_Hash: str
-    Output_Index: int
-    Amount: List[TokenValue]
-    SenderAddress: str
+    tx_hash: str
+    output_index: int
+    amount: List[TokenValue]
+    sender_address: str
     status: str
-    Created: datetime
+    created: str
     metadata: Metadata = None 
 
     def toJSON(self):

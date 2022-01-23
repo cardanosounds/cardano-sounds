@@ -22,8 +22,17 @@ class Upload:
 		}
 
 		response = requests.post('https://ipfs.blockfrost.io/api/v0/ipfs/add', headers=headers, files=files)
-		ipfs_hash = json.loads(response.text)['ipfs_hash']
-
+		try:
+			ipfs_hash = json.loads(response.text)['ipfs_hash']
+		except:
+			print(json.loads(response.text))
+			try:
+				response = requests.post('https://ipfs.blockfrost.io/api/v0/ipfs/add', headers=headers, files=files)
+				ipfs_hash = json.loads(response.text)['ipfs_hash'] 
+			except:
+				print(json.loads(response.text))
+				ipfs_hash = "FAIL"
+				
 		return self.pin_to_ipfs(ipfs_hash)
 
 
