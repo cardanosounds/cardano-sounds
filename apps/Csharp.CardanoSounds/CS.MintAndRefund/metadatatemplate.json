@@ -1,0 +1,30 @@
+{
+  "721": {
+    "97de3506172e572d4e7ba9874af2616c41ae3027c9894fde2c484a62": {
+      "NFT_NAME": {
+        "description": "Cardano Sounds CNFT - the first wave",
+        "files": [
+          {
+            "mediaType": "audio/mpeg",
+            "name": "NFT_NAME",
+            "src": "IPFS_AUDIO",
+            "arweaveHash": "ARWEAVE_AUDIO"
+          }
+        ],
+        "probability": "SOUND_PROBABILITY",
+        "sounds": [ "SOUND_1", "SOUND_2", "SOUND_3", "SOUND_4", "SOUND_5" ],
+        "image": "IPFS_PLAYER_PREVIEW",
+        "rarity": "RARITY_COLOR",
+        "player": "PLAYER_NAME",
+        "name": "NFT_NAME",
+        "arweaveWebsite": "ARWEAVE_WEBSITE",
+        "buyingTransaction": "TRANSACTION_HASH"
+      }
+    },
+    "327ebb172812c24e20a82db0d391b5403f58f305f672aed8fbd48808": {
+      "CSCT" :{
+        "ticker": "CSCT" 
+      }
+    }
+  }
+}

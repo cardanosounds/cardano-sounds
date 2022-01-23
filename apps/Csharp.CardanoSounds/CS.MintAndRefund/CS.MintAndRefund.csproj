@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <UserSecretsId>dotnet-CS.MintAndRefund-90BA3A2B-16D8-4779-B22F-EFC0A4C93A16</UserSecretsId>
   </PropertyGroup>
 
@@ -15,11 +15,11 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="5.0.1" />
-    <PackageReference Include="Csharp.CardanoCLI" Version="1.27.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CS.DB.Cosmos\CS.DB.Cosmos.csproj" />
+    <ProjectReference Include="..\Csharp.CardanoCLI\Csharp.CardanoCLI.csproj" />
   </ItemGroup>
 </Project>

@@ -34,14 +34,18 @@ namespace CS.MintAndRefund.Services
         public async Task MintFromDbTransaction()
         {
             var tx = _dbTransactions.GetReadyToMintTransaction();
-            //CreateNFTPolicy();
-
+            
             if (tx == null)
             {
                 _logger.LogTrace("No records to mint, waiting 5 sec");
                 await Task.Delay(TimeSpan.FromSeconds(5));               
                 return;
             }
+            _logger.LogInformation("Started mint for " + tx.Id);
+            _logger.LogInformation("1");
+            tx.Metadata.TokenName = "CSNFT" + tx.Id;
+            // CreateNFTPolicy();
+            _logger.LogInformation("2");
 
             var meta = File.ReadAllText(Path.Combine(_working_directory, "metadatatemplate.json"));
             meta = meta.Replace("NFT_NAME", tx.Metadata.TokenName);
@@ -51,16 +55,28 @@ namespace CS.MintAndRefund.Services
             meta = meta.Replace("IPFS_PLAYER_PREVIEW", tx.Metadata.PlayerImage);
             meta = meta.Replace("PLAYER_NAME", tx.Metadata.Player);
             meta = meta.Replace("RARITY_COLOR", tx.Metadata.Rarity);
-
+            _logger.LogInformation("3");
+            _logger.LogInformation(meta);
             //char[]
-            string web = tx.Metadata.ArweaveWebsiteUri.Remove(0,5);
-            web = web.Remove(web.Length - 7, 7);
+            string web = tx.Metadata.ArweaveWebsiteUri;
+            // string web = tx.Metadata.ArweaveWebsiteUri.Remove(0,5);
+            // web = web.Remove(web.Length - 7, 7);
             meta = meta.Replace("ARWEAVE_WEBSITE", web);
             meta = meta.Replace("TRANSACTION_HASH", tx.Tx_Hash);
             for (var i = 0; i < tx.Metadata.Sounds.Length; i++)
             {
-                meta = meta.Replace("SOUND_" + (i + 1), tx.Metadata.Sounds[i].Filename.Replace("/home/azureuser/soundclips/cswaves/",""));
+                meta = meta.Replace("SOUND_" + (i + 1), tx.Metadata.Sounds[i].Filename.Replace("/home/azureuser/cswaves/",""));
             }
+
+            meta.Replace("signatures/", "signatures: ");
+            meta.Replace("bass/", "bass: ");
+            meta.Replace("drums/", "drums: ");
+            meta.Replace("melodies/", "melody: ");
+            meta.Replace("enriching-mid-rare/", "enriching: ");
+            meta.Replace("enriching-rarest/", "enriching: ");
+            meta.Replace("enriching-common/", "enriching: ");
+
+            _logger.LogInformation("4");
 
             File.WriteAllText(Path.Combine(_working_directory, "metadata_" + tx.Metadata.TokenName + ".json"), meta);
 
@@ -69,13 +85,36 @@ namespace CS.MintAndRefund.Services
             TransactionParams txParams = CreateTransactionParameters(tx);
 
             Assets assets = new Assets(_cli);
+            _logger.LogInformation("5");
 
-            _logger.LogInformation(assets.MintNativeTokens(
-                new List<PolicyParams>(), 
-                mintParams, 
-                txParams
-                )
-            );
+            try 
+            {
+                var mintOutput = assets.MintNativeTokens(
+                    new List<PolicyParams>(), 
+                    mintParams, 
+                    txParams
+                    );
+                if(mintOutput.ToUpper().Contains("ERROR"))
+                { 
+                    tx.Status = "failed mint";
+                    _logger.LogError("failed mint: ");
+                    _logger.LogError(mintOutput);
+
+                } 
+                else
+                { 
+                    tx.Status = "finished";
+                     _logger.LogInformation("finished mint: ");
+                    _logger.LogInformation(mintOutput);
+                }
+            }
+            catch(Exception ex){
+                _logger.LogError(ex, ex.Message);
+                tx.Status = "failed mint";
+            }
+            
+            await _dbTransactions.Update(tx);
+
         }
 
         private TransactionParams CreateTransactionParameters(Models.FullTransaction tx) => new TransactionParams()
@@ -99,18 +138,18 @@ namespace CS.MintAndRefund.Services
                         Amount = new List<TokenValue>
                         {
                             new TokenValue(2000000),
-                            new TokenValue(1, tx.Metadata.TokenName),
-                            new TokenValue(1, "CSCT")
+                            new TokenValue(1, EncodeStringToHex(tx.Metadata.TokenName)),
+                            new TokenValue(10, EncodeStringToHex("CSCT"))
                         }
 
                     },
                     new TxOut
                     {
-                        RecipientAddress = "addr_test1vpl22c6vml7p7n5vv4n2mjf6sfw9kcse5c7jjk3uxc9dllcvvvj8q",
+                        RecipientAddress = "addr1qx0l7rcp9qkzyy53w5wkk55wgz0hpmst00revasatvrz3evp5y5y0lja4ujq7geynu5as5fcrtjcdju69pfsvv8hhdpq9ep7x9",
                         PaysFee = true,
                         Amount = new List<TokenValue>
                         {
-                            new TokenValue(3000000)
+                            new TokenValue(13000000)
                         }
                     }
                 },
@@ -119,24 +158,34 @@ namespace CS.MintAndRefund.Services
             SigningKeyFile = _signing_key
         };
 
-        private static MintParams CreateMintParamaters(Models.FullTransaction tx) => new MintParams
+        private MintParams CreateMintParamaters(Models.FullTransaction tx) => new MintParams
         {
             TokenParams = new List<TokenParams>
                 {
                     new TokenParams()
                     {
-                        PolicyName = "newtestnftpolicy",
+                        PolicyName = "c-sound-mainnet-nft-policy",
                         TokenAmount = 1,
-                        TokenName = tx.Metadata.TokenName
+                        TokenName = EncodeStringToHex(tx.Metadata.TokenName)
                     },
                     new TokenParams
                     {
-                        PolicyName = "newtesttokenpolicy",
-                        TokenAmount = 1,
-                        TokenName = "CSCT"
+                        PolicyName = "c-sound-mainnet-ft-policy",
+                        TokenAmount = 10,
+                        TokenName = EncodeStringToHex("CSCT")
                     }
                 }
         };
+
+        private string EncodeStringToHex(string input)
+        {
+            byte[] ba = Encoding.Default.GetBytes(input);
+
+            var hexString = BitConverter.ToString(ba);
+
+            return hexString.Replace("-", "");
+        }
+
 
         private void CreateNFTPolicy()
         {
@@ -144,17 +193,17 @@ namespace CS.MintAndRefund.Services
 
             policies.Create(new PolicyParams
             {
-                PolicyName = "newtestnftpolicy",
-                TimeLimited = true,
-                ValidForMinutes = 120,
+                PolicyName = "newtesttokenpolicy",
+                TimeLimited = false,
                 SigningKeyFile = _signing_key,
                 VerificationKeyFile = _verif_key
             });
 
-            policies.Create(new PolicyParams
+             policies.Create(new PolicyParams
             {
-                PolicyName = "newtesttokenpolicy",
-                TimeLimited = false,
+                PolicyName = "newtestnftpolicy",
+                TimeLimited = true,
+                ValidForMinutes = 180000,
                 SigningKeyFile = _signing_key,
                 VerificationKeyFile = _verif_key
             });

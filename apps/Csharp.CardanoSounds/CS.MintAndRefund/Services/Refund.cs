@@ -19,16 +19,18 @@ namespace CS.MintAndRefund.Services
         public readonly string _signing_key = ConfigurationManager.AppSettings["CLI_SIGNING_KEY"];
         private readonly CLI _cli;
         private readonly ILogger<Refund> _logger;
+        public readonly CS.DB.Cosmos.Transactions _dbTransactions;
 
         public Refund(ILogger<Refund> logger)
         {
             _cli = new CLI(_network, _cardano_cli_location, _working_directory, new CliLogger(logger));
+            _dbTransactions = new CS.DB.Cosmos.Transactions(logger);
             _logger = logger;
         }
 
         public async Task RefundFromInvalidDBTransaction()
         {
-            var tx = DB.Cosmos.Transactions.GetInvalidTransaction();
+            var tx = _dbTransactions.GetInvalidTransaction();
 
             if (tx == null)
             {
@@ -43,11 +45,16 @@ namespace CS.MintAndRefund.Services
             if (response.StartsWith("Error"))
             {
                 _logger.LogError(response);
+                tx.Status = "failed refund";
             }
             else
             {
                 _logger.LogInformation("Refund: " + response);
+                tx.Status = "refunded";
             }
+
+            await _dbTransactions.Update(tx);
+
         }
 
         private TransactionParams CreateTransactionParameters(Models.FullTransaction tx) => new TransactionParams()

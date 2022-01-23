@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <UserSecretsId>dotnet-CS.ScanForTxs-AB5D07B6-C9E3-4BF7-9328-3580D5C7FCCF</UserSecretsId>
   </PropertyGroup>
 
