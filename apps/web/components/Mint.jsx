@@ -14,7 +14,6 @@ import { useContext, useState, useEffect } from "react";
 import WalletJs from "../wallet-js";
 import { ChevronRightIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import WalletContext from "../lib/WalletContext";
-import File from "./File"
 import { BsInfoCircleFill } from 'react-icons/bs'
 
 
