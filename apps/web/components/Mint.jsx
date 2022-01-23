@@ -15,6 +15,7 @@ import WalletJs from "../wallet-js";
 import { ChevronRightIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import WalletContext from "../lib/WalletContext";
 import { BsInfoCircleFill } from 'react-icons/bs'
+import NextChakraLink from "./NextChakraLink";
 
 
 let wallet
@@ -232,10 +233,9 @@ const Mint = () => {
        
           <Flex direction="row" w="50vw"> 
             <Text fontWeight="bold" fontSize="36" mb={4}>Mint NFTs with a Dapp connector wallet </Text>
-            <Spacer/> 
-            <a href="/mint-info">
-              <BsInfoCircleFill/>
-            </a>
+            <NextChakraLink href="/mint-info" p="0.5rem">
+              <BsInfoCircleFill size={36}/>
+            </NextChakraLink>
           </Flex>
         
         <Box w="10" />
