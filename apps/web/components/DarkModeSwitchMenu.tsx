@@ -77,10 +77,13 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
       let baseWalletApi, fullWalletApi
       switch(wallet){
         case 'nami':
-          baseWalletApi = win.cardano
+          baseWalletApi = win.cardano.nami
           break
         case 'ccvault':
           baseWalletApi = win.cardano.ccvault
+          break
+        case 'flint':
+          baseWalletApi = win.cardano.flint
           break
         case 'gerowallet':
           if(!win.cardano.gerowallet){ 
@@ -94,10 +97,14 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
 
       switch(wallet){
         case 'nami':
-          await baseWalletApi.enable()
-          fullWalletApi = win.cardano
+          fullWalletApi = await baseWalletApi.enable()
+          // await baseWalletApi.enable()
+          // fullWalletApi = win.cardano
           break
         case 'ccvault':
+          fullWalletApi = await baseWalletApi.enable()
+          break
+        case 'flint':
           fullWalletApi = await baseWalletApi.enable()
           break
         case 'gerowallet':

@@ -64,6 +64,9 @@ export default function ConnectWalletModal(
           <Button w="100%" h={24} variant={'ghost'} mr={3} onClick={() => enableCardano('ccvault')}>
             <Image src="/icons/ccvault-icon.png" w="48px" h="48px"/>Connect ccvault
           </Button>
+          <Button w="100%" h={24} variant={'ghost'} mr={3} onClick={() => enableCardano('flint')}>
+            <Image src="/icons/flint-icon.png" w="48px" h="48px"/>Connect flint
+          </Button>
         </Flex>
       </ModalBody>
       <ModalFooter>
