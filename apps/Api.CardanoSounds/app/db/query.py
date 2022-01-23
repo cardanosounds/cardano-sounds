@@ -18,6 +18,7 @@ class Query:
 				enable_cross_partition_query=True):
 			return(json.dumps(item, indent=True))
 
+
 	def delete_data(self, container_name, query):
 		container = self.base.get_existing_container(container_name)
 		for item in container.query_items(
@@ -25,22 +26,23 @@ class Query:
 				enable_cross_partition_query=True):
 			container.delete_item(item)
 
+
 	def insert_metadata(self, metadata: Metadata):
 		container = self.base.get_existing_container('metadata')
 		metadata = jsonpickle.encode(metadata)
 		container.create_item(json.loads(metadata))
+
 
 	def insert_transaction(self, tx: Transaction):
 		container = self.base.get_existing_container('transactions')
 		tx = jsonpickle.encode(tx)
 		container.create_item(json.loads(tx))
 
+
 	def update_transaction(self, tx: Transaction):
 		container = self.base.get_existing_container('transactions')
 		# Query a document
-		read_item = container.read_item(item=tx.id, partition_key=tx.Tx_Hash)
+		read_item = container.read_item(item=tx.id, partition_key=tx.tx_hash)
 		read_item['status'] = "generated"
 		read_item['metadata'] = json.loads(jsonpickle.encode(tx.metadata))
 		return container.replace_item(item=read_item, body=read_item)
-
-		
