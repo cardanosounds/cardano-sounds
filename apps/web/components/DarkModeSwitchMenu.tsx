@@ -211,6 +211,12 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                         <NextChakraLink href="/create">
                             <Heading size="lg" as="h4">CREATE</Heading>
                         </NextChakraLink>
+                        <NextChakraLink href="/sounds/all">
+                            <Heading size="lg" as="h4">SOUNDS</Heading>
+                        </NextChakraLink>
+                        <NextChakraLink href="/mint">
+                            <Heading size="lg" as="h4">MINT</Heading>
+                        </NextChakraLink>
                       </DrawerBody>
                     </DrawerContent>
                   </Drawer>

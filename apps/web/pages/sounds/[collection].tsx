@@ -17,8 +17,11 @@ import NextChakraLink from "../../components/NextChakraLink"
 import { DatabaseTx } from "../../interfaces/databaseTx"
 import { ChevronDownIcon } from "@chakra-ui/icons"
 import GlitchText from "../../components/GlitchText"
-const apiPath = "https://csounds-app.azurewebsites.net/api/"
+
 // const apiPath = "http://localhost:3000/api/"
+// const apiPath = "https://cs-main-app.azurewebsites.net/api/"
+const apiPath = "https://csounds-app.azurewebsites.net/api/"
+// const apiPath = `http://localhost:${process.env.PORT || 3000}/api/`
 
 export default function SoundList({ errorCode, data }: {
     errorCode: number
@@ -42,7 +45,7 @@ export default function SoundList({ errorCode, data }: {
     }
     if(selection == collection) return
     changeCollection(selection)
-    const res: SoundListData = await fetch(apiPath + "sounds/" + selection + "/1").then(rs => rs.json())
+    const res: SoundListData = await fetch("/api/sounds/" + selection + "/1").then(rs => rs.json())
     updateNfts(res.nfts)   
   }
 
@@ -50,7 +53,7 @@ export default function SoundList({ errorCode, data }: {
       loadMore(true)
       data.page ++
 
-      const res: SoundListData = await fetch(apiPath + "sounds/" + collection + "/" + String(data.page)).then(rs => rs.json())
+      const res: SoundListData = await fetch("/api/sounds/" + collection + "/" + String(data.page)).then(rs => rs.json())
 
       updateNfts(nfts.concat(res.nfts))
       loadMore(false)
@@ -130,7 +133,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     if (errorCode === null) {
         data = await fetch(apiPath + "sounds/" + collection + "/1").then(res => res.json())
-        // console.log("data")
         // console.log(data)
         if(data == null) {
             data = {
