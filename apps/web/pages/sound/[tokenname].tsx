@@ -2,16 +2,15 @@ import { Flex } from "@chakra-ui/react";
 import Head from "next/head";
 import React from "react";
 import Layout from "../../components/layout";
-import SoundNFT from "../../components/SoundNFT";
 import SoundNFTPreview from "../../components/SoundNFTPreview";
-import { DatabaseTx, Metadata } from "../../interfaces/databaseTx";
+import { DatabaseTx } from "../../interfaces/databaseTx";
+import getSoundNFTData from '../../lib/sounds'
 
 // const apiPath = "http://localhost:3000/api/"
-const apiPath = "https://csounds-app.azurewebsites.net/api/"
+// const apiPath = "https://csounds-app.azurewebsites.net/api/"
 
 export default function Sound({nftData}: {nftData?: DatabaseTx})
 {
-    
         return (
             <>
             <Layout>
@@ -38,8 +37,9 @@ export default function Sound({nftData}: {nftData?: DatabaseTx})
 export const getServerSideProps = async (context) => {
     // ...
     const { tokenname } = context.query
+    if (typeof(tokenname) === "undefined") return { props: {nftData: "Wrong id"} }
     let data
-    const res = await fetch(apiPath + "sound/" + tokenname).then(res => res.json())
+    const res = await getSoundNFTData(tokenname)
     // console.log(res)
     if(Array.isArray(res)) {
         data = res[0]

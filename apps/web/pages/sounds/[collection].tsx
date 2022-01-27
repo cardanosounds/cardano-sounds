@@ -13,14 +13,15 @@ import { NFTData, SoundListData } from '../../interfaces/interfaces'
 import Head from "next/head"
 import Layout from "../../components/layout"
 import SoundNFTPreviewSmall from "../../components/SoundNFTPreviewSmall"
-import NextChakraLink from "../../components/NextChakraLink"
+// import NextChakraLink from "../../components/NextChakraLink"
 import { DatabaseTx } from "../../interfaces/databaseTx"
 import { ChevronDownIcon } from "@chakra-ui/icons"
-import GlitchText from "../../components/GlitchText"
+// import GlitchText from "../../components/GlitchText"
+import { getSoundsNFTData } from "../../lib/sounds"
 
 // const apiPath = "http://localhost:3000/api/"
 // const apiPath = "https://cs-main-app.azurewebsites.net/api/"
-const apiPath = "https://csounds-app.azurewebsites.net/api/"
+// const apiPath = "https://csounds-app.azurewebsites.net/api/"
 // const apiPath = `http://localhost:${process.env.PORT || 3000}/api/`
 
 export default function SoundList({ errorCode, data }: {
@@ -132,15 +133,36 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     let data: SoundListData
 
     if (errorCode === null) {
-        data = await fetch(apiPath + "sounds/" + collection + "/1").then(res => res.json())
+
+      const nftListData = await getSoundsNFTData(collection.toString(), Number(1))
+      if(nftListData instanceof String) {
+        data = {
+          collection: "all",
+          page: 1,
+          nfts: []
+        }
+      }
+      else {
+        data = 
+        {
+            collection: collection.toString(),
+            page: Number(1),
+            nfts: nftListData
+        }
+      }
+        // var nftListData = getSoundsNFTData()
+        // console.log("nftListData")
+        // console.log(nftListData)
+
+        // data = await fetch(apiPath + "sounds/" + collection + "/1").then(res => res.json())
         // console.log(data)
-        if(data == null) {
-            data = {
-              collection: "all",
-              page: 1,
-              nfts: []
-          }
-        } 
+        // if(data == null) {
+        //     data = {
+        //       collection: "all",
+        //       page: 1,
+        //       nfts: []
+        //   }
+        // } 
     }
     else {
         data = {
