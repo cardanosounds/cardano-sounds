@@ -30,6 +30,10 @@ const Mint = () => {
   const [inputs, setInputs] = useState({
     image: "",
     name: "",
+    publisher: '',
+    collection: '',
+    summary: '',
+    description: '',
     metadataName: "",
     quantity: "1",
     author: "",
@@ -100,57 +104,93 @@ const Mint = () => {
     const prepMetadata = (imageipfs, filesWithType) => {
       console.log(`prepMetadata(${imageipfs}, ${filesWithType})`)
       console.log(filesWithType)
-      if(inputs.arweaveHash !== '') return {
-        [policy.id]: {
-          [inputs.name]: {
-            name: inputs.metadataName,
-            image: `ipfs://${imageipfs.replace('ipfs://', '')}`,
-            arweaveId: inputs.arweaveHash, 
-            publisher: "CardanoSounds.com",
-            files : 
-              filesWithType.map((file) => (file.arweaveHash === '' ? (
-                { 
-                  mediaType: file.mediaType,
-                  name: file.name,
-                  src: `ipfs://${imageipfs.replace('ipfs://', '')}`
-                }) 
-                : 
-                {
-                  mediaType: file.mediaType,
-                  name: file.name,
-                  arweaveId: file.arweaveHash,
-                  src: `ipfs://${imageipfs.replace('ipfs://', '')}`
-                }
-              ))
-          },
-        },
-      };
-      return {
+      let returnMeta
+      // if(inputs.arweaveHash !== '') returnMeta = {
+      //   [policy.id]: {
+      //     [inputs.name]: {
+      //       name: inputs.metadataName,
+      //       image: `ipfs://${imageipfs.replace('ipfs://', '')}`,
+      //       arweaveId: inputs.arweaveHash, 
+      //       publisher: "CardanoSounds.com",
+      //       files : 
+      //         filesWithType.map((file) => (file.arweaveHash === '' ? (
+      //           { 
+      //             mediaType: file.mediaType,
+      //             name: file.name,
+      //             src: `ipfs://${imageipfs.replace('ipfs://', '')}`
+      //           }) 
+      //           : 
+      //           {
+      //             mediaType: file.mediaType,
+      //             name: file.name,
+      //             arweaveId: file.arweaveHash,
+      //             src: `ipfs://${imageipfs.replace('ipfs://', '')}`
+      //           }
+      //         ))
+      //     },
+      //   },
+      // };
+      returnMeta = {
       [policy.id]: {
         [inputs.name]: {
           name: inputs.metadataName,
           image: `ipfs://${imageipfs.replace('ipfs://', '')}`,
-          publisher: "CardanoSounds.com",
-          files : 
-            filesWithType.map((file) => (file.arweaveHash === '' ? (
-              { 
-                mediaType: file.mediaType,
-                name: file.name,
-                src: `ipfs://${imageipfs.replace('ipfs://', '')}`
-              }) 
-              : 
-              {
-                mediaType: file.mediaType,
-                name: file.name,
-                arweaveId: file.arweaveHash,
-                src: `ipfs://${imageipfs.replace('ipfs://', '')}`
-              }
-            ))
+          publisher: ["CardanoSounds.com"].concat(inputs.publisher).filter(s => s !== ''),
         },
       },
-    };
+    }
+    returnMeta = addPropertyToMeta(
+      "files", 
+      getFilesMeta(), 
+      returnMeta
+    )
+    returnMeta = addPropertyToMeta("arweaveId", inputs.arweaveHash, returnMeta)
+    returnMeta = addPropertyToMeta("collection", inputs.collection, returnMeta)
+    returnMeta = addPropertyToMeta("summary", inputs.summary, returnMeta)
+    returnMeta = addPropertyToMeta("description", inputs.description, returnMeta)
+    // returnMeta[policy.id][inputs.name]["collection"] = inputs.collection
+    return returnMeta
   }
 
+    const getFilesMeta = () => {
+      if(filesWithType.length < 1) {
+        return ''
+        // let retObj = { 
+        //   name: inputs.metadataName,
+        //   image: `ipfs://${inputs.image.replace('ipfs://', '')}`
+        // }
+        // if(inputs.arweaveHash !== '') retObj["arweaveId"] = inputs.arweaveHash
+        // return retObj
+      }
+      return filesWithType.map((file) => (file.arweaveHash === '' ? (
+        { 
+          mediaType: file.mediaType,
+          name: file.name,
+          src: `ipfs://${file.ipfsHash.replace('ipfs://', '')}`
+        }) 
+        : 
+        {
+          mediaType: file.mediaType,
+          name: file.name,
+          arweaveId: file.arweaveHash,
+          src: `ipfs://${file.ipfsHash.replace('ipfs://', '')}`
+        }
+      ))
+    }
+    const addPropertyToMeta = (propertyName, propertyValue, metaObject) => {
+      console.log("addPropertyToMeta = (propertyName, propertyValue, metaObject)")
+      console.log(propertyName, propertyValue, metaObject)
+      if(propertyValue !== '' && propertyValue !== []) {
+        let newPropVal = propertyValue
+        if(typeof propertyValue === "string") {
+          if(propertyValue.length > 64) {
+            newPropVal = propertyValue.match(/(.|[\r\n]){1,64}/g)
+          }
+        }
+        metaObject[policy.id][inputs.name][propertyName] = newPropVal
+      }
+      return metaObject
+    }
     const metadata = prepMetadata(inputs.image, filesWithType)
     if (inputs.author) metadata[policy.id][inputs.name].author = inputs.author;
     const tx = await wallet
@@ -182,20 +222,6 @@ const Mint = () => {
       setLoading(false);
     }
   };
-
-  const chooseMediaTypeOpt = (val, index) => {
-    console.log(`chooseMediaTypeOpt(${val}, ${index})`)
-    let copyArr = filesWithType.slice()
-    console.log("index")
-    console.log(index)
-
-      console.log("if(copyArr[index].mediaType)")
-      copyArr[index].mediaType = val
-      setFilesWithType(copyArr)
-    console.log("copyArr")
-    console.log(copyArr)
-
-  }
 
   useEffect(() => {
     init();
@@ -241,28 +267,7 @@ const Mint = () => {
         <Box w="10" />
         <Flex flexDirection="row" w="80%">
           <Flex flexDirection="column" w="75%">
-            <Input
-              focusBorderColor="blue.700"
-              // width="60%"
-              placeholder="Image (preview) IPFS hash"
-              value={inputs.image}
-              onInput={(e) => {
-                const val = e.target.value;
-                setInputs((i) => ({ ...i, image: val }));
-              }}
-            />
-            <Box h="4" />
-            <Input
-              focusBorderColor="blue.700"
-              // width="60%"
-              placeholder="(Optional) Image Arweave hash"
-              value={inputs.arweaveHash}
-              onInput={(e) => {
-                const val = e.target.value;
-                setInputs((i) => ({ ...i, arweaveHash: val }));
-              }}
-            />
-            <Box h="4" />
+                 
             <Input
               focusBorderColor="blue.700"
               // width="60%"
@@ -290,6 +295,28 @@ const Mint = () => {
             />
             <Box h="4" />
             <Input
+              focusBorderColor="blue.700"
+              // width="60%"
+              placeholder="Image (preview) IPFS hash"
+              value={inputs.image}
+              onInput={(e) => {
+                const val = e.target.value;
+                setInputs((i) => ({ ...i, image: val }));
+              }}
+            />
+            <Box h="4" />
+            <Input
+              focusBorderColor="blue.700"
+              // width="60%"
+              placeholder="Image Arweave hash (optional)"
+              value={inputs.arweaveHash}
+              onInput={(e) => {
+                const val = e.target.value;
+                setInputs((i) => ({ ...i, arweaveHash: val }));
+              }}
+            />
+            <Box h="4" />
+            <Input
               value={inputs.author}
               focusBorderColor="blue.700"
               // width="60%"
@@ -298,6 +325,39 @@ const Mint = () => {
                 const val = e.target.value;
                 if (val.length > 64) return;
                 setInputs((i) => ({ ...i, author: val }));
+              }}
+            />
+            <Box h="4" />
+            <Input
+              focusBorderColor="blue.700"
+              // width="60%"
+              placeholder="Publisher (optional)"
+              value={inputs.publisher}
+              onInput={(e) => {
+                const val = e.target.value;
+                setInputs((i) => ({ ...i, publisher: val }));
+              }}
+            />
+            <Box h="4" />
+            <Input
+              focusBorderColor="blue.700"
+              // width="60%"
+              placeholder="Summary (optional)"
+              value={inputs.summary}
+              onInput={(e) => {
+                const val = e.target.value;
+                setInputs((i) => ({ ...i, summary: val }));
+              }}
+            />
+            <Box h="4" />
+            <Input
+              focusBorderColor="blue.700"
+              // width="60%"
+              placeholder="Description (optional)"
+              value={inputs.description}
+              onInput={(e) => {
+                const val = e.target.value;
+                setInputs((i) => ({ ...i, description: val }));
               }}
             />
           {/* </Flex>
@@ -355,7 +415,6 @@ const Mint = () => {
                   if (target.type === 'select-one') {
                     const selectValue = target.selectedOptions[0].value;
                     setFileInputs((i) => ({ ...i, mediaType: selectValue }));
-                  // chooseMediaTypeOpt(selectValue, index);
                   }
               }}
               placeholder='Select media type:'
