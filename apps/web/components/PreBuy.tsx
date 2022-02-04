@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Button, List, ListIcon, ListItem, Stack, Spacer, Tooltip, Flex } from "@chakra-ui/react"
+import { Button, List, ListIcon, ListItem, Stack, Spacer, Tooltip, Flex, Text} from "@chakra-ui/react"
 import utilStyles from "../styles/utils.module.css"
 import { FaChevronRight, FaChevronLeft } from 'react-icons/fa';
 import { InfoIcon } from "@chakra-ui/icons";
@@ -35,10 +35,12 @@ export default function PreBuy() {
                 maxW={["80vw", "80vw", "75vw", "70vw", "75vw", "70vw"]}
                 mt={["25vh", "25vh", "30vh", "30vh", "25vh", "25vh"]}
             >
+                <Text fontWeight="bold" fontSize="36" my={4}>Support us by minting our CNFTs</Text>
+
                 <List spacing={3} pl="3vw" ml="0" marginInlineEnd="auto" mt="5vh" >
                     <ListItem>
                         <ListIcon as={FaChevronRight} color="green.500" />
-                            The collection will be released in 3 <strong>short</strong> waves
+                            The collection is being released in 3 <strong>short</strong> waves
                     </ListItem>
                     <Spacer/>
                     <ListItem>
@@ -60,7 +62,7 @@ export default function PreBuy() {
                     <Spacer/>
                     <ListItem>
                         <ListIcon as={FaChevronRight} color="green.500" />
-                            Never use exchange wallet to buy NFT! To buy multiple NFTs, use multiple transactions
+                            Never use exchange wallet to buy NFT! You will be able to mint 5 per TX
                     </ListItem>
                     <Spacer/>
                     <ListItem>
@@ -78,6 +80,10 @@ export default function PreBuy() {
                             You will be able to check live status of the generative and minting process by transaction ID
                     </ListItem>
                     <Spacer/>
+                    <ListItem>
+                        <ListIcon as={FaChevronRight} color="green.500" />
+                            You can browse already minted CNFTs from the collection <NextChakraLink href='/sounds/all'>here</NextChakraLink>
+                    </ListItem>
                 </List>
                 <Flex direction={["column", "column", "row", "row"]} w={["100%", "100%", "100%", "100%", "100%", "90%"]}>
                     <NextChakraLink

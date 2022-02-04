@@ -206,14 +206,8 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                         <Logo size={["2em", "3em", "2em", "5em", "5em", "5em"]} color={ isDark ? "white" : "gray.800" }/>
                       </DrawerHeader>
                       <DrawerBody background="transparent url(/noise.png) repeat 0 0">
-                        <NextChakraLink href="/buy">{/*  className={mainStyles.disableEvents} */}
-                            <Heading size="lg" as="h4">BUY</Heading>
-                        </NextChakraLink>
                         <NextChakraLink href="/">
                             <Heading size="lg" as="h4">HOME</Heading>
-                        </NextChakraLink>
-                        <NextChakraLink href="https://cardanosounds.com">
-                            <Heading size="lg" as="h4">ABOUT</Heading>
                         </NextChakraLink>
                         <NextChakraLink href="/create">
                             <Heading size="lg" as="h4">CREATE</Heading>
@@ -222,7 +216,13 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                             <Heading size="lg" as="h4">SOUNDS</Heading>
                         </NextChakraLink>
                         <NextChakraLink href="/mint">
-                            <Heading size="lg" as="h4">MINT</Heading>
+                            <Heading size="lg" as="h4">MINTING</Heading>
+                        </NextChakraLink>
+                        <NextChakraLink href="https://cardano-sounds.gitbook.io/cardanosounds/">
+                            <Heading size="lg" as="h4">ABOUT</Heading>
+                        </NextChakraLink>
+                        <NextChakraLink href="/buy">{/*  className={mainStyles.disableEvents} */}
+                            <Heading size="lg" as="h4">BUY</Heading>
                         </NextChakraLink>
                       </DrawerBody>
                     </DrawerContent>
