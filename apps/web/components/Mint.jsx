@@ -2,31 +2,41 @@ import {
   Box,
   Button,
   Input,
-  Spinner,
   Text,
   useToast,
   Flex,
   Select,
-  Spacer,
-  Heading
+  Image,
+  Heading,
+  Textarea,
+  Accordion,
+  AccordionIcon,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  useColorMode
 } from "@chakra-ui/react";
+import { getFilesMeta, prepMetadata } from "../lib/mintMetadata"
 import { useContext, useState, useEffect } from "react";
 import WalletJs from "../wallet-js";
-import { ChevronRightIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import WalletContext from "../lib/WalletContext";
 import { BsInfoCircleFill } from 'react-icons/bs'
 import NextChakraLink from "./NextChakraLink";
-
+import { NotConnectedToast, NftLimitToast, SuccessTransactionToast, PendingTransactionToast, FailedTransactionToast, TxErrorSubmitToast, NoWalletToast } from '../lib/toasts'
 
 let wallet
 const Mint = () => {
   const toast = useToast()
+  const { colorMode } = useColorMode()
+  const isDark = colorMode === 'dark'
   const walletCtx = useContext(WalletContext)
   // const initIpfs = useIpfs()
   const [connected, setConnected] = useState("")
   const [loading, setLoading] = useState(false)
-  const [files, setFiles] = useState(false)
   const [filesWithType, setFilesWithType] = useState([])
+  const [policy, setPolicy] = useState(null)
+  const [nfts, setNfts] = useState([])
+
   const [inputs, setInputs] = useState({
     image: "",
     name: "",
@@ -46,158 +56,140 @@ const Mint = () => {
     arweaveHash: ""
   })
 
+  // useEffect(() => { console.log(`files: ${JSON.stringify(nfts)}`) }, [nfts])
+  // useEffect(() => { 
+  //   init() 
+  //   console.log("refreshed walletCtx.walletApi")
+  //   console.log(walletCtx.walletApi)
+  // }, [walletCtx.walletApi])
+
   const init = async () => {
-    // const walletApi = (await window.cardano.ccvault.enable())
     wallet = new WalletJs(
       "https://cardano-mainnet.blockfrost.io/api/v0",
       "mainnetGHf1olOJblaj5LD8rcRudajSJGKRU6IL",
       walletCtx.walletApi
     )
-    // ipfs = await initIpfs();
     setConnected(window.localStorage.getItem('cswallet') === 'connected')
   }
-
 
   const checkStatus = async (toast, connected) => {
     connected = walletCtx.walletApi !== null
     wallet.walletApi = walletCtx.walletApi
     setConnected(connected)
     return (
-      NoWallet(toast) &&
+      NoWalletToast(toast, window.cardano) &&
       (await NotConnectedToast(toast, connected)) //&&
-      // (await WrongNetworkToast(toast, walletCtx.walletApi))
     )
+  }
+
+  const checkNftCount = async (toast, nfts) => {
+    return (
+      NftLimitToast(toast, nfts)
+    )
+  }
+
+  const addNft = async () => {
+    let mintPolicy = policy
+    if (!policy) {
+      mintPolicy = await wallet.createLockingPolicyScript()
+      setPolicy(mintPolicy)
+      fetch(`https://pool.pm/register/policy/${mintPolicy.id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: "all",
+          scripts: [
+            {
+              keyHash: mintPolicy.paymentKeyHash,
+              type: "sig",
+            },
+            { slot: mintPolicy.ttl, type: "before" },
+          ],
+        }),
+      })
+    }
+
+    const metadata = prepMetadata(inputs.image, filesWithType, inputs)
+    if (inputs.author) metadata[inputs.name].author = inputs.author;
+    setNfts([...nfts].concat(metadata))
+    clearInputs()
+  }
+
+  const clearInputs = () => {
+  }
+
+  String.prototype.trimEllip = function (length) {
+    return this.length > length ? this.substring(0, length) + ".." : this;
   }
 
   const makeTx = async () => {
     setLoading(true)
-    // const result = await ipfs.add(blob);ipfsHash
-    // const hash = result.path;
-    // (async () => {
-    //   const response = await fetch(
-    //     'https://ipfs2arweave.com/permapin/'+hash,
-    //     {method: 'POST'}
-    //   );
-    
-    //   console.log(await response.json());
-    // })();
-    // const hash = 'QmWbpAupVYwj7pVE6i3VMALMwngctS8F5ucCNLwg9RqCn3'
-    const policy = await wallet.createLockingPolicyScript()
-    fetch(`https://pool.pm/register/policy/${policy.id}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        type: "all",
-        scripts: [
-          {
-            keyHash: policy.paymentKeyHash,
-            type: "sig",
-          },
-          { slot: policy.ttl, type: "before" },
-        ],
-      }),
-    })
-      .then((res) => res.json())
-      .then(console.log);
-    const prepMetadata = (imageipfs, filesWithType) => {
-      console.log(`prepMetadata(${imageipfs}, ${filesWithType})`)
-      console.log(filesWithType)
-      let returnMeta
-      // if(inputs.arweaveHash !== '') returnMeta = {
-      //   [policy.id]: {
-      //     [inputs.name]: {
-      //       name: inputs.metadataName,
-      //       image: `ipfs://${imageipfs.replace('ipfs://', '')}`,
-      //       arweaveId: inputs.arweaveHash, 
-      //       publisher: "CardanoSounds.com",
-      //       files : 
-      //         filesWithType.map((file) => (file.arweaveHash === '' ? (
-      //           { 
-      //             mediaType: file.mediaType,
-      //             name: file.name,
-      //             src: `ipfs://${imageipfs.replace('ipfs://', '')}`
-      //           }) 
-      //           : 
-      //           {
-      //             mediaType: file.mediaType,
-      //             name: file.name,
-      //             arweaveId: file.arweaveHash,
-      //             src: `ipfs://${imageipfs.replace('ipfs://', '')}`
-      //           }
-      //         ))
-      //     },
-      //   },
-      // };
-      returnMeta = {
-      [policy.id]: {
-        [inputs.name]: {
-          name: inputs.metadataName,
-          image: `ipfs://${imageipfs.replace('ipfs://', '')}`,
-          publisher: ["CardanoSounds.com"].concat(inputs.publisher).filter(s => s !== ''),
+    await init()
+    let mintPolicy = policy
+    if (!policy) {
+      mintPolicy = await wallet.createLockingPolicyScript()
+      setPolicy(mintPolicy)
+      fetch(`https://pool.pm/register/policy/${mintPolicy.id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      },
+        body: JSON.stringify({
+          type: "all",
+          scripts: [
+            {
+              keyHash: mintPolicy.paymentKeyHash,
+              type: "sig",
+            },
+            { slot: mintPolicy.ttl, type: "before" },
+          ],
+        }),
+      })
     }
-    returnMeta = addPropertyToMeta(
-      "files", 
-      getFilesMeta(), 
-      returnMeta
-    )
-    returnMeta = addPropertyToMeta("arweaveId", inputs.arweaveHash, returnMeta)
-    returnMeta = addPropertyToMeta("collection", inputs.collection, returnMeta)
-    returnMeta = addPropertyToMeta("summary", inputs.summary, returnMeta)
-    returnMeta = addPropertyToMeta("description", inputs.description, returnMeta)
-    // returnMeta[policy.id][inputs.name]["collection"] = inputs.collection
-    return returnMeta
-  }
 
-    const getFilesMeta = () => {
-      if(filesWithType.length < 1) {
-        return ''
-        // let retObj = { 
-        //   name: inputs.metadataName,
-        //   image: `ipfs://${inputs.image.replace('ipfs://', '')}`
-        // }
-        // if(inputs.arweaveHash !== '') retObj["arweaveId"] = inputs.arweaveHash
-        // return retObj
-      }
-      return filesWithType.map((file) => (file.arweaveHash === '' ? (
-        { 
-          mediaType: file.mediaType,
-          name: file.name,
-          src: `ipfs://${file.ipfsHash.replace('ipfs://', '')}`
-        }) 
-        : 
-        {
-          mediaType: file.mediaType,
-          name: file.name,
-          arweaveId: file.arweaveHash,
-          src: `ipfs://${file.ipfsHash.replace('ipfs://', '')}`
-        }
-      ))
+    let metadata = {
+      [mintPolicy.id]: prepMetadata(inputs.image, filesWithType, inputs)
     }
-    const addPropertyToMeta = (propertyName, propertyValue, metaObject) => {
-      console.log("addPropertyToMeta = (propertyName, propertyValue, metaObject)")
-      console.log(propertyName, propertyValue, metaObject)
-      if(propertyValue !== '' && propertyValue !== []) {
-        let newPropVal = propertyValue
-        if(typeof propertyValue === "string") {
-          if(propertyValue.length > 64) {
-            newPropVal = propertyValue.match(/(.|[\r\n]){1,64}/g)
-          }
-        }
-        metaObject[policy.id][inputs.name][propertyName] = newPropVal
+
+    nfts.forEach((nft) => {
+      console.log("nft")
+      console.log(nft)
+      metadata[mintPolicy.id][nft[Object.keys(nft)[0]].name] = {
+        name: nft[Object.keys(nft)[0]].name,
+        image: nft[Object.keys(nft)[0]].image,
+        publisher: nft[Object.keys(nft)[0]].publisher,
       }
-      return metaObject
-    }
-    const metadata = prepMetadata(inputs.image, filesWithType)
-    if (inputs.author) metadata[policy.id][inputs.name].author = inputs.author;
+      const shortStrings = (val) => val.length > 64 ? propertyValue.split('\n').map(s => {
+        if(s.length > 64) {
+            return s.match(/(.|[\r\n]){1,64}/g)
+        } else return s
+      }) : val
+
+      if(nft[Object.keys(nft)[0]].files){
+        metadata[mintPolicy.id][nft[Object.keys(nft)[0]].name]["files"] = nft[Object.keys(nft)[0]].files
+      }
+      if(nft[Object.keys(nft)[0]].description){
+        metadata[mintPolicy.id][nft[Object.keys(nft)[0]].name]["description"] = nft[Object.keys(nft)[0]].description
+      }
+      if(nft[Object.keys(nft)[0]].summary){
+        metadata[mintPolicy.id][nft[Object.keys(nft)[0]].name]["summary"] = nft[Object.keys(nft)[0]].summary
+      }
+      if(nft[Object.keys(nft)[0]].arweaveHash){
+        metadata[mintPolicy.id][nft[Object.keys(nft)[0]].name]["arweaveHash"] = nft[Object.keys(nft)[0]].arweaveHash
+      }
+      if(nft[Object.keys(nft)[0]].author){
+        metadata[mintPolicy.id][nft[Object.keys(nft)[0]].name]["author"] = nft[Object.keys(nft)[0]].author
+      }
+    })
+
+    if (inputs.author) metadata[mintPolicy.id][inputs.name].author = inputs.author;
     const tx = await wallet
       .mintTx(
         [{ name: inputs.name, quantity: inputs.quantity }],
         metadata,
-        policy
+        mintPolicy
       )
       .catch((e) => {
         console.log(e);
@@ -208,9 +200,9 @@ const Mint = () => {
     const signedTx = await wallet.signTx(tx).catch(() => setLoading(false));
     if (!signedTx) return;
     const txHash = await wallet.submitTx(signedTx);
-    if(txHash.toString().length === 64){
+    if (txHash.toString().length === 64) {
       PendingTransactionToast(toast);
-      await wallet.awaitConfirmation(txHash);
+      // await wallet.awaitConfirmation(txHash);
       toast.closeAll();
       SuccessTransactionToast(toast, txHash);
       setLoading(false);
@@ -226,51 +218,55 @@ const Mint = () => {
   useEffect(() => {
     init();
   }, []);
-  useEffect(() => {
-    // if (connected)
-    //   window.cardano.onAccountChange(async () => {
-    //     const address = await wallet.baseAddressToBech32();
-    //     setConnected(address);
-    //   });
-  });
   return (
     <Box
       width="100%"
       display="flex"
       alignItems="center"
       justifyContent="center"
-    > 
+      pt="15vh"
+
+    >
       <Text
         display={["flex", "flex", "flex", "none"]}
       >
         Unfortunately, tool does not support smaller devices yet.
-      </Text>      
+      </Text>
       <Box
         width="90%"
+        minWidth="70rem"
         maxWidth="65vw"
         rounded="lg"
-        // display="flex"
         alignItems="center"
         flexDirection="column"
         padding="10"
-        mt="10vh"
+        m="auto"
         display={["none", "none", "none", "flex"]}
       >
-       
-          <Flex direction="row" w="50vw"> 
-            <Text fontWeight="bold" fontSize="36" mb={4}>Mint NFTs with a Dapp connector wallet </Text>
-            <NextChakraLink href="/mint-info" p="0.5rem">
-              <BsInfoCircleFill size={36}/>
-            </NextChakraLink>
-          </Flex>
-        
+        <Flex direction="column">
+          <NextChakraLink target="blank" href="/mint-info" p="0.5rem">
+            <Heading float="right" _hover={{transform: "scale(1.05)"}} fontSize="24">MORE INFO</Heading>
+          </NextChakraLink>
+          <Heading fontWeight="bold" fontSize="36" mb={4}>🎶 Mint Cardano NFTs with a Dapp connector wallet </Heading>
+        </Flex>
         <Box w="10" />
+        {nfts.length > 0 ?
+          <Flex h={36} direction={"row"} overflow="auto" whiteSpace={"nowrap"} maxW="50vw" py={2}>
+            {nfts?.map((nft, i) => (
+              <Flex h={34} w={24} mx={2} key={i} direction="column" textAlign={"center"}>
+                <Flex h={24} w={24}>
+                  <Image h={24} w={24} src={`https://infura-ipfs.io/ipfs/${nft[Object.keys(nft)[0]].image.replace("ipfs://", "")}`} fallbackSrc="/noise.png" />
+                </Flex>
+                <Heading fontSize={14} maxW={24} >{nft[Object.keys(nft)[0]].name.trimEllip(11)}</Heading>
+              </Flex>
+            ))}
+          </Flex> : <></>
+        }
         <Flex flexDirection="row" w="80%">
           <Flex flexDirection="column" w="75%">
-                 
+            <Box h="3rem" />
             <Input
               focusBorderColor="blue.700"
-              // width="60%"
               placeholder="Name"
               value={inputs.metadataName}
               onInput={(e) => {
@@ -285,7 +281,6 @@ const Mint = () => {
             <Input
               type="number"
               focusBorderColor="blue.700"
-              // width="60%"
               placeholder="Quantity"
               value={inputs.quantity}
               onInput={(e) => {
@@ -305,296 +300,207 @@ const Mint = () => {
               }}
             />
             <Box h="4" />
-            <Input
-              focusBorderColor="blue.700"
-              // width="60%"
-              placeholder="Image Arweave hash (optional)"
-              value={inputs.arweaveHash}
-              onInput={(e) => {
-                const val = e.target.value;
-                setInputs((i) => ({ ...i, arweaveHash: val }));
-              }}
-            />
+            {OptionalInputs(isDark, inputs, setInputs)}
             <Box h="4" />
-            <Input
-              value={inputs.author}
-              focusBorderColor="blue.700"
-              // width="60%"
-              placeholder="Author (optional)"
-              onInput={(e) => {
-                const val = e.target.value;
-                if (val.length > 64) return;
-                setInputs((i) => ({ ...i, author: val }));
-              }}
-            />
-            <Box h="4" />
-            <Input
-              focusBorderColor="blue.700"
-              // width="60%"
-              placeholder="Publisher (optional)"
-              value={inputs.publisher}
-              onInput={(e) => {
-                const val = e.target.value;
-                setInputs((i) => ({ ...i, publisher: val }));
-              }}
-            />
-            <Box h="4" />
-            <Input
-              focusBorderColor="blue.700"
-              // width="60%"
-              placeholder="Summary (optional)"
-              value={inputs.summary}
-              onInput={(e) => {
-                const val = e.target.value;
-                setInputs((i) => ({ ...i, summary: val }));
-              }}
-            />
-            <Box h="4" />
-            <Input
-              focusBorderColor="blue.700"
-              // width="60%"
-              placeholder="Description (optional)"
-              value={inputs.description}
-              onInput={(e) => {
-                const val = e.target.value;
-                setInputs((i) => ({ ...i, description: val }));
-              }}
-            />
-          {/* </Flex>
-          <Box w="14" />
-          <Flex flexDirection="column" w="75%">             */}
-            <Box h="4" />
-            <Button onClick={() => {if(!files) setFiles(true) 
-            else{
-              setFileInputs({
-                name: "",
-                ipfsHash: "",
-                mediaType: "",
-                arweaveHash: ""
-              })
-              setFilesWithType([])
-              setFiles(false)}
-            }}>{!files ? "Add files" : "Remove files"}</Button>
-            {!files ? <></> : <>
-            <Box h="4" />
-            <Input
-              value={fileInputs.name}
-              focusBorderColor="blue.700"
-              placeholder="Name"
-              onInput={(e) => {
-                const val = e.target.value;
-                setFileInputs((i) => ({ ...i, name: val }));
-              }}
-            />
-            <Box h="4" />
-            <Input
-              value={fileInputs.ipfsHash}
-              focusBorderColor="blue.700"
-              placeholder="IPFS Hash"
-              onInput={(e) => {
-                const val = e.target.value;
-                setFileInputs((i) => ({ ...i, ipfsHash: val }));
-              }}
-            />
-            <Box h="4" />
-            <Input
-              focusBorderColor="blue.700"
-              // width="60%"
-              placeholder="(Optional) Arweave hash"
-              value={fileInputs.arweaveHash}
-              onInput={(e) => {
-                const val = e.target.value;
-                setFileInputs((i) => ({ ...i, arweaveHash: val }));
-              }}
-            />
-            <Box h="4" />
-            <Select
-              value={fileInputs.mediaType}
-              onChange={(val) => {
-                  const { target } = val;
-                  if (target.type === 'select-one') {
-                    const selectValue = target.selectedOptions[0].value;
-                    setFileInputs((i) => ({ ...i, mediaType: selectValue }));
-                  }
-              }}
-              placeholder='Select media type:'
-            >
-              <option value='video/mp4'>mp4</option>
-              <option value='audio/mpeg'>mp3</option>
-              <option value='audio/ogg'>ogg</option>
-              <option value='image/png'>png</option>
-              <option value='image/svg+xml'>svg</option>
-              <option value='image/jpeg'>jpg</option>
-            </Select> 
-            <Box h="4" />
-            <Button onClick={() => { 
-              if(fileInputs.ipfsHash !== "" && fileInputs.name !== "" && fileInputs.mediaType) {
-                setFilesWithType(
-                  filesWithType.concat(
-                    {
-                      ipfsHash: fileInputs.ipfsHash, 
-                      mediaType: fileInputs.mediaType, 
-                      name: fileInputs.name,
-                      arweaveHash: fileInputs.arweaveHash
-                    }
-                  )
-                )
-                setFileInputs({
-                  name: "",
-                  ipfsHash: "",
-                  mediaType: "",
-                  arweaveHash: ""
-                })
-              }
-            }}>
-              Add file +
-            </Button>
-            { filesWithType.map((fileWithType, index) => (
-                <Flex key={index}> 
-                  <Text p={2}>{fileWithType.name}</Text>
-                  <Text p={2}>{fileWithType.ipfsHash}</Text>
-                  <Text p={2}>{fileWithType.mediaType}</Text>
-                  <Text p={2}>{fileWithType.arweaveHash}</Text>
-                </Flex>
-            ))}
-            </>}
+            {FileInput(isDark, fileInputs, setFileInputs, setFilesWithType, filesWithType)}
           </Flex>
           <Box w="14" />
-          <Button
-            my="auto"
-            h="33vh"
-            onClick={async () =>
-              (await checkStatus(toast, connected)) && makeTx()
-            }
-            // onClick={async () => await decryptWithPassword()}
-            width="100px"
-            isDisabled={!(inputs.name && inputs.quantity && inputs.metadataName)}
-            isLoading={loading}
-            variant="ghost"
-          >
-            Mint
-          </Button>
+          <Flex display="column">
+            <Button
+              my="auto"
+              h="12rem"
+              onClick={async () =>
+                (await checkNftCount(toast, nfts)) && await addNft()
+              }
+              width="100px"
+              isDisabled={!(inputs.name && inputs.quantity && inputs.metadataName && inputs.image)}
+              isLoading={loading}
+              variant="ghost"
+            >
+              Add
+            </Button>
+            <Box w="14" />
+            <Button
+              my="auto"
+              h="12rem"
+              onClick={async () =>
+                (await checkStatus(toast, connected)) && makeTx()
+              }
+              width="100px"
+              isDisabled={!(inputs.name && inputs.quantity && inputs.metadataName && inputs.image)}
+              isLoading={loading}
+              variant="ghost"
+            >
+              Mint
+            </Button>
+          </Flex>
+
         </Flex>
       </Box>
     </Box>
   );
 };
 
-const NoWallet = (toast) => {
-  if (window.cardano) return true;
-  toast({
-    position: "bottom-right",
-    title: (
-      <Box width="full" display="flex">
-        <Text>No wallet installed</Text>
-        <Button
-          onClick={() => window.open("https://namiwallet.io")}
-          ml="6"
-          mr="-4"
-          size="xs"
-          // background="white"
-          color="orange.400"
-          rightIcon={<ChevronRightIcon />}
+const OptionalInputs = (isDark, inputs, setInputs) => {
+  return <Accordion allowToggle>
+    <AccordionItem>
+      <h2>
+        <AccordionButton _expanded={{ bg: isDark ? 'gray.700' : 'gray.200' }}>
+          <Box flex='1' textAlign='left'>
+            Optional fields
+          </Box>
+          <AccordionIcon />
+        </AccordionButton>
+      </h2>
+      <AccordionPanel>
+        <Box h="4" />
+        <Input
+          focusBorderColor="blue.700"
+          placeholder="Image Arweave hash (optional)"
+          value={inputs.arweaveHash}
+          onInput={(e) => {
+            const val = e.target.value;
+            setInputs((i) => ({ ...i, arweaveHash: val }));
+          } } />
+        <Box h="4" />
+        <Input
+          value={inputs.author}
+          focusBorderColor="blue.700"
+          placeholder="Author (optional)"
+          onInput={(e) => {
+            const val = e.target.value;
+            if (val.length > 64)
+              return;
+            setInputs((i) => ({ ...i, author: val }));
+          } } />
+        <Box h="4" />
+        <Input
+          focusBorderColor="blue.700"
+          placeholder="Publisher (optional)"
+          value={inputs.publisher}
+          onInput={(e) => {
+            const val = e.target.value;
+            setInputs((i) => ({ ...i, publisher: val }));
+          } } />
+        <Box h="4" />
+        <Input
+          focusBorderColor="blue.700"
+          placeholder="Summary (optional)"
+          value={inputs.summary}
+          onInput={(e) => {
+            const val = e.target.value;
+            setInputs((i) => ({ ...i, summary: val }));
+          } } />
+        <Box h="4" />
+        <Textarea
+          focusBorderColor="blue.700"
+          placeholder="Description (optional)"
+          value={inputs.description}
+          onInput={(e) => {
+            const val = e.target.value;
+            setInputs((i) => ({ ...i, description: val }));
+          } } />
+
+      </AccordionPanel>
+    </AccordionItem>
+  </Accordion>;
+}
+
+const FileInput = (isDark, fileInputs, setFileInputs, setFilesWithType, filesWithType) => {
+  return (
+  <Accordion allowToggle>
+    <AccordionItem>
+      <h2>
+        <AccordionButton _expanded={{ bg: isDark ? 'gray.700' : 'gray.200' }}>
+          <Box flex='1' textAlign='left'>
+            Files
+          </Box>
+          <AccordionIcon />
+        </AccordionButton>
+      </h2>
+      <AccordionPanel pb={4}>
+        <Box h="4" />
+        <Input
+          value={fileInputs.name}
+          focusBorderColor="blue.700"
+          placeholder="Name"
+          onInput={(e) => {
+            const val = e.target.value;
+            setFileInputs((i) => ({ ...i, name: val }));
+          } } />
+        <Box h="4" />
+        <Input
+          value={fileInputs.ipfsHash}
+          focusBorderColor="blue.700"
+          placeholder="IPFS Hash"
+          onInput={(e) => {
+            const val = e.target.value;
+            setFileInputs((i) => ({ ...i, ipfsHash: val }));
+          } } />
+        <Box h="4" />
+        <Input
+          focusBorderColor="blue.700"
+          // width="60%"
+          placeholder="Arweave hash (Optional - you don't need ipfs hash if filled)"
+          value={fileInputs.arweaveHash}
+          onInput={(e) => {
+            const val = e.target.value;
+            setFileInputs((i) => ({ ...i, arweaveHash: val }));
+          } } />
+        <Box h="4" />
+        <Select
+          value={fileInputs.mediaType}
+          onChange={(val) => {
+            const { target } = val;
+            if (target.type === 'select-one') {
+              const selectValue = target.selectedOptions[0].value;
+              setFileInputs((i) => ({ ...i, mediaType: selectValue }));
+            }
+          } }
+          placeholder='Select media type:'
         >
-          Get Nami
-        </Button>
-        <Button
-          onClick={() => window.open("https://ccvault.io")}
-          ml="6"
-          mr="-4"
-          size="xs"
-          // background="white"
-          color="orange.400"
-          rightIcon={<ChevronRightIcon />}
-        >
-          Get ccvault
-        </Button>
-      </Box>
-    ),
-
-    status: "warning",
-    duration: 9000,
-  });
-  return false;
-};
-
-const TxErrorSubmitToast = async (toast) => {
-  toast({
-    position: "bottom-right",
-    title: "Transaction submit failed",
-    description: "Try again or use a wallet with enough ADA not locked with UTXOs, and only a small amount of native assets.",
-    status: "error",
-    duration: 5000,
-  });
-  return false;
-};
-
-const WrongNetworkToast = async (toast, walletApi) => {
-  console.log(await walletApi.getNetworkId());
-  if ((await walletApi.getNetworkId()) === 1) return true;
-  toast({
-    position: "bottom-right",
-    title: "Wrong network",
-    status: "warning",
-    duration: 5000,
-  });
-  return false;
-};
-
-const NotConnectedToast = async (toast, connected) => {
-  if (connected) return true;
-  toast({
-    position: "bottom-right",
-    title: "Connect a wallet first",
-    status: "warning",
-    duration: 5000,
-  });
-  return false;
-};
-
-const FailedTransactionToast = (toast) => {
-  return toast({
-    position: "bottom-right",
-    title: "Transaction not possible",
-    description: "(Maybe insufficient balance)",
-    status: "error",
-    duration: 5000,
-    isClosable: true,
-  });
-};
-
-const PendingTransactionToast = (toast) => {
-  toast({
-    position: "bottom-right",
-    title: (
-      <Box display="flex" alignItems="center">
-        <Text>Transaction pending</Text>
-        <Spinner ml="4" speed="0.5s" size="sm" />
-      </Box>
-    ),
-    status: "info",
-    duration: null,
-  });
-};
-
-const SuccessTransactionToast = (toast, txHash) => {
-  toast({
-    position: "bottom-right",
-    title: (
-      <Box display="flex" alignItems="center">
-        <Text>Transaction confirmed</Text>
-        <ExternalLinkIcon
-          cursor="pointer"
-          ml="4"
-          onClick={() =>
-            window.open(`https://cardanoscan.io/transaction/${txHash}`)
+          <option value='video/mp4'>mp4</option>
+          <option value='audio/mpeg'>mp3</option>
+          <option value='audio/ogg'>ogg</option>
+          <option value='image/png'>png</option>
+          <option value='image/svg+xml'>svg</option>
+          <option value='image/jpeg'>jpg</option>
+          <option value='text/html'>html</option>
+        </Select>
+        <Box h="4" />
+        <Button onClick={() => {
+          if ((fileInputs.ipfsHash !== "" || fileInputs.arweaveHash !== "") && fileInputs.name !== "" && fileInputs.mediaType) {
+            setFilesWithType(
+              filesWithType.concat(
+                {
+                  ipfsHash: fileInputs.ipfsHash,
+                  mediaType: fileInputs.mediaType,
+                  name: fileInputs.name,
+                  arweaveHash: fileInputs.arweaveHash
+                }
+              )
+            );
+            setFileInputs({
+              name: "",
+              ipfsHash: "",
+              mediaType: "",
+              arweaveHash: ""
+            });
           }
-        />
-      </Box>
-    ),
-    status: "success",
-    duration: 9000,
-  });
-};
+        } }>
+          Add file +
+        </Button>
+        {filesWithType.map((fileWithType, index) => (
+          <Flex key={index}>
+            <Text p={2}>{fileWithType.name}</Text>
+            <Text p={2}>{fileWithType.ipfsHash}</Text>
+            <Text p={2}>{fileWithType.mediaType}</Text>
+            <Text p={2}>{fileWithType.arweaveHash}</Text>
+          </Flex>
+        ))}
+      </AccordionPanel>
+    </AccordionItem>
+  </Accordion>)
+}
 
 export default Mint;
