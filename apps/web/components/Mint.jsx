@@ -91,28 +91,6 @@ const Mint = () => {
   }
 
   const addNft = async () => {
-    let mintPolicy = policy
-    if (!policy) {
-      mintPolicy = await wallet.createLockingPolicyScript()
-      setPolicy(mintPolicy)
-      fetch(`https://pool.pm/register/policy/${mintPolicy.id}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          type: "all",
-          scripts: [
-            {
-              keyHash: mintPolicy.paymentKeyHash,
-              type: "sig",
-            },
-            { slot: mintPolicy.ttl, type: "before" },
-          ],
-        }),
-      })
-    }
-
     const metadata = prepMetadata(inputs.image, filesWithType, inputs)
     if (inputs.author) metadata[inputs.name].author = inputs.author;
     const quantityDictCopy = JSON.parse(JSON.stringify(quantityDict))
