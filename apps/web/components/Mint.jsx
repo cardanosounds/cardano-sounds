@@ -14,7 +14,8 @@ import {
   AccordionItem,
   AccordionButton,
   AccordionPanel,
-  useColorMode
+  useColorMode,
+  Popover, PopoverTrigger, PopoverContent, PopoverCloseButton, PopoverHeader, PopoverBody, PopoverArrow
 } from "@chakra-ui/react";
 import { getFilesMeta, prepMetadata } from "../lib/mintMetadata"
 import { useContext, useState, useEffect } from "react";
@@ -34,6 +35,7 @@ const Mint = () => {
   const [connected, setConnected] = useState("")
   const [loading, setLoading] = useState(false)
   const [filesWithType, setFilesWithType] = useState([])
+  const [quantityDict, setQuantityDict] = useState({})
   const [policy, setPolicy] = useState(null)
   const [nfts, setNfts] = useState([])
 
@@ -113,6 +115,9 @@ const Mint = () => {
 
     const metadata = prepMetadata(inputs.image, filesWithType, inputs)
     if (inputs.author) metadata[inputs.name].author = inputs.author;
+    const quantityDictCopy = JSON.parse(JSON.stringify(quantityDict))
+    quantityDictCopy[inputs.name] = inputs.quantity
+    setQuantityDict(quantityDictCopy)
     setNfts([...nfts].concat(metadata))
     clearInputs()
   }
@@ -122,6 +127,14 @@ const Mint = () => {
 
   String.prototype.trimEllip = function (length) {
     return this.length > length ? this.substring(0, length) + ".." : this;
+  }
+
+  const uniqBy = (a, key) => {
+    return [
+        ...new Map(
+            a.map(x => [key(x), x])
+        ).values()
+    ]
   }
 
   const makeTx = async () => {
@@ -161,11 +174,6 @@ const Mint = () => {
         image: nft[Object.keys(nft)[0]].image,
         publisher: nft[Object.keys(nft)[0]].publisher,
       }
-      const shortStrings = (val) => val.length > 64 ? propertyValue.split('\n').map(s => {
-        if(s.length > 64) {
-            return s.match(/(.|[\r\n]){1,64}/g)
-        } else return s
-      }) : val
 
       if(nft[Object.keys(nft)[0]].files){
         metadata[mintPolicy.id][nft[Object.keys(nft)[0]].name]["files"] = nft[Object.keys(nft)[0]].files
@@ -185,9 +193,12 @@ const Mint = () => {
     })
 
     if (inputs.author) metadata[mintPolicy.id][inputs.name].author = inputs.author;
+
+    let allNfts = nfts.map((nft) => ({ name: nft[Object.keys(nft)[0]].name, quantity: quantityDict[nft[Object.keys(nft)[0]].name] })).concat({ name: inputs.name, quantity: inputs.quantity })
+    allNfts = uniqBy(allNfts, it => it.name)
     const tx = await wallet
       .mintTx(
-        [{ name: inputs.name, quantity: inputs.quantity }],
+        allNfts,
         metadata,
         mintPolicy
       )
@@ -199,20 +210,23 @@ const Mint = () => {
     if (!tx) return;
     const signedTx = await wallet.signTx(tx).catch(() => setLoading(false));
     if (!signedTx) return;
-    const txHash = await wallet.submitTx(signedTx);
-    if (txHash.toString().length === 64) {
-      PendingTransactionToast(toast);
-      // await wallet.awaitConfirmation(txHash);
-      toast.closeAll();
-      SuccessTransactionToast(toast, txHash);
-      setLoading(false);
-      console.log(txHash);
-
-    } else {
-      console.log("error")
-      await TxErrorSubmitToast(toast);
-      setLoading(false);
+    try {
+      const txHash = await wallet.submitTx(signedTx);
+      if (txHash.toString().length === 64) {
+        PendingTransactionToast(toast);
+        // await wallet.awaitConfirmation(txHash);
+        toast.closeAll();
+        SuccessTransactionToast(toast, txHash);
+        setLoading(false);
+        console.log(txHash);
+        return
+      }
     }
+    catch(err){
+      console.log(`error: ${JSON.stringify(err)}`)
+    }
+    await TxErrorSubmitToast(toast);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -253,12 +267,34 @@ const Mint = () => {
         {nfts.length > 0 ?
           <Flex h={36} direction={"row"} overflow="auto" whiteSpace={"nowrap"} maxW="50vw" py={2}>
             {nfts?.map((nft, i) => (
-              <Flex h={34} w={24} mx={2} key={i} direction="column" textAlign={"center"}>
-                <Flex h={24} w={24}>
-                  <Image h={24} w={24} src={`https://infura-ipfs.io/ipfs/${nft[Object.keys(nft)[0]].image.replace("ipfs://", "")}`} fallbackSrc="/noise.png" />
-                </Flex>
-                <Heading fontSize={14} maxW={24} >{nft[Object.keys(nft)[0]].name.trimEllip(11)}</Heading>
-              </Flex>
+              <Popover key={i}>
+                {({ onClose }) => (
+                <>
+                  <PopoverTrigger>
+                    <Flex h={34} w={24} mx={2} direction="column" textAlign={"center"}>
+                      <Flex h={24} w={24}>
+                        <Image h={24} w={24} src={`https://infura-ipfs.io/ipfs/${nft[Object.keys(nft)[0]].image.replace("ipfs://", "")}`} fallbackSrc="/noise.png" />
+                      </Flex>
+                      <Heading fontSize={14} maxW={24} >{nft[Object.keys(nft)[0]].name.trimEllip(11)}</Heading>
+                    </Flex>
+                  </PopoverTrigger>
+                  <PopoverContent>
+                    <PopoverArrow />
+                    <PopoverCloseButton />
+                    <PopoverHeader>Cancel?</PopoverHeader>
+                    <PopoverBody>
+                      <Button onClick={() => {
+                          const cancelNft = [...nfts].filter((it, index) => index !== i)
+                          setNfts(cancelNft)
+                          onClose()
+                      }}>Cancel</Button>
+
+                    </PopoverBody>
+                  </PopoverContent>
+                </>
+               )}
+             </Popover>
+
             ))}
           </Flex> : <></>
         }
@@ -463,6 +499,7 @@ const FileInput = (isDark, fileInputs, setFileInputs, setFilesWithType, filesWit
           <option value='audio/mpeg'>mp3</option>
           <option value='audio/ogg'>ogg</option>
           <option value='image/png'>png</option>
+          <option value='image/gif'>gif</option>
           <option value='image/svg+xml'>svg</option>
           <option value='image/jpeg'>jpg</option>
           <option value='text/html'>html</option>
@@ -496,6 +533,10 @@ const FileInput = (isDark, fileInputs, setFileInputs, setFilesWithType, filesWit
             <Text p={2}>{fileWithType.ipfsHash}</Text>
             <Text p={2}>{fileWithType.mediaType}</Text>
             <Text p={2}>{fileWithType.arweaveHash}</Text>
+            <Button variant={"ghost"} _hover={{transform: "scale(1.05)"}} onClick={() => {
+              const cancelFile = [...filesWithType].filter((fil, i) => i !== index)
+              setFilesWithType(cancelFile)
+            }}>x</Button>
           </Flex>
         ))}
       </AccordionPanel>
