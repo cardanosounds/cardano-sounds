@@ -1,4 +1,4 @@
-import Cardano from "./serialization-lib";
+import Loader from "./loader";
 
 /**
  * BerryPool implementation of the __Random-Improve__ coin selection algorithm.
@@ -224,7 +224,7 @@ const CoinSelection = {
         "Protocol parameters not set. Use setProtocolParameters()."
       );
 
-    await Cardano.load()
+    await Loader.load()
     /** @type {UTxOSelection} */
     let utxoSelection = {
       selection: [],
@@ -252,13 +252,13 @@ const CoinSelection = {
       createSubSet(utxoSelection, splitOutputsAmounts[i]); // Narrow down for NatToken UTxO
 
       let range = {};
-      range.ideal = Cardano.Instance.Value.new(
-        Cardano.Instance.BigNum.from_str("0")
+      range.ideal = Loader.Cardano.Value.new(
+        Loader.Cardano.BigNum.from_str("0")
       )
         .checked_add(splitOutputsAmounts[i])
         .checked_add(splitOutputsAmounts[i]);
-      range.maximum = Cardano.Instance.Value.new(
-        Cardano.Instance.BigNum.from_str("0")
+      range.maximum = Loader.Cardano.Value.new(
+        Loader.Cardano.BigNum.from_str("0")
       )
         .checked_add(range.ideal)
         .checked_add(splitOutputsAmounts[i]);
@@ -275,18 +275,18 @@ const CoinSelection = {
     if (utxoSelection.remaining.length > 0) {
       const change = utxoSelection.amount.checked_sub(mergedOutputsAmounts);
 
-      let minAmount = Cardano.Instance.Value.new(
-        Cardano.Instance.min_ada_required(
+      let minAmount = Loader.Cardano.Value.new(
+        Loader.Cardano.min_ada_required(
           change,
-          Cardano.Instance.BigNum.from_str(protocolParameters.coinsPerUtxoWord)
+          Loader.Cardano.BigNum.from_str(protocolParameters.coinsPerUtxoWord)
         )
       );
 
       if (compare(change, minAmount) < 0) {
         // Not enough, add missing amount and run select one last time
         const minAda = minAmount
-          .checked_sub(Cardano.Instance.Value.new(change.coin()))
-          .checked_add(Cardano.Instance.Value.new(utxoSelection.amount.coin()));
+          .checked_sub(Loader.Cardano.Value.new(change.coin()))
+          .checked_add(Loader.Cardano.Value.new(utxoSelection.amount.coin()));
 
         createSubSet(utxoSelection, minAda);
         utxoSelection = select(utxoSelection, minAda, limit);
@@ -453,8 +453,8 @@ function improve(utxoSelection, outputAmount, limit, range) {
     .splice(Math.floor(Math.random() * nbFreeUTxO), 1)
     .pop();
 
-  const newAmount = Cardano.Instance.Value.new(
-    Cardano.Instance.BigNum.from_str("0")
+  const newAmount = Loader.Cardano.Value.new(
+    Loader.Cardano.BigNum.from_str("0")
   )
     .checked_add(utxo.output().amount())
     .checked_add(outputAmount);
@@ -483,8 +483,8 @@ function improve(utxoSelection, outputAmount, limit, range) {
  * @return {Value} - The compiled set of amounts requested for payment.
  */
 function mergeOutputsAmounts(outputs) {
-  let compiledAmountList = Cardano.Instance.Value.new(
-    Cardano.Instance.BigNum.from_str("0")
+  let compiledAmountList = Loader.Cardano.Value.new(
+    Loader.Cardano.BigNum.from_str("0")
   );
 
   for (let i = 0; i < outputs.len(); i++) {
@@ -522,23 +522,23 @@ function splitAmounts(amounts) {
       let scriptHash = mA.keys().get(i);
 
       for (let j = 0; j < mA.get(scriptHash).keys().len(); j++) {
-        let _assets = Cardano.Instance.Assets.new();
+        let _assets = Loader.Cardano.Assets.new();
         let assetName = mA.get(scriptHash).keys().get(j);
 
         _assets.insert(
-          Cardano.Instance.AssetName.from_bytes(assetName.to_bytes()),
-          Cardano.Instance.BigNum.from_bytes(
+          Loader.Cardano.AssetName.from_bytes(assetName.to_bytes()),
+          Loader.Cardano.BigNum.from_bytes(
             mA.get(scriptHash).get(assetName).to_bytes()
           )
         );
 
-        let _multiasset = Cardano.Instance.MultiAsset.new();
+        let _multiasset = Loader.Cardano.MultiAsset.new();
         _multiasset.insert(
-          Cardano.Instance.ScriptHash.from_bytes(scriptHash.to_bytes()),
+          Loader.Cardano.ScriptHash.from_bytes(scriptHash.to_bytes()),
           _assets
         );
-        let _value = Cardano.Instance.Value.new(
-          Cardano.Instance.BigNum.from_str("0")
+        let _value = Loader.Cardano.Value.new(
+          Loader.Cardano.BigNum.from_str("0")
         );
         _value.set_multiasset(_multiasset);
 
@@ -552,8 +552,8 @@ function splitAmounts(amounts) {
 
   // Insure lovelace is last to account for min ada requirement
   splitAmounts.push(
-    Cardano.Instance.Value.new(
-      Cardano.Instance.BigNum.from_bytes(amounts.coin().to_bytes())
+    Loader.Cardano.Value.new(
+      Loader.Cardano.BigNum.from_bytes(amounts.coin().to_bytes())
     )
   );
 
@@ -659,10 +659,10 @@ function isQtyFulfilled(outputAmount, cumulatedAmount, nbFreeUTxO) {
   let amount = outputAmount;
 
   if (!outputAmount.multiasset() || outputAmount.multiasset().len() <= 0) {
-    let minAmount = Cardano.Instance.Value.new(
-      Cardano.Instance.min_ada_required(
+    let minAmount = Loader.Cardano.Value.new(
+      Loader.Cardano.min_ada_required(
         cumulatedAmount,
-        Cardano.Instance.BigNum.from_str(protocolParameters.coinsPerUtxoWord)
+        Loader.Cardano.BigNum.from_str(protocolParameters.coinsPerUtxoWord)
       )
     );
 
@@ -676,8 +676,8 @@ function isQtyFulfilled(outputAmount, cumulatedAmount, nbFreeUTxO) {
           BigInt(protocolParameters.maxTxSize) +
         BigInt(protocolParameters.minFeeB);
 
-      maxFee = Cardano.Instance.Value.new(
-        Cardano.Instance.BigNum.from_str(maxFee.toString())
+      maxFee = Loader.Cardano.Value.new(
+        Loader.Cardano.BigNum.from_str(maxFee.toString())
       );
 
       amount = amount.checked_add(maxFee);
@@ -708,7 +708,7 @@ function cloneUTxOSelection(utxoSelection) {
  */
 const cloneUTxOList = (utxoList) =>
   utxoList.map((utxo) =>
-    Cardano.Instance.TransactionUnspentOutput.from_bytes(utxo.to_bytes())
+    Loader.Cardano.TransactionUnspentOutput.from_bytes(utxo.to_bytes())
   );
 
 /**
@@ -717,7 +717,7 @@ const cloneUTxOList = (utxoList) =>
  * @return {Value} Cone - Deep copy
  */
 const cloneValue = (value) =>
-  Cardano.Instance.Value.from_bytes(value.to_bytes());
+  Loader.Cardano.Value.from_bytes(value.to_bytes());
 
 // Helper
 function abs(big) {
@@ -765,10 +765,10 @@ function compare(group, candidate) {
  * @return {Value} - Initialized empty value
  */
 function createEmptyValue() {
-  const value = Cardano.Instance.Value.new(
-    Cardano.Instance.BigNum.from_str("0")
+  const value = Loader.Cardano.Value.new(
+    Loader.Cardano.BigNum.from_str("0")
   );
-  const multiasset = Cardano.Instance.MultiAsset.new();
+  const multiasset = Loader.Cardano.MultiAsset.new();
   value.set_multiasset(multiasset);
   return value;
 }
