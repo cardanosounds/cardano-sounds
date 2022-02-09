@@ -565,16 +565,16 @@ class WalletJs {
   }
 
   async submitTx(signedTx) {
-    const result = await this._blockfrostRequest(
-      `/tx/submit`,
-      { "Content-Type": "application/cbor" },
-      Buffer.from(signedTx.to_bytes(), "hex")
-    );
-    return result;
-    // const txHash = await window.cardano.submitTx(
-    //   Buffer.from(signedTx.to_bytes(), "hex").toString("hex")
+    // const result = await this._blockfrostRequest(
+    //   `/tx/submit`,
+    //   { "Content-Type": "application/cbor" },
+    //   Buffer.from(signedTx.to_bytes(), "hex")
     // );
-    // return txHash;
+    // return result;
+    const txHash = await this.walletApi.submitTx(
+      Buffer.from(signedTx.to_bytes(), "hex").toString("hex")
+    );
+    return txHash;
   }
 
   async awaitConfirmation(txHash) {
@@ -587,7 +587,7 @@ class WalletJs {
           res(txHash);
           return;
         }
-      }, 5000);
+      }, 15000);
     });
   }
 
@@ -607,7 +607,7 @@ class WalletJs {
   async createLockingPolicyScript() {
     const protocolParameters = await this.getProtocolParameters();
     const slot = parseInt(protocolParameters.slot);
-    const ttl = slot + 1000;
+    const ttl = slot + 36000;
     const address = Buffer.from(
       (await this.walletApi.getUsedAddresses())[0],
       "hex"
@@ -634,7 +634,11 @@ class WalletJs {
       ).to_bytes(),
       "hex"
     ).toString("hex");
-    return { id: policyId, script: finalScript, ttl: ttl, paymentKeyHash: paymentKeyHash };
+    const keyHashString = Buffer.from(
+      paymentKeyHash.to_bytes(),
+      "hex"
+    ).toString("hex");
+    return { id: policyId, script: finalScript, ttl: ttl, paymentKeyHash: keyHashString };
   }
 }
 
