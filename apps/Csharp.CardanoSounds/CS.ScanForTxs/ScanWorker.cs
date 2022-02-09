@@ -278,6 +278,16 @@ namespace CS.ScanForTxs
                 var transactionsArr = (JArray)DeserializeFromStream(txs);
 
                 transactions = transactionsArr.ToObject<List<IncommingTransaction>>();
+
+                transactions.ForEach(tx => 
+                { 
+                    if(tx.Amount?.Count == 1 && tx.Amount.First().Unit == "lovelace") 
+                    { 
+                        tx.NftCount = tx.Amount.First().Quantity / buyPriceLovelace; 
+                    }
+                    else tx.NftCount == 0;
+
+                });
             }
             catch (Exception ex)
             {

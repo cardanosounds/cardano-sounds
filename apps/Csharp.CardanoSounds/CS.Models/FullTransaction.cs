@@ -8,6 +8,7 @@ namespace CS.Models
 {
     public class FullTransaction : IncommingTransaction
     {
-       public Metadata Metadata { get; set; }
+       public List<Metadata> Metadata { get; set; }
+
     }
 }
