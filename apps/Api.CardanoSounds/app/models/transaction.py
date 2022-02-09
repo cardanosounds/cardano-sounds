@@ -15,7 +15,8 @@ class Transaction:
     sender_address: str
     status: str
     created: str
-    metadata: Metadata = None 
+    nft_count: int
+    metadata: List[Metadata] = []
 
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__, 
