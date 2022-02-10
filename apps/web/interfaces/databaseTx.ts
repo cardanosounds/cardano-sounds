@@ -1,5 +1,5 @@
 export interface DatabaseTx {
-    Metadata:       Metadata;
+    Metadata:       Metadata[];
     id:             string;
     tx_hash:        string;
     output_index:   number;
@@ -7,6 +7,7 @@ export interface DatabaseTx {
     sender_address: string;
     status:         string;
     created:        string;
+    nft_count:      string;
 }
 
 export interface Metadata {

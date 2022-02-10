@@ -1,4 +1,4 @@
-import { DatabaseTx } from "./databaseTx"
+import { DatabaseTx, Metadata } from "./databaseTx"
 
 export interface ContextualHref {
     makeContextualHref: (extraQueryParams: { [key: string]: any }) => string
@@ -26,24 +26,24 @@ export interface Sound {
 }
 
 export interface SoundListData {
-    nfts: DatabaseTx[]
+    nfts: Metadata[]
     collection: string
     page: number
 }
 
-export interface Metadata {
-	id: string;
-	policy_id: string;
-	token_name: string;
-	player: string;
-	image: string;
-	probability: number;
-	rarity: string;
-	sounds: Sound[];
-	arweave_id_sound: string;
-	ipfs_id_sound: string;
-	arweave_website_uri: string;
-}
+// export interface Metadata {
+// 	id: string;
+// 	policy_id: string;
+// 	token_name: string;
+// 	player: string;
+// 	image: string;
+// 	probability: number;
+// 	rarity: string;
+// 	sounds: Sound[];
+// 	arweave_id_sound: string;
+// 	ipfs_id_sound: string;
+// 	arweave_website_uri: string;
+// }
 
 export interface TokenValue {
     unit: string;
@@ -58,8 +58,5 @@ export interface IncommingTransaction {
     senderAddress: string;
     status: string;
     created: string;
-}
-
-export interface NFTData extends IncommingTransaction {
-    metadata: Metadata;
+    nft_count: string;
 }

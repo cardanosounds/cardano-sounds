@@ -6,22 +6,22 @@ import {
 	Image,
 	Spacer
 } from '@chakra-ui/react'
-import { DatabaseTx } from '../interfaces/databaseTx'
+import { DatabaseTx, Metadata } from '../interfaces/databaseTx'
 import Gifffer from '../lib/gifffer-custom'
 import GlitchText from './GlitchText'
 import NextChakraLink from './NextChakraLink'
 
 
 
-export default function SoundNFTPreviewSmall({soundNFTData, fullView}: { soundNFTData: DatabaseTx, fullView?: boolean } ) {
+export default function SoundNFTPreviewSmall({metadata, fullView}: { metadata: Metadata, fullView?: boolean } ) {
 	const [ glitching, setGlitching ]= useState<boolean>(false)
 
 	// const imageFilePath = fullView ? "glitch-light-v1.PNG" : "../../../glitch-light-v1.PNG"
-	const imageFilePath = 'https://infura-ipfs.io/ipfs/' + soundNFTData.Metadata?.image
+	const imageFilePath = 'https://infura-ipfs.io/ipfs/' + metadata?.image
 
 	const hoverShadow = { strokeWidth: "1em", strokeDashoffset: "0",  strokeDasharray: "760", cursor: "pointer" }
 	// const hoverShadow = fullView ? {boxShadow: "unset" } : { boxShadow: "dark-lg", transform: "scale(1.1)", cursor: "pointer" }
-	const audioPath = 'https://arweave.net/' + soundNFTData.Metadata?.arweave_id_sound
+	const audioPath = 'https://arweave.net/' + metadata?.arweave_id_sound
 
 	useEffect(() => {
 		Gifffer();
@@ -62,7 +62,7 @@ export default function SoundNFTPreviewSmall({soundNFTData, fullView}: { soundNF
 					{/* <Image src={imageFilePath} style={{animationPlayState: "paused"}} rounded="lg" pos="relative" /> */}
 				</Box>
 				<NextChakraLink 
-					href={`/sound/${soundNFTData.Metadata?.token_name}`}
+					href={`/sound/${metadata?.token_name}`}
 					onMouseOver={() => {if(!glitching) setGlitching(true) }} onMouseOut={() => { if(glitching) setGlitching(false)}}
 				>
 					<Flex direction="column">
@@ -81,7 +81,7 @@ export default function SoundNFTPreviewSmall({soundNFTData, fullView}: { soundNF
 								size="sm"
 								mb="1em"
 							>
-								{glitchingText(soundNFTData.Metadata?.token_name)}
+								{glitchingText(metadata?.token_name)}
 							</Heading>
 
 						</Flex>
@@ -99,7 +99,7 @@ export default function SoundNFTPreviewSmall({soundNFTData, fullView}: { soundNF
 								{glitchingText("web:")}
 							</Heading>
 							<Spacer/>
-							<a href={soundNFTData.Metadata?.arweave_website_uri}>
+							<a href={metadata?.arweave_website_uri}>
 								<Heading 
 									size="sm"
 									mb="1em"
@@ -108,7 +108,7 @@ export default function SoundNFTPreviewSmall({soundNFTData, fullView}: { soundNF
 									textOverflow="ellipsis"
 									maxW="15rem"
 								>
-									{glitchingText(soundNFTData.Metadata?.arweave_website_uri)}
+									{glitchingText(metadata?.arweave_website_uri)}
 								</Heading>
 							</a>
 						</Flex> }

@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { NFTData, SoundListData } from "../../../../interfaces/interfaces"
+import { SoundListData } from "../../../../interfaces/interfaces"
 
 // import { CosmosClient, DatabaseResponse } from "@azure/cosmos"
 
@@ -32,7 +32,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse): Promi
         {
             collection: collection.toString(),
             page: Number(page.toString()),
-            nfts: nftListData
+            nfts: nftListData.map(x => x.Metadata).flat(1)
         }
     
         res.json(data)
