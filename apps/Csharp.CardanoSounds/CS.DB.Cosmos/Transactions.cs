@@ -194,6 +194,28 @@ namespace CS.DB.Cosmos
             }
         }
 
+        public int GetNftCount()
+        {
+            try 
+            {
+                using (client = new DocumentClient(new Uri(EndpointUri), PrimaryKey))
+                {
+                    var option = new FeedOptions { EnableCrossPartitionQuery = true };
+                    var txCount = client.CreateDocumentQuery<IncommingTransaction>(
+                    UriFactory.CreateDocumentCollectionUri(DBName, "transactions"), option)
+                    .AsEnumerable()
+                    .Sum(tx => tx.NftCount);
+
+                    return txCount;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return 0;
+            }
+        }
+
         public FullTransaction GetReadyToMintTransaction()
         {
             using (client = new DocumentClient(new Uri(EndpointUri), PrimaryKey))

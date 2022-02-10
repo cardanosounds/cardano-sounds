@@ -35,5 +35,8 @@ namespace CS.Models
         [JsonProperty(PropertyName = "nft_count")]
         public int NftCount { get; set; }
 
+        [JsonProperty(PropertyName = "nft_index")]
+        public int? FirstNftIndex { get; set; }
+
     }
 }

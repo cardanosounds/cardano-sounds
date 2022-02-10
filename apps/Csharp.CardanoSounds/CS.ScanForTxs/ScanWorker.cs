@@ -72,7 +72,8 @@ namespace CS.ScanForTxs
             var txs = await GetFilteredUtxos();
 
             lastTx = transactions.GetLastTx();
-       
+            var nftIndex = transactions.GetNftCount();
+
             var i = 1;
             if (lastTx != null)
             {
@@ -92,20 +93,36 @@ namespace CS.ScanForTxs
                 tx.SenderAddress = sender;
                 var created = false;
                 var status = ValidateBuyingTx(tx);
+
                 if (status == "confirmed")
                 {
                     try 
                     {
+                        try 
+                        {
+                            tx.NftCount = tx.Amount.First().Quantity / buyPriceLovelace;
+                            nftIndex += tx.NftCount;
+                            tx.FirstNftIndex = nftIndex;
+                        }
+                        catch()
+                        {
+                            status = "error";
+                            tx.NftCount = 0;
+                        }
+
                         var txresult = await ProcessTransaction(tx);
+
                         if (txresult.Contains("Error"))
                         {
                             status = "failed";
+                            tx.NftCount = 0;
                         }
                     }
                     catch(Exception ex)
                     {
                         _logger.LogError(ex, ex.Message);
                         status = "failed";
+                        tx.NftCount = 0;
                     }
                     
                 }
@@ -114,13 +131,19 @@ namespace CS.ScanForTxs
                     stuckCount ++;
                     if(stuckCount == 5 && txs.Last() == tx)
                     {
+                        tx.NftCount = 0;
                         tx.Status = status;
                         _logger.LogInformation("created tx: " + tx.Tx_Hash);
                         _logger.LogInformation("status : " + tx.Status);
+                        tx.NftCount = 0;
                         _logger.LogTrace((await transactions.Create(tx)).ToString());
                         created = true;
                         await Scan(pageCount + 1);
                     }
+                    tx.NftCount = 0;
+                }
+                else {
+                    tx.NftCount = 0;
                 }
                 tx.Status = status;
 
@@ -221,7 +244,7 @@ namespace CS.ScanForTxs
                 {
                     valid = false;
                 }
-                else if(amount.Quantity != buyPriceLovelace) 
+                else if(amount.Quantity != buyPriceLovelace || (amount.Quantity > buyPriceLovelace && amount.Quantity % buyPriceLovelace != 0)) 
                 {
                     valid = false;
                     if(amount.Quantity > 1500000) tryRefund = true;
@@ -279,15 +302,6 @@ namespace CS.ScanForTxs
 
                 transactions = transactionsArr.ToObject<List<IncommingTransaction>>();
 
-                transactions.ForEach(tx => 
-                { 
-                    if(tx.Amount?.Count == 1 && tx.Amount.First().Unit == "lovelace") 
-                    { 
-                        tx.NftCount = tx.Amount.First().Quantity / buyPriceLovelace; 
-                    }
-                    else tx.NftCount == 0;
-
-                });
             }
             catch (Exception ex)
             {
