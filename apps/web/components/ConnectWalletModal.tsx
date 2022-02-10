@@ -38,7 +38,9 @@ export default function ConnectWalletModal(
       // console.log(walletCtx.walletApi)
       if(walletCtx.walletApi) {
           await loader.load()
-          const address = (await walletCtx.walletApi.getUsedAddresses())[0]
+          console.log("walletCtx.walletApi")
+          console.log(walletCtx.walletApi)
+          const address = await walletCtx.walletApi.getChangeAddress()
           const addReadable = loader.Cardano.Address.from_bytes(_Buffer.from(address, 'hex')).to_bech32()
           console.log(addReadable)
           setWalletAddress(addReadable)
@@ -66,6 +68,12 @@ export default function ConnectWalletModal(
           </Button>
           <Button w="100%" h={24} variant={'ghost'} mr={3} onClick={() => enableCardano('flint')}>
             <Image src="/icons/flint-icon.png" w="48px" h="48px"/>Connect flint
+          </Button>
+          <Button w="100%" h={24} variant={'ghost'} mr={3} onClick={() => enableCardano('yoroi')}>
+            <Image src="/icons/yoroi-icon.png" w="48px" h="48px"/>Connect Yoroi
+          </Button>
+          <Button w="100%" h={24} variant={'ghost'} mr={3} onClick={() => enableCardano('cardwallet')}>
+            <Image src="/icons/cardwallet-icon.png" w="48px" h="48px"/>Connect CardWallet
           </Button>
         </Flex>
       </ModalBody>
