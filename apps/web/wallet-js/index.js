@@ -130,7 +130,7 @@ class WalletJs {
     }
     const protocolParameters = await this.getProtocolParameters();
     const address = Buffer.from(
-      (await this.walletApi.getUsedAddresses())[0],
+      (await this.walletApi.getChangeAddress()),
       "hex"
     );
     const utxos = (await this.walletApi.getUtxos()).map((utxo) =>
@@ -205,7 +205,7 @@ class WalletJs {
     await Loader.load();
     const protocolParameters = await this.getProtocolParameters();
     const address = Buffer.from(
-      (await this.walletApi.getUsedAddresses())[0],
+      (await this.walletApi.getChangeAddress()),
       "hex"
     );
     const checkValue = await amountToValue(
@@ -594,7 +594,7 @@ class WalletJs {
   async baseAddressToBech32() {
     await Loader.load();
     const address = Buffer.from(
-      (await this.walletApi.getUsedAddresses())[0],
+      (await this.walletApi.getChangeAddress()),
       "hex"
     );
     return Loader.Cardano.BaseAddress.from_address(
@@ -609,7 +609,7 @@ class WalletJs {
     const slot = parseInt(protocolParameters.slot);
     const ttl = slot + 36000;
     const address = Buffer.from(
-      (await this.walletApi.getUsedAddresses())[0],
+      (await this.walletApi.getChangeAddress()),
       "hex"
     );
     const paymentKeyHash = Loader.Cardano.BaseAddress.from_address(
