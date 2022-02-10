@@ -15,7 +15,7 @@ def start_sound_generation(tx: Transaction):
     metadataList = []
     for x in range(tx.nft_count):
         sounds = Sounds()
-        metadata = sounds.get_random_track(tx)
+        metadata = sounds.get_random_track(tx, tx.nft_index + x)
         upload = Upload()
         metadata.ipfs_id_sound = upload.upload_to_ipfs(tx.tx_hash)
         metadata.arweave_id_sound = upload.upload_to_arweave(tx.tx_hash)

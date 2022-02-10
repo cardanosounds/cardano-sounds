@@ -16,6 +16,7 @@ class Transaction:
     status: str
     created: str
     nft_count: int
+    nft_index: int
     metadata: List[Metadata] = []
 
     def toJSON(self):
