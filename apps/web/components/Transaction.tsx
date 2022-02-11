@@ -81,7 +81,11 @@ export default function Transaction({ id } : {id: string}) {
                     py={[0, 0, 24]}
                 >
                     {isFinished && instanceOfDatabaseTx(data) ?
-                    <SoundNFTPreviewSmall soundNFTData={data}/>
+                    <Flex direction={"row"} overflow="auto" whiteSpace={"nowrap"} maxW="20rem">
+                        {data.Metadata.map(nft => (
+                            <SoundNFTPreviewSmall metadata={nft}/>
+                        ))}
+                    </Flex>
                     : 
                     <>
                         {statusFullText(typeof(data) === 'undefined' || data === 'not found' ? data : instanceOfDatabaseTx(data) ? data.status : '' )}
