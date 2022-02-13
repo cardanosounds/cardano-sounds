@@ -26,7 +26,7 @@ export default function Mint() {
                             To upload, you can use this dApp: <a href="https://arweave.net/PXhr5EdWuCgUmSBbuiU587GlBnmde1MdvlPCpIt1NyM">arweave.net/PXhr5EdWuCgUmSBbuiU587GlBnmde1MdvlPCpIt1NyM</a>
                     </ListItem>
                     <ListItem>
-                        All fees go to network. If you want to support the development of this and more tools, you can tip some ADA to addr1qx0l7rcp9qkzyy53w5wkk55wgz0hpmst00revasatvrz3evp5y5y0lja4ujq7geynu5as5fcrtjcdju69pfsvv8hhdpq9ep7x9
+                        All fees go to network.
                     </ListItem>
                     <Spacer/>                   
                     <a href="/mint">Go to mint</a>
