@@ -2,11 +2,14 @@ import { DatabaseTx } from '../interfaces/databaseTx';
 import { container } from './db'
 
 const getByTokenNameQuery = (tokenName: string) => {
+    var val = {"token_name": tokenName.toUpperCase() }
+    console.log("val")
+    console.log(val)
     return (
-        { query: "SELECT * from t WHERE LOWER(t.Metadata.token_name) = @tokenname",
+        { query: "SELECT * from t WHERE ARRAY_CONTAINS(t.metadata, @tokenname, true)",
             parameters: [{
                 name: "@tokenname",
-                value: tokenName.toLowerCase() 
+                value: val
             }]
         }
     )
@@ -17,7 +20,14 @@ export default async function getSoundNFTData(tokenName: string){
         const res = await container().items
                     .query(getByTokenNameQuery(tokenName))
                     .fetchNext()
-        return res.resources;
+
+        if(Array.isArray(res.resources))
+        {
+            const data = res.resources[0]?.metadata
+            
+            if(data) return data.find(d => d.token_name == tokenName.toUpperCase())
+        }
+        return "Wrong id"
     }
     else {
         return "Wrong id"
@@ -30,7 +40,7 @@ export async function getSoundsNFTData(collection: string, page: number): Promis
         // const container = (await database.containers.createIfNotExists({ id: containerid })).container //client.container(containerid).read()
         const offset = (page - 1) * 9 
         const res = await container().items
-                    .query(`SELECT * from t WHERE t.status = 'finished' ORDER BY t.created OFFSET ${offset} LIMIT 9`)
+                    .query(`SELECT * from t WHERE t.status = 'generated' ORDER BY t.created OFFSET ${offset} LIMIT 9`)
                     .fetchAll() 
         let nfts: Array<DatabaseTx>
         if(Array.isArray(res.resources))

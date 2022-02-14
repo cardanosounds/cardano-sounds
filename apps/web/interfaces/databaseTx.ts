@@ -1,5 +1,5 @@
 export interface DatabaseTx {
-    Metadata:       Metadata[];
+    metadata:       Metadata[];
     id:             string;
     tx_hash:        string;
     output_index:   number;

@@ -76,13 +76,13 @@ export default function Transaction({ id } : {id: string}) {
                     spacing={6}
                     align="center"
                     margin="auto"
-                    ml={["30vw", "30vw", "auto"]}
-                    mt={["10vh", "10vh", "auto"]}
+                    // ml={["30vw", "30vw", "auto"]}
+                    mt={["0", "0", "auto"]}
                     py={[0, 0, 24]}
                 >
                     {isFinished && instanceOfDatabaseTx(data) ?
-                    <Flex direction={"row"} overflow="auto" whiteSpace={"nowrap"} maxW="20rem">
-                        {data.Metadata.map(nft => (
+                    <Flex direction={"row"} overflow="auto" whiteSpace={"nowrap"} maxW={["80vw", "80vw", "40vw"]}>
+                        {data.metadata.map(nft => (
                             <SoundNFTPreviewSmall metadata={nft}/>
                         ))}
                     </Flex>

@@ -37,16 +37,18 @@ export default function Sound({metadata}: {metadata?: Metadata})
 export const getServerSideProps = async (context) => {
     // ...
     const { tokenname } = context.query
-    if (typeof(tokenname) === "undefined") return { props: {nftData: "Wrong id"} }
+    if (typeof(tokenname) === "undefined") return { props: {metadata: "Wrong id"} }
     let data
     const res = await getSoundNFTData(tokenname)
+    console.log(res)
     // console.log(res)
-    if(Array.isArray(res)) {
-        data = res[0]
-    } else {
-        data = res
-    }
+    // if(Array.isArray(res)) {
+    //     data = res[0].metadata[0]
+    //     console.log(data)
+    // } else {
+    data = res
+    // }
     return {
-        props: {nftData: data }
+        props: {metadata: data }
     }
 }

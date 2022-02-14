@@ -32,7 +32,7 @@ export default async function (req: NextApiRequest, res: NextApiResponse): Promi
         {
             collection: collection.toString(),
             page: Number(page.toString()),
-            nfts: nftListData.map(x => x.Metadata).flat(1)
+            nfts: nftListData.map(x => x.metadata).flat(1)
         }
     
         res.json(data)
