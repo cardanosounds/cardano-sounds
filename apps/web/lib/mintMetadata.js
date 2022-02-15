@@ -4,7 +4,7 @@ export const prepMetadata = (imageipfs, filesWithType, inputs) => {
     let returnMeta = {
         [inputs.name]: {
             name: inputs.metadataName,
-            image: `ipfs://${imageipfs.replace('ipfs://', '')}`,
+            image:  !imageipfs || imageipfs === '' ? `ar://${inputs.arweaveHash.replace('ar://', '')}` : `ipfs://${imageipfs.replace('ipfs://', '')}`,
             publisher: ["CardanoSounds.com"].concat(inputs.publisher).filter(s => s !== ''),
         },
     }
@@ -35,7 +35,7 @@ export const getFilesMeta = (filesWithType) => {
         {
             mediaType: file.mediaType,
             name: file.name,
-            src: `ar://${file.arweaveHash.replace('ar://', '')}`
+            src: arweaveString(file)
         }
         :
         {
@@ -66,3 +66,19 @@ export const addPropertyToMeta = (propertyName, propertyValue, metaObject, name)
     }
     return metaObject
 }
+
+const arweaveString = (file) => {
+    if (file.arweaveHash.length > 64) {
+       let splitString = file.arweaveHash.split('\n').map(s => {
+            if(s.length > 64) {
+               return s.match(/(.|[\r\n]){1,64}/g)
+            } else return s
+        }).flat(1).filter((val) => val !== '')
+
+        if(splitString[0].includes('ar://')) return splitString
+
+        splitString[0] = `ar://${splitString[0]}`
+        return splitString
+
+    }  else return `ar://${file.arweaveHash.replace('ar://', '')}`
+} 
