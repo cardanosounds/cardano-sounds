@@ -31,8 +31,8 @@ import ConnectWalletModal from './ConnectWalletModal'
     const [quantity, setQuantity] = useState(1)
     const init = async () => {
       wallet = new WalletJs(
-        "https://cardano-testnet.blockfrost.io/api/v0",
-        "testnetRvOtxC8BHnZXiBvdeM9b3mLbi8KQPwzA",
+        "https://cardano-mainnet.blockfrost.io/api/v0",
+        "mainnetPN9zftfhdxo3bqYq6cO76e3yx1EEgE8V",
         walletCtx.walletApi
       )
       setConnected(window.localStorage.getItem('cswallet') === 'connected')
@@ -142,7 +142,7 @@ import ConnectWalletModal from './ConnectWalletModal'
               cursor="pointer"
               ml="4"
               onClick={() =>
-                window.open(`https://testnet.cardanoscan.io/transaction/${txHash}`)
+                window.open(`https://cardanoscan.io/transaction/${txHash}`)
               }
             />
           </Box>
@@ -208,7 +208,7 @@ import ConnectWalletModal from './ConnectWalletModal'
               onClick={async () => {
                 if (await checkStatus(toast, connected)){ makeTx(
                   address,
-                  price)
+                  quantity * price)
                 }}
               }
               width="200px"
