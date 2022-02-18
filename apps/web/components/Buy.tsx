@@ -124,7 +124,7 @@ export default function Buy(data){//: {status: string, address: string, price: n
                                 transition="all 0.3s ease-in-out"
                                 display={txSearch ? "none" : ["none", "none", "none", "flex"]}
                             >
-                                <PayBtn successCallback={successCallback}/>
+                                <PayBtn successCallback={successCallback} address={data.data.address} price={data.data.price} />
                             </Flex>
                         </Flex>
                         <Flex direction={txStatus ? ["column", "column", "column", "column", "row-reverse"] : ["column", "column", "column", "column", "row"]}>

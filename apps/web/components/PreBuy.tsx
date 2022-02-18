@@ -122,7 +122,8 @@ export default function PreBuy(data) {//: {status: string, datetime: Date}) {
                      transition="all 0.3s ease-in-out"
                      justifyContent={["flex-start", "flex-start", "center"]}
                     >
-                    <Countdown date={new Date("2022-02-17 19:00:00 GMT+0100")}>
+                    {/* <Countdown date={new Date("2022-02-24 20:00:00 GMT+0100")}> */}
+                    <Countdown date={new Date(data.data.datetime)}>
                         <NextChakraLink 
                             // width={["80vw", "80vw", "25vw", "25vw", "25vw", "25vw" ]}
                             // mt={["1vh", "1vh", "5vh"]}

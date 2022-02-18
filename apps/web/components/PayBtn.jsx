@@ -6,6 +6,8 @@ import {
     useToast,
     useDisclosure, 
     Heading,
+    Input,
+    Flex,
     Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, ModalCloseButton, useColorMode 
   } from "@chakra-ui/react";
 import { useContext, useState, useEffect } from "react";
@@ -17,7 +19,7 @@ import ConnectWalletModal from './ConnectWalletModal'
   
   
   let wallet
-  const PayBtn = (successCallback) => {
+  const PayBtn = ({successCallback, address, price}) => {
     const toast = useToast()
     const walletCtx = useContext(WalletContext)
     const { colorMode } = useColorMode()
@@ -26,7 +28,7 @@ import ConnectWalletModal from './ConnectWalletModal'
     const [connected, setConnected] = useState("")
     const [loading, setLoading] = useState(false)
     const walletModal = useDisclosure()
-  
+    const [quantity, setQuantity] = useState(1)
     const init = async () => {
       wallet = new WalletJs(
         "https://cardano-testnet.blockfrost.io/api/v0",
@@ -37,26 +39,48 @@ import ConnectWalletModal from './ConnectWalletModal'
     }
 
     const enableCardano = async (wallet = 'nami') => {
-      if(!window.cardano) return
+      const win = window
+      if(!win.cardano) return
 
       let baseWalletApi, fullWalletApi
       switch(wallet){
         case 'nami':
-          baseWalletApi = window.cardano
+          baseWalletApi = win.cardano.nami
           break
         case 'ccvault':
-          baseWalletApi = window.cardano.ccvault
+          baseWalletApi = win.cardano.ccvault
+          break
+        case 'flint':
+          baseWalletApi = win.cardano.flint
+          break
+        case 'gerowallet':
+          if(!win.cardano.gerowallet){ 
+            console.log("gero not inserted")
+            return 
+          }
+          baseWalletApi = win.cardano.gerowallet
           break
       }
+      // if(await baseWalletApi.isEnabled()) return walletModal.onClose()
+
       switch(wallet){
         case 'nami':
-          await baseWalletApi.enable()
-          fullWalletApi = window.cardano
+          fullWalletApi = await baseWalletApi.enable()
+          // await baseWalletApi.enable()
+          // fullWalletApi = win.cardano
           break
         case 'ccvault':
           fullWalletApi = await baseWalletApi.enable()
           break
+        case 'flint':
+          fullWalletApi = await baseWalletApi.enable()
+          break
+        case 'gerowallet':
+          await baseWalletApi.enable()
+          fullWalletApi = win.cardano.gerowallet
+          break
       }
+
       if(!await baseWalletApi.isEnabled()) return
 
       walletCtx.update({walletApi: fullWalletApi})
@@ -70,14 +94,15 @@ import ConnectWalletModal from './ConnectWalletModal'
       setConnected(connected)
       return (
         NoWallet(toast) &&
-        (await NotConnectedToast(toast, connected)) &&
-        (await WrongNetworkToast(toast, walletCtx.walletApi))
+        (await NotConnectedToast(toast, connected)) //&&
+        // (await WrongNetworkToast(toast, walletCtx.walletApi))
       )
     }
   
     const makeTx = async (payTo, payAdaAmount) => {
       setLoading(true)
-     
+      console.log("makeTx")
+      console.log(payTo, payAdaAmount)
       const tx = await wallet
         .payTx(
           payTo,
@@ -126,7 +151,8 @@ import ConnectWalletModal from './ConnectWalletModal'
         duration: 9000,
       });
       onClose()
-      successCallback.successCallback(txHash)
+      console.log(successCallback)
+      successCallback(txHash)
     };
     
     useEffect(() => {
@@ -157,12 +183,33 @@ import ConnectWalletModal from './ConnectWalletModal'
             </Heading></ModalHeader>
           <ModalCloseButton />
           <ModalBody>
+          <Flex direction="row">
+          <Input
+              focusBorderColor="blue.700"
+              // width="60%"
+              placeholder="Quantity (10 max)"
+              type="number"
+              value={quantity}
+              onInput={(e) => {
+                const val = e.target.value;
+                if(val > 9){
+                  setQuantity(10)
+                } else {
+                  setQuantity(val);
+                }
+              }}
+            /> 
+            {/* <Box w="15%"/>
+            10 max */}
+            </Flex>
+            <Box h={4}/>
             <Button
               my="auto"
-              onClick={async () =>
-                (await checkStatus(toast, connected)) && makeTx(
-                  'addr_test1vz0j2fn0m4jnrrp6806trv4fk3amz9wkuujreat0j5tse5g3ns8pu',
-                   5)
+              onClick={async () => {
+                if (await checkStatus(toast, connected)){ makeTx(
+                  address,
+                  price)
+                }}
               }
               width="200px"
               isLoading={loading}
