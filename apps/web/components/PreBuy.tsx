@@ -1,14 +1,17 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Button, List, ListIcon, ListItem, Stack, Spacer, Tooltip, Flex, Text} from "@chakra-ui/react"
 import utilStyles from "../styles/utils.module.css"
 import { FaChevronRight, FaChevronLeft } from 'react-icons/fa';
 import { InfoIcon } from "@chakra-ui/icons";
 import NextChakraLink from "./NextChakraLink";
 import useSound from "use-sound";
+import { GetServerSideProps } from 'next'
+import Countdown from "react-countdown"
 
-export default function PreBuy() {
+
+export default function PreBuy(data) {//: {status: string, datetime: Date}) {
     const [isTooltipOpen, setIsTooltipOpen] = useState<boolean>(false)
-
+    
     const playSound = (id: string) => {
         if(window.localStorage.getItem('sound') === 'false') return
         play({id: id})
@@ -110,24 +113,38 @@ export default function PreBuy() {
                     </NextChakraLink>
                     <Spacer/>
                     {/* <NextChakraLink href="/buy"> */}
-                    <Button 
-                        width={["80vw", "80vw", "25vw", "25vw", "25vw", "25vw" ]}
-                        mt={["1vh", "1vh", "5vh"]}
-                        height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]}
-                        variant="ghost"
-                        className={utilStyles.shadow}
-                        transition="all 0.3s ease-in-out"
-                        justifyContent={["flex-start", "flex-start", "center"]}
-                        disabled
+                    <Flex
+                     width={["80vw", "80vw", "25vw", "25vw", "25vw", "25vw" ]}
+                     mt={["1vh", "1vh", "5vh"]}
+                     height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]}
+                     variant="ghost"
+                     className={utilStyles.shadow}
+                     transition="all 0.3s ease-in-out"
+                     justifyContent={["flex-start", "flex-start", "center"]}
                     >
-                        {/* chakra color var doesn't work here */}
-                        {/* <Heading fontSize="1.5rem" as="h4"
-                            fontWeight="normal"
-                        > */}
-                            BUY
-                        <FaChevronRight />
-                        {/* </Heading>   */}
-                    </Button>
+                    <Countdown date={new Date("2022-02-17 19:00:00 GMT+0100")}>
+                        <NextChakraLink 
+                            // width={["80vw", "80vw", "25vw", "25vw", "25vw", "25vw" ]}
+                            // mt={["1vh", "1vh", "5vh"]}
+                            // height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]}
+                            // variant="ghost"
+                            // className={utilStyles.shadow}
+                            // transition="all 0.3s ease-in-out"
+                            // justifyContent={["flex-start", "flex-start", "center"]}
+                            href="/buy"
+                        ><Button width="100%" h="100%">BUY<FaChevronRight /></Button>
+                            {/* chakra color var doesn't work here */}
+                            {/* <Heading fontSize="1.5rem" as="h4"
+                                fontWeight="normal"
+                            > */}
+                                
+                                
+                            
+                            {/* </Heading>   */}
+                        </NextChakraLink>
+                    </Countdown>
+                    </Flex>
+                    
                 </Flex>
             </Stack>    
         </>

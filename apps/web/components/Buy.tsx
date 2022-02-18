@@ -13,7 +13,7 @@ import Transaction from "./Transaction";
 import Address from "./Address";
 import PayBtn from "./PayBtn.jsx";
 
-export default function Buy(){
+export default function Buy(data){//: {status: string, address: string, price: number }){
     const [ searchValue, handleSearchValChange] = useState<string>("")
     const [ isSearchInValid, invalidateSearchString] = useState<boolean>(true)
     const [ txSearch, showTxSearch] = useState<boolean>(false)
@@ -85,15 +85,16 @@ export default function Buy(){
                                 <List marginInlineEnd="auto" my="auto" w={["80vw","80vw", "80vw", "80vw", "45vw"]}>
                                     <ListItem mb={9}>
                                         <ListIcon as={IoMdPricetag} />{/* color="yellow.400" */}
-                                            Price 20ADA
+                                            Price {data.data.price}ADA
                                     </ListItem>
                                     <ListItem mb={9}>
                                         <ListIcon as={RiAlarmWarningFill} />{/* color="red.400"" */}
-                                            Use Yoroi or Daedalus, do not send ADA from an exchange! Send the exact amount without additional tokens.
+                                            Use Yoroi or Daedalus, do not send ADA from an exchange! 
+                                            Send the exact amount or multiples up to 10x, without additional tokens.
                                     </ListItem>
                                     <ListItem>
                                         <ListIcon as={InfoIcon} />{/* color="teal.400"" */}
-                                            If you want to buy more NFTs, send multiple transactions with 50ADA. 
+                                            Max 10 NFTs per TX. 
                                     </ListItem>
                                     <Spacer/>
                                 </List>
@@ -174,7 +175,7 @@ export default function Buy(){
                         </Button>
                         </Flex>
                     </Flex>
-                    <Address display={["none", "none", "none", "none", "flex"]} />
+                    <Address display={["none", "none", "none", "none", "flex"]} address={data.data.address} />
                     {/* <Address display={mobileAddress ? "flex" : ["none", "none", "none", "none", "flex"]} /> */}
                 </Stack>
             </Flex>
@@ -184,7 +185,7 @@ export default function Buy(){
                     <ModalHeader><Heading as="h3">Cardano address</Heading></ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                        <Address/>
+                        <Address address={data.data.address}/>
                     </ModalBody>
                     <ModalFooter>
                         <Button colorScheme="blue" onClick={onClose}>

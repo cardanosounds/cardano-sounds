@@ -40,7 +40,7 @@ export async function getSoundsNFTData(collection: string, page: number): Promis
         // const container = (await database.containers.createIfNotExists({ id: containerid })).container //client.container(containerid).read()
         const offset = (page - 1) * 9 
         const res = await container().items
-                    .query(`SELECT * from t WHERE t.status = 'generated' ORDER BY t.created OFFSET ${offset} LIMIT 9`)
+                    .query(`SELECT * from t WHERE t.status = 'finished' ORDER BY t.created OFFSET ${offset} LIMIT 9`)
                     .fetchAll() 
         let nfts: Array<DatabaseTx>
         if(Array.isArray(res.resources))

@@ -135,6 +135,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     if (errorCode === null) {
 
       const nftListData = await getSoundsNFTData(collection.toString(), Number(1))
+      console.log("nftListData")
+      console.log(nftListData)
       
       if(nftListData instanceof String) {
         data = {
