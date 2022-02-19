@@ -48,6 +48,10 @@ export default function PreBuy(data) {//: {status: string, datetime: Date}) {
                     <Spacer/>
                     <ListItem>
                         <ListIcon as={FaChevronRight} color="green.500" />
+                            The following second wave will be open for <strong>24 hours</strong>
+                    </ListItem>
+                    {/* <ListItem>
+                        <ListIcon as={FaChevronRight} color="green.500" />
                             When time is set, an address with QR code and price will be displayed here
                             <Tooltip 
                                 isOpen={isTooltipOpen}
@@ -61,11 +65,11 @@ export default function PreBuy(data) {//: {status: string, datetime: Date}) {
                                     onClick={() => setIsTooltipOpen(true)}
                                 />
                             </Tooltip>
-                    </ListItem>
+                    </ListItem> */}
                     <Spacer/>
                     <ListItem>
                         <ListIcon as={FaChevronRight} color="green.500" />
-                            Never use exchange wallet to buy NFT! You will be able to mint 5 per TX
+                            Never use exchange wallet to buy NFT! You will be able to mint 10 NFTs per TX
                     </ListItem>
                     <Spacer/>
                     <ListItem>
