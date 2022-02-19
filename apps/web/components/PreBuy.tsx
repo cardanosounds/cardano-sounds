@@ -106,17 +106,11 @@ export default function PreBuy(data) {//: {status: string, datetime: Date}) {
                             transition="all 0.3s ease-in-out"
                             justifyContent={["flex-start", "flex-start", "center"]}
                         >
-                            {/* chakra color var doesn't work here */}
-                            {/* <Heading className={utilStyles.noHovDecor} as="h4" fontSize="1.5rem"
-                            fontWeight="normal"
-                            > */}
                             HOME
                             <FaChevronLeft />
-                            {/* </Heading>   */}
                         </Button>
                     </NextChakraLink>
                     <Spacer/>
-                    {/* <NextChakraLink href="/buy"> */}
                     <Flex
                      width={["80vw", "80vw", "25vw", "25vw", "25vw", "25vw" ]}
                      mt={["1vh", "1vh", "5vh"]}
@@ -126,26 +120,10 @@ export default function PreBuy(data) {//: {status: string, datetime: Date}) {
                      transition="all 0.3s ease-in-out"
                      justifyContent={["flex-start", "flex-start", "center"]}
                     >
-                    {/* <Countdown date={new Date("2022-02-24 20:00:00 GMT+0100")}> */}
                     <Countdown date={new Date(data.data.datetime)}>
                         <NextChakraLink 
-                            // width={["80vw", "80vw", "25vw", "25vw", "25vw", "25vw" ]}
-                            // mt={["1vh", "1vh", "5vh"]}
-                            // height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]}
-                            // variant="ghost"
-                            // className={utilStyles.shadow}
-                            // transition="all 0.3s ease-in-out"
-                            // justifyContent={["flex-start", "flex-start", "center"]}
                             href="/buy"
                         ><Button width="100%" h="100%">BUY<FaChevronRight /></Button>
-                            {/* chakra color var doesn't work here */}
-                            {/* <Heading fontSize="1.5rem" as="h4"
-                                fontWeight="normal"
-                            > */}
-                                
-                                
-                            
-                            {/* </Heading>   */}
                         </NextChakraLink>
                     </Countdown>
                     </Flex>
