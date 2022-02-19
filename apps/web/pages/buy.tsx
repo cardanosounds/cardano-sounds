@@ -29,15 +29,17 @@ export default function Buy(data){
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const saleDateString = "2022-02-17 20:00:00 GMT+0100"
+    const saleDateString = "2022-02-24 20:00:00 GMT+0100"
+    const saleEndDateString = "2022-02-25 20:00:00 GMT+0100"
     const saleDate =  new Date(saleDateString) 
+    const saleEndDate =  new Date(saleEndDateString) 
 
     const dt = new Date()
     const addr = process.env.SALE_ADDRESS || "";
     const price = process.env.SALE_PRICE || 0;
     let data
   
-    if(dt.getTime() > saleDate.getTime()) {
+    if(dt.getTime() > saleDate.getTime() && dt.getTime() < saleEndDate.getTime()) {
       data = { status: "open", address: addr, price: price }
     } else {
       data = { status: "wait", datetime: saleDateString }
