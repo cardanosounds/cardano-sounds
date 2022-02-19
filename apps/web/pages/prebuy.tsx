@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react'
+// import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import Layout, { siteTitle } from '../components/layout'
 import React from "react"
-import PreBuy from '../components/PreBuy'
+// import PreBuy from '../components/PreBuy'
 
 export default function Prebuy(){
     
@@ -15,7 +15,7 @@ export default function Prebuy(){
                     <title>How to buy Cardano Sounds NFT</title>
                 </Head>
                 
-                <PreBuy/>
+                {/* <PreBuy/> */}
 
             </Layout>
         
