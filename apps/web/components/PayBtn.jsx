@@ -37,7 +37,6 @@ import ConnectWalletModal from './ConnectWalletModal'
       )
       setConnected(window.localStorage.getItem('cswallet') === 'connected')
     }
-
     const enableCardano = async (wallet = 'nami') => {
       const win = window
       if(!win.cardano) return
@@ -52,6 +51,12 @@ import ConnectWalletModal from './ConnectWalletModal'
           break
         case 'flint':
           baseWalletApi = win.cardano.flint
+          break
+        case 'yoroi':
+          baseWalletApi = win.cardano.yoroi
+          break
+        case 'cardwallet':
+          baseWalletApi = win.cardano.cardwallet
           break
         case 'gerowallet':
           if(!win.cardano.gerowallet){ 
@@ -73,6 +78,12 @@ import ConnectWalletModal from './ConnectWalletModal'
           fullWalletApi = await baseWalletApi.enable()
           break
         case 'flint':
+          fullWalletApi = await baseWalletApi.enable()
+          break
+        case 'yoroi':
+          fullWalletApi = await baseWalletApi.enable()
+          break
+        case 'cardwallet':
           fullWalletApi = await baseWalletApi.enable()
           break
         case 'gerowallet':
