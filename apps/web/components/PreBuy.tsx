@@ -38,7 +38,7 @@ export default function PreBuy(data) {//: {status: string, datetime: Date}) {
                 maxW={["80vw", "80vw", "75vw", "70vw", "75vw", "70vw"]}
                 mt={["25vh", "25vh", "30vh", "30vh", "25vh", "25vh"]}
             >
-                <Text fontWeight="bold" fontSize="36" my={4}>Support us by minting our CNFTs</Text>
+                <Text fontWeight="bold" fontSize="36" my={4}>Support Cardano Sounds by minting our CNFTs</Text>
 
                 <List spacing={3} pl="3vw" ml="0" marginInlineEnd="auto" mt="5vh" >
                     <ListItem>
