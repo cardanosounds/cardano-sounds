@@ -74,7 +74,7 @@ export default function PreBuy(data) {//: {status: string, datetime: Date}) {
                     <Spacer/>
                     <ListItem>
                         <ListIcon as={FaChevronRight} color="green.500" />
-                            Music clip and website with animated player are created for each tx
+                            Music clip and website with animated player are created for each NFT
                     </ListItem>
                     <Spacer/>
                     <ListItem>
