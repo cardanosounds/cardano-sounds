@@ -29,8 +29,4 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     }
     
     await reply()
-
-    setInterval(async () => {
-        await reply()
-    }, 9000)
 }
