@@ -58,6 +58,8 @@ export default function Transaction({ id } : {id: string}) {
                 } 
             }
         };
+        
+        updateData()
 
         setInterval(async () => {
             await updateData()
