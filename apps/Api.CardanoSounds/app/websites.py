@@ -91,7 +91,7 @@ class Websites:
 
 		with open(self.template_html) as f:
 			htmlfile=f.read().replace('RARITY_COLOR', metadata.rarity)
-			htmlfile=htmlfile.replace('TOKEN_NAME', metadata.token_name)
+			htmlfile=htmlfile.replace('TOKEN_NAME', str(metadata.token_name))
 			htmlfile=htmlfile.replace('SOUND_PROBABILITY', str(metadata.probability))
 			htmlfile=htmlfile.replace('USED_SOUNDS', soundsstring)
 			htmlfile=htmlfile.replace('BUYING_TX', metadata.id)

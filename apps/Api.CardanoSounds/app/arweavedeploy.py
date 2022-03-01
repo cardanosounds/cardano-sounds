@@ -8,7 +8,7 @@ from arweave.arweave_lib import Wallet, Transaction
 #this class uses Linux specific commands
 class ArweaveDeploy:
 
-	wallet = Wallet("/home/azureuser/arweave-key.json")
+	wallet = Wallet("/home/azureuser/arweave-key")
 	sounds_folder = "/home/azureuser/sounds"
 	websites_folder = "/home/azureuser/websites"
 

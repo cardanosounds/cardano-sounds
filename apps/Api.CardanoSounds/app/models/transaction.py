@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from typing import List
 from app.models.metadata import Metadata
@@ -17,7 +17,7 @@ class Transaction:
     created: str
     nft_count: int
     nft_index: int
-    metadata: List[Metadata] = []
+    metadata = []
 
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__, 

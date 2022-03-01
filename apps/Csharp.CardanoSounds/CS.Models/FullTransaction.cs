@@ -8,7 +8,11 @@ namespace CS.Models
 {
     public class FullTransaction : IncommingTransaction
     {
-       public List<Metadata> Metadata { get; set; }
+        [JsonProperty(PropertyName = "metadata")]
+        public List<Metadata> Metadata { get; set; }
+
+        [JsonProperty(PropertyName = "submitted")]
+        public DateTime? Submitted { get; set; }
 
     }
 }

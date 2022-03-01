@@ -59,7 +59,21 @@ namespace CS.DB.Cosmos
 
             return statusCode;
         }
-
+        public void UpdateStatus(IncommingTransaction tx)
+        {
+            using (client = new DocumentClient(new Uri(EndpointUri), PrimaryKey))
+            {
+                var dbTx = client.CreateDocumentQuery<FullTransaction>(UriFactory.CreateDocumentCollectionUri(DBName, "transactions"))
+                .Where(x => x.Tx_Hash == tx.Tx_Hash && x.Output_Index == x.Output_Index)
+                .AsEnumerable()
+                .FirstOrDefault();
+                if(dbTx != null) 
+                {
+                    dbTx.Status = tx.Status;
+                    var document = client.ReplaceDocumentAsync(UriFactory.CreateDocumentUri(DBName, "transactions", dbTx?.Id), dbTx).Result.Resource;
+                }
+            }
+        }
         public async Task<HttpStatusCode> Update(FullTransaction tx)
         {
             HttpStatusCode statusCode;
@@ -150,12 +164,12 @@ namespace CS.DB.Cosmos
             using (client = new DocumentClient(new Uri(EndpointUri), PrimaryKey))
             {
                 var option = new FeedOptions { EnableCrossPartitionQuery = true };
-                var dbTx = client.CreateDocumentQuery<IncommingTransaction>(
+                var dbTx = client.CreateDocumentQuery<FullTransaction>(
                 UriFactory.CreateDocumentCollectionUri(DBName, "transactions"), option)
                 .Where(x => x.Tx_Hash == tx.Tx_Hash)
                 .OrderBy(x => x.Created)
                 .AsEnumerable()
-                .Select(x => new TxStatus(x.Id, x.Tx_Hash, x.Output_Index, x.Status, x.Created))
+                .Select(x => new TxStatus(x.Id, x.Tx_Hash, x.Output_Index, x.Status, x.Submitted))
                 .ToList();
 
                 foreach(var id in dbTx.Select(x => x.Id.ToString()))

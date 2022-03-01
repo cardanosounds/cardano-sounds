@@ -135,7 +135,7 @@ namespace CS.Csharp.CardanoCLI
                 cmd += _incmd_newline;
             }
 
-            cmd += $"--invalid-hereafter {invalidAfter}";
+            cmd += $"--invalid-hereafter 63926424";
             cmd += _incmd_newline;
 
             cmd += $"--fee {minFee}";

@@ -40,7 +40,7 @@ def generate_sound():
         tx = jsons.load(request_json, Transaction)
         
         q.enqueue_call(
-                func=start_sound_generation, args=(tx,), result_ttl=5000
+                func=start_sound_generation, args=(tx,), timeout=500, result_ttl=5000
             )
         response.status_code = 200  
     except:
