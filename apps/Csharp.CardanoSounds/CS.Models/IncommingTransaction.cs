@@ -31,5 +31,12 @@ namespace CS.Models
 
         [JsonProperty(PropertyName = "created")]
         public DateTime Created { get; set; }
+
+        [JsonProperty(PropertyName = "nft_count")]
+        public int NftCount { get; set; }
+
+        [JsonProperty(PropertyName = "nft_index")]
+        public int? FirstNftIndex { get; set; }
+
     }
 }

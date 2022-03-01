@@ -28,21 +28,23 @@ export default function Transaction({ id } : {id: string}) {
     const [isFinished, finishNFT] = useState<boolean>(false);
     
     useEffect(() => {
-        const eventSource = new EventSource(`/api/sale/${id}`);
-        // An instance of EventSource by passing the events URL
-        // console.log(id)
-        // console.log(`/api/sale/${id}`)
-        // A function to parse and update the data state
-        const updateData = async (messageEvent: MessageEvent) => {
-
+        // const eventSource = new EventSource(`/api/sale/${id}`);
+        // // An instance of EventSource by passing the events URL
+        // // console.log(id)
+        // // console.log(`/api/sale/${id}`)
+        // // A function to parse and update the data state
+        const updateData = async () => {
+            // const updateData = async (messageEvent: MessageEvent) => {
+            const res = await fetch(`/api/sale/` + id)
+            const data: any = await res.json()
             // console.log("updateData")
-            if(messageEvent.data === "not found") {
+            if(!data || data.data === "not found") {
                 // console.log(messageEvent.data)
-                setData(messageEvent.data.toString())
+                setData(data.data.toString())
             } else {
                 let dbtx: DatabaseTx = null
                 try {
-                    dbtx = JSON.parse(messageEvent.data);
+                    dbtx = JSON.parse(data.data);
                 } catch (e) {
                     console.log("Handle error", e);
                 }
@@ -51,16 +53,22 @@ export default function Transaction({ id } : {id: string}) {
                     setData(dbtx)
                     if (dbtx.status === "finished" || dbtx.status === "error") {
                         finishNFT(true)
-                        eventSource.close()
+                        
                     }
-                }
+                } 
             }
         };
+        
+        updateData()
+
+        setInterval(async () => {
+            await updateData()
+        }, 9000)
 
         // eventSource now listening to all the events named 'message'
-        eventSource.addEventListener('message', updateData)
-        // Unsubscribing to the event stream when the component is unmounted
-        return () => eventSource.close()
+        // eventSource.addEventListener('message', updateData)
+        // // Unsubscribing to the event stream when the component is unmounted
+        // return () => eventSource.close()
     }, []);
 
     return (
@@ -76,12 +84,16 @@ export default function Transaction({ id } : {id: string}) {
                     spacing={6}
                     align="center"
                     margin="auto"
-                    ml={["30vw", "30vw", "auto"]}
-                    mt={["10vh", "10vh", "auto"]}
+                    // ml={["30vw", "30vw", "auto"]}
+                    mt={["0", "0", "auto"]}
                     py={[0, 0, 24]}
                 >
                     {isFinished && instanceOfDatabaseTx(data) ?
-                    <SoundNFTPreviewSmall soundNFTData={data}/>
+                    <Flex direction={"row"} overflow="auto" whiteSpace={"nowrap"} maxW={["80vw", "80vw", "40vw"]}>
+                        {data.metadata.map(nft => (
+                            <SoundNFTPreviewSmall metadata={nft}/>
+                        ))}
+                    </Flex>
                     : 
                     <>
                         {statusFullText(typeof(data) === 'undefined' || data === 'not found' ? data : instanceOfDatabaseTx(data) ? data.status : '' )}

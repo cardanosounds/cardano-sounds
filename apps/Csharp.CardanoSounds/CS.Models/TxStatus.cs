@@ -7,7 +7,7 @@ namespace CS.Models
 {
     public class TxStatus
     {
-        public TxStatus(string id, string txHash, int outputIndex, string status, DateTime created)
+        public TxStatus(string id, string txHash, int outputIndex, string status, DateTime? created = null)
         {
             Id = id;
             Status = status;
@@ -20,6 +20,6 @@ namespace CS.Models
         public string Tx_Hash { get; set; }
         public int Output_Index { get; set; }
         public string Status { get; set; }
-        public DateTime Created { get; set; }
+        public DateTime? Created { get; set; }
     }
 }

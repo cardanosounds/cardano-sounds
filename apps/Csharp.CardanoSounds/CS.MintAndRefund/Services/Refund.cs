@@ -52,7 +52,7 @@ namespace CS.MintAndRefund.Services
                 _logger.LogInformation("Refund: " + response);
                 tx.Status = "refunded";
             }
-
+            tx.Submitted = DateTime.Now;
             await _dbTransactions.Update(tx);
 
         }

@@ -72,7 +72,8 @@ namespace CS.ScanForTxs
             var txs = await GetFilteredUtxos();
 
             lastTx = transactions.GetLastTx();
-       
+            var nftIndex = transactions.GetNftCount() + 1;
+
             var i = 1;
             if (lastTx != null)
             {
@@ -92,20 +93,35 @@ namespace CS.ScanForTxs
                 tx.SenderAddress = sender;
                 var created = false;
                 var status = ValidateBuyingTx(tx);
+
                 if (status == "confirmed")
                 {
                     try 
                     {
+                        try 
+                        {
+                            tx.NftCount = (int) (tx.Amount.First().Quantity / buyPriceLovelace);
+                            tx.FirstNftIndex = nftIndex;
+                        }
+                        catch
+                        {
+                            status = "error";
+                            tx.NftCount = 0;
+                        }
+
                         var txresult = await ProcessTransaction(tx);
+
                         if (txresult.Contains("Error"))
                         {
                             status = "failed";
+                            tx.NftCount = 0;
                         }
                     }
                     catch(Exception ex)
                     {
                         _logger.LogError(ex, ex.Message);
                         status = "failed";
+                        tx.NftCount = 0;
                     }
                     
                 }
@@ -114,13 +130,19 @@ namespace CS.ScanForTxs
                     stuckCount ++;
                     if(stuckCount == 5 && txs.Last() == tx)
                     {
+                        tx.NftCount = 0;
                         tx.Status = status;
                         _logger.LogInformation("created tx: " + tx.Tx_Hash);
                         _logger.LogInformation("status : " + tx.Status);
+                        tx.NftCount = 0;
                         _logger.LogTrace((await transactions.Create(tx)).ToString());
                         created = true;
                         await Scan(pageCount + 1);
                     }
+                    tx.NftCount = 0;
+                }
+                else {
+                    tx.NftCount = 0;
                 }
                 tx.Status = status;
 
@@ -129,6 +151,8 @@ namespace CS.ScanForTxs
                 if(!created)_logger.LogTrace((await transactions.Create(tx)).ToString());
 
                 i++;
+                nftIndex += tx.NftCount;
+
             }
 
           
@@ -179,8 +203,8 @@ namespace CS.ScanForTxs
             tx.Status = "generationstart";
             var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(tx), Encoding.UTF8, "application/json");
 
-            //add tx queue for generating sounds & websites (metadata)
-
+            // add tx queue for generating sounds & websites (metadata)
+            
             var result = await queueClient.PostAsync(queueApiUrl + "/addtxtoqueue", content);
             if(result.StatusCode == System.Net.HttpStatusCode.OK)
             {
@@ -221,14 +245,15 @@ namespace CS.ScanForTxs
                 {
                     valid = false;
                 }
-                else if(amount.Quantity != buyPriceLovelace) 
+                else if(amount.Quantity == buyPriceLovelace || (amount.Quantity > buyPriceLovelace && amount.Quantity <= buyPriceLovelace*10 && amount.Quantity % buyPriceLovelace == 0)) 
                 {
-                    valid = false;
-                    if(amount.Quantity > 1500000) tryRefund = true;
+                    return "confirmed";
+                    
                 }
                 else 
                 {
-                    return "confirmed";
+                    valid = false;
+                    if(amount.Quantity > 1500000) tryRefund = true;
                 }
             }
 
@@ -278,6 +303,7 @@ namespace CS.ScanForTxs
                 var transactionsArr = (JArray)DeserializeFromStream(txs);
 
                 transactions = transactionsArr.ToObject<List<IncommingTransaction>>();
+
             }
             catch (Exception ex)
             {
@@ -305,34 +331,34 @@ namespace CS.ScanForTxs
             IncommingTransaction[] txsCopy = new IncommingTransaction[txs.Count];
             txs.CopyTo(txsCopy);
 
-            foreach(var txhash in txs.Select(x => x.Tx_Hash.ToString())) 
-            {
-                Console.WriteLine("txs#308");
-                Console.WriteLine(txhash);
-            }
-            Console.WriteLine("FilterUtxo");
-            Console.WriteLine("");
-            Console.WriteLine("");
-            Console.WriteLine("txs.Count");
-            Console.WriteLine(txs.Count);
+            // foreach(var txhash in txs.Select(x => x.Tx_Hash.ToString())) 
+            // {
+            //     Console.WriteLine("txs#308");
+            //     Console.WriteLine(txhash);
+            // }
+            // Console.WriteLine("FilterUtxo");
+            // Console.WriteLine("");
+            // Console.WriteLine("");
+            // Console.WriteLine("txs.Count");
+            // Console.WriteLine(txs.Count);
             var i = 0;
 
             foreach(var tx in txs)
             {
                 i++;
                 var txDbData = transactions.GetDbTransactionsDataForIncomming(tx);
-                Console.WriteLine("i");
-                Console.WriteLine("i");
-                Console.WriteLine("i");
-                Console.WriteLine(i);
-                Console.WriteLine();
-                Console.WriteLine();
+                // Console.WriteLine("i");
+                // Console.WriteLine("i");
+                // Console.WriteLine("i");
+                // Console.WriteLine(i);
+                // Console.WriteLine();
+                // Console.WriteLine();
 
-                foreach(var txhash in txDbData.Select(x => x.Tx_Hash.ToString())) 
-                {
-                    Console.WriteLine("txhash#314+i="+i);
-                    Console.WriteLine(txhash);
-                }
+                // foreach(var txhash in txDbData.Select(x => x.Tx_Hash.ToString())) 
+                // {
+                //     Console.WriteLine("txhash#314+i="+i);
+                //     Console.WriteLine(txhash);
+                // }
 
                 if (txDbData.Any())
                 {
@@ -359,14 +385,14 @@ namespace CS.ScanForTxs
                             switch (txDb.Status)
                             {
                                 case "finished":
-                                    if (txDb.Created.AddMinutes(30) < DateTime.Now)
+                                    if (txDb.Created != null && txDb.Created?.AddMinutes(50) < DateTime.Now)
                                     {
                                         toUpdateTx.Status = "generated";
                                         update = true;
                                     }
                                     break;
                                 case "refunded":
-                                    if (txDb.Created.AddMinutes(30) < DateTime.Now)
+                                    if (txDb.Created != null && txDb.Created?.AddMinutes(50) < DateTime.Now)
                                     {
                                         toUpdateTx.Status = "invalid";
                                         update = true;
@@ -397,7 +423,7 @@ namespace CS.ScanForTxs
                         Console.WriteLine();
                         Console.WriteLine();
 
-                        if (update) await transactions.Update(toUpdateTx);
+                        if (update) transactions.UpdateStatus(toUpdateTx);
 
                         Console.WriteLine("4");
                         Console.WriteLine();

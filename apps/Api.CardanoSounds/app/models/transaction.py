@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from typing import List
 from app.models.metadata import Metadata
@@ -15,7 +15,9 @@ class Transaction:
     sender_address: str
     status: str
     created: str
-    metadata: Metadata = None 
+    nft_count: int
+    nft_index: int
+    metadata = []
 
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__, 

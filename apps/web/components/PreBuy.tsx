@@ -1,14 +1,17 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Button, List, ListIcon, ListItem, Stack, Spacer, Tooltip, Flex, Text} from "@chakra-ui/react"
 import utilStyles from "../styles/utils.module.css"
 import { FaChevronRight, FaChevronLeft } from 'react-icons/fa';
 import { InfoIcon } from "@chakra-ui/icons";
 import NextChakraLink from "./NextChakraLink";
 import useSound from "use-sound";
+import { GetServerSideProps } from 'next'
+import Countdown from "react-countdown"
 
-export default function PreBuy() {
+
+export default function PreBuy(data) {//: {status: string, datetime: Date}) {
     const [isTooltipOpen, setIsTooltipOpen] = useState<boolean>(false)
-
+    
     const playSound = (id: string) => {
         if(window.localStorage.getItem('sound') === 'false') return
         play({id: id})
@@ -35,7 +38,7 @@ export default function PreBuy() {
                 maxW={["80vw", "80vw", "75vw", "70vw", "75vw", "70vw"]}
                 mt={["25vh", "25vh", "30vh", "30vh", "25vh", "25vh"]}
             >
-                <Text fontWeight="bold" fontSize="36" my={4}>Support us by minting our CNFTs</Text>
+                <Text fontWeight="bold" fontSize="36" my={4}>Support Cardano Sounds by minting our CNFTs</Text>
 
                 <List spacing={3} pl="3vw" ml="0" marginInlineEnd="auto" mt="5vh" >
                     <ListItem>
@@ -43,6 +46,10 @@ export default function PreBuy() {
                             The collection is being released in 3 <strong>short</strong> waves
                     </ListItem>
                     <Spacer/>
+                    {/* <ListItem>
+                        <ListIcon as={FaChevronRight} color="green.500" />
+                            The following second wave will be open for <strong>24 hours</strong>
+                    </ListItem> */}
                     <ListItem>
                         <ListIcon as={FaChevronRight} color="green.500" />
                             When time is set, an address with QR code and price will be displayed here
@@ -62,12 +69,12 @@ export default function PreBuy() {
                     <Spacer/>
                     <ListItem>
                         <ListIcon as={FaChevronRight} color="green.500" />
-                            Never use exchange wallet to buy NFT! You will be able to mint 5 per TX
+                            Never use exchange wallet to buy NFT! You will be able to mint 10 NFTs per TX
                     </ListItem>
                     <Spacer/>
                     <ListItem>
                         <ListIcon as={FaChevronRight} color="green.500" />
-                            Music clip and website with animated player are created for each tx
+                            Music clip and website with animated player are created for each NFT
                     </ListItem>
                     <Spacer/>
                     <ListItem>
@@ -99,35 +106,29 @@ export default function PreBuy() {
                             transition="all 0.3s ease-in-out"
                             justifyContent={["flex-start", "flex-start", "center"]}
                         >
-                            {/* chakra color var doesn't work here */}
-                            {/* <Heading className={utilStyles.noHovDecor} as="h4" fontSize="1.5rem"
-                            fontWeight="normal"
-                            > */}
                             HOME
                             <FaChevronLeft />
-                            {/* </Heading>   */}
                         </Button>
                     </NextChakraLink>
                     <Spacer/>
-                    {/* <NextChakraLink href="/buy"> */}
-                    <Button 
-                        width={["80vw", "80vw", "25vw", "25vw", "25vw", "25vw" ]}
-                        mt={["1vh", "1vh", "5vh"]}
-                        height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]}
-                        variant="ghost"
-                        className={utilStyles.shadow}
-                        transition="all 0.3s ease-in-out"
-                        justifyContent={["flex-start", "flex-start", "center"]}
-                        disabled
+                    <Flex
+                     width={["80vw", "80vw", "25vw", "25vw", "25vw", "25vw" ]}
+                     mt={["1vh", "1vh", "5vh"]}
+                     height={["8vh", "7vh", "15vh", "15vh", "15vh", "15vh"]}
+                     variant="ghost"
+                     className={utilStyles.shadow}
+                     transition="all 0.3s ease-in-out"
+                     justifyContent={["flex-start", "flex-start", "center"]}
                     >
-                        {/* chakra color var doesn't work here */}
-                        {/* <Heading fontSize="1.5rem" as="h4"
-                            fontWeight="normal"
+                    <Countdown date={new Date(data.data.datetime)}>
+                        {/* <NextChakraLink 
+                            href="/buy"
                         > */}
-                            BUY
-                        <FaChevronRight />
-                        {/* </Heading>   */}
-                    </Button>
+                            <Button width="100%" variant={'ghost'} h="100%">{new Date(data.data.datetime).getTime() < new Date().getTime() ? 'Next wave soon!' : "BUY"}<FaChevronRight /></Button>
+                        {/* </NextChakraLink> */}
+                    </Countdown>
+                    </Flex>
+                    
                 </Flex>
             </Stack>    
         </>

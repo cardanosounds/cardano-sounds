@@ -9,12 +9,12 @@ import {
   Button,
 } from "@chakra-ui/react"
 import { useState } from 'react'
-import { NFTData, SoundListData } from '../../interfaces/interfaces'
+import { SoundListData } from '../../interfaces/interfaces'
 import Head from "next/head"
 import Layout from "../../components/layout"
 import SoundNFTPreviewSmall from "../../components/SoundNFTPreviewSmall"
 // import NextChakraLink from "../../components/NextChakraLink"
-import { DatabaseTx } from "../../interfaces/databaseTx"
+import { DatabaseTx, Metadata } from "../../interfaces/databaseTx"
 import { ChevronDownIcon } from "@chakra-ui/icons"
 // import GlitchText from "../../components/GlitchText"
 import { getSoundsNFTData } from "../../lib/sounds"
@@ -31,7 +31,7 @@ export default function SoundList({ errorCode, data }: {
 })
 {
   const [ collection, changeCollection ] = useState<string>("all")
-  const [ nfts, updateNfts ] = useState<DatabaseTx[]>(data.nfts)
+  const [ nfts, updateNfts ] = useState<Metadata[]>(data.nfts)
   const [ loadingMore, loadMore ] = useState<boolean>(false)
 
   const changeCollectionOption = async (selectedIndex: number) => {
@@ -104,7 +104,7 @@ export default function SoundList({ errorCode, data }: {
           columns={[1,1,2,3]}
         >
           {/* {nfts} */}
-          { nfts.map(( nftsound: DatabaseTx ) => (
+          { nfts.map(( nftsound: Metadata ) => (
             <Flex
               rounded="lg"
               py={["3vh", "3vh","3vw"]}
@@ -113,7 +113,7 @@ export default function SoundList({ errorCode, data }: {
               // _hover={{ boxShadow: "dark-lg", transform: "scale(1.1)", cursor: "pointer" }}
               >
               {/*href={`/sound/${nftsound.id}`} */}
-              <SoundNFTPreviewSmall  soundNFTData={nftsound}/>
+              <SoundNFTPreviewSmall  metadata={nftsound}/>
             </Flex>
           ))}
         </SimpleGrid>
@@ -135,6 +135,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     if (errorCode === null) {
 
       const nftListData = await getSoundsNFTData(collection.toString(), Number(1))
+      console.log("nftListData")
+      console.log(nftListData)
+      
       if(nftListData instanceof String) {
         data = {
           collection: "all",
@@ -147,7 +150,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         {
             collection: collection.toString(),
             page: Number(1),
-            nfts: nftListData
+            nfts: nftListData.map(x => x.metadata).flat(1)
         }
       }
         // var nftListData = getSoundsNFTData()

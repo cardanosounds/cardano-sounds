@@ -4,12 +4,12 @@ import getTransaction from '../../../lib/db'
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
     let data: string = "not found"
-    res.writeHead(200, {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
-        'Content-Encoding': 'none',
-    });
+    // res.writeHead(200, {
+    //     'Content-Type': 'text/event-stream',
+    //     'Cache-Control': 'no-cache',
+    //     'Connection': 'keep-alive',
+    //     'Content-Encoding': 'none',
+    // });
     const { txid } = req.query 
     
     const format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
@@ -23,14 +23,12 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
             data = JSON.stringify(dbres)
         } 
 
-        res.write('event: message\n')
-        res.write('data: ' + data)
-        res.write('\n\n')
+        res.status(200).json({ data: data })
+        
+        // res.write('event: message\n')
+        // res.write('data: ' + data)
+        // res.write('\n\n')
     }
     
     await reply()
-
-    setInterval(async () => {
-        await reply()
-    }, 9000)
 }

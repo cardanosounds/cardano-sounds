@@ -2,7 +2,7 @@ import React from "react"
 import { Flex, Box, Image, InputGroup, Input, InputRightElement, useToast } from "@chakra-ui/react"
 import { CopyIcon } from "@chakra-ui/icons"
 
-export default function Address( { display } : { display?: "flex" | "none" | Array <"flex" | "none"> }   ) {
+export default function Address( { address, display } : {  address: string, display?: "flex" | "none" | Array <"flex" | "none"> }   ) {
 
     const toast = useToast()
 
@@ -30,7 +30,7 @@ export default function Address( { display } : { display?: "flex" | "none" | Arr
                 w={["85vw", "85vw", "20vw", "20vw", "20vw", "20vw"]}
                 onClick={
                     () => {
-                        navigator.clipboard.writeText("addr11565FAKE63454rsdfgb363454rsd9556363454rsdfgb363454r")
+                        navigator.clipboard.writeText(address)
                         toast({
                             title: "Copied",
                             status: "success",
@@ -41,7 +41,8 @@ export default function Address( { display } : { display?: "flex" | "none" | Arr
                 } 
             >
                 <Input 
-                    placeholder="addr11565FAKE63454rsdfgb363454rsd9556363454rsdfgb363454r" 
+                    placeholder={address} 
+                    // placeholder="addr11565FAKE63454rsdfgb363454rsd9556363454rsdfgb363454r" 
                     id="address"
                     //isReadonly={true}
                 />

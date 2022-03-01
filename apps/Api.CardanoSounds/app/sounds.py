@@ -95,8 +95,11 @@ class Sounds:
 	def get_signature(self):
 		return self.get_sound(os.path.join(self.base_sounds_folder, "signatures/"), category="signature")
 
-	def get_random_track(self, tx: Transaction):
+	def get_random_track(self, tx: Transaction, nft_id: str = ''):
 	# def get_random_track(self, tx_hash):
+		if nft_id == '':
+			nft_id = tx.id
+
 		mix = MixSound()
 
 		enrich = self.get_enrich_sound()
@@ -137,7 +140,7 @@ class Sounds:
 		bass.filename = bass.filename.replace("/home/azureuser/cswaves/bass/", "bass: ").replace(ext, "")
 		signature.filename = signature.filename.replace("/home/azureuser/cswaves/signatures/", "signatures: ").replace(ext, "")
 		# return rarity	
-		return Metadata(tx.tx_hash, tx.id, total_probability, rarity, [enrich, melody, drums, bass, signature])
+		return Metadata(tx.tx_hash, nft_id, total_probability, rarity, [enrich, melody, drums, bass, signature])
 
 
 	def get_sound(self, folder_path, category):
