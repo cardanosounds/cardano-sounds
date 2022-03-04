@@ -72,6 +72,9 @@ export default function ConnectWalletModal(
           <Button w="100%" h={24} variant={'ghost'} mr={3} onClick={() => enableCardano('yoroi')}>
             <Image src="/icons/yoroi-icon.png" w="48px" h="48px"/>Connect Yoroi
           </Button>
+          <Button w="100%" h={24} variant={'ghost'} mr={3} onClick={() => enableCardano('gerowallet')}>
+            <Image src="/icons/gerowallet-icon.png" w="48px" h="48px"/>Connect GeroWallet
+          </Button>
           <Button w="100%" h={24} variant={'ghost'} mr={3} onClick={() => enableCardano('cardwallet')}>
             <Image src="/icons/cardwallet-icon.png" w="48px" h="48px"/>Connect CardWallet
           </Button>
