@@ -62,7 +62,8 @@ export default function SoundNFTPreviewSmall({metadata, fullView}: { metadata: M
 					{/* <Image src={imageFilePath} style={{animationPlayState: "paused"}} rounded="lg" pos="relative" /> */}
 				</Box>
 				<NextChakraLink 
-					href={`/sound/${metadata?.token_name}`}
+					href={`${metadata?.arweave_website_uri}`}
+					target="_blank"
 					onMouseOver={() => {if(!glitching) setGlitching(true) }} onMouseOut={() => { if(glitching) setGlitching(false)}}
 				>
 					<Flex direction="column">
@@ -85,33 +86,6 @@ export default function SoundNFTPreviewSmall({metadata, fullView}: { metadata: M
 							</Heading>
 
 						</Flex>
-						{fullView ? <></>
-						:
-						<Flex 
-							direction="row"
-							
-							px="1.25rem"
-						>
-							<Heading 
-								size="sm"
-								mb="1em"
-							>
-								{glitchingText("web:")}
-							</Heading>
-							<Spacer/>
-							<a href={metadata?.arweave_website_uri}>
-								<Heading 
-									size="sm"
-									mb="1em"
-									whiteSpace="nowrap"
-									overflow="hidden"
-									textOverflow="ellipsis"
-									maxW="15rem"
-								>
-									{glitchingText(metadata?.arweave_website_uri)}
-								</Heading>
-							</a>
-						</Flex> }
 					</Flex>
 				</NextChakraLink>	
 				
