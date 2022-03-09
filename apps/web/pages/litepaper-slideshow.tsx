@@ -30,7 +30,6 @@ export default function LitepaperSlideshow() {
         "/litepaper/CS-LP-S5-Story.png",
         "/litepaper/CS-LP-S6-Story.png",
         "/litepaper/CS-LP-S7-Story.png",
-        "/litepaper/CS-LP-S8-Story.png",
         "/litepaper/CS-LP-S9-Story.png",
         "/litepaper/CS-LP-S10-Story.png"
     ];
