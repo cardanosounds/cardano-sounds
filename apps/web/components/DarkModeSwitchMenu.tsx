@@ -230,7 +230,7 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                         <NextChakraLink href="/mint">
                             <Heading size="lg" as="h4">MINTING</Heading>
                         </NextChakraLink>
-                        <NextChakraLink href="https://cardano-sounds.gitbook.io/cardanosounds/">
+                        <NextChakraLink href="/litepaper-slideshow">
                             <Heading size="lg" as="h4">ABOUT</Heading>
                         </NextChakraLink>
                         <NextChakraLink href="/buy">{/*  className={mainStyles.disableEvents} */}
