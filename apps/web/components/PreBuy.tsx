@@ -46,10 +46,10 @@ export default function PreBuy(data) {//: {status: string, datetime: Date}) {
                             The collection is being released in 3 <strong>short</strong> waves
                     </ListItem>
                     <Spacer/>
-                    {/* <ListItem>
+                    <ListItem>
                         <ListIcon as={FaChevronRight} color="green.500" />
-                            The following second wave will be open for <strong>24 hours</strong>
-                    </ListItem> */}
+                            The last third wave will be open for <strong>72 hours</strong>
+                    </ListItem>
                     <ListItem>
                         <ListIcon as={FaChevronRight} color="green.500" />
                             When time is set, an address with QR code and price will be displayed here
@@ -121,11 +121,13 @@ export default function PreBuy(data) {//: {status: string, datetime: Date}) {
                      justifyContent={["flex-start", "flex-start", "center"]}
                     >
                     <Countdown date={new Date(data.data.datetime)}>
-                        {/* <NextChakraLink 
+                        <NextChakraLink 
                             href="/buy"
-                        > */}
+                            width="100%" 
+                            h="100%"
+                        >
                             <Button width="100%" variant={'ghost'} h="100%">{new Date(data.data.datetime).getTime() < new Date().getTime() ? 'Next wave soon!' : "BUY"}<FaChevronRight /></Button>
-                        {/* </NextChakraLink> */}
+                        </NextChakraLink>
                     </Countdown>
                     </Flex>
                     
