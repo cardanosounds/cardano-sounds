@@ -80,14 +80,15 @@ libraryValidator libraryDatum libraryRedeemer ctx =
       traceIfFalse "Lock token isn't burn" tokensBurnt
 
   where
+    scriptAdress :: Address 
+    scriptAdress = scriptHashAddress (ownHash ctx)
     {-# INLINABLE isScInput #-}
     isScInput :: TxInInfo -> Bool
-    -- isScInput input = (txOutAddress (txInInfoResolved input)) == (Ledger.scriptAddress validator)
-    isScInput input = isPayToScriptOut (txInInfoResolved input)
+    isScInput input = (txOutAddress (txInInfoResolved input)) == scriptAdress
 
     {-# INLINABLE isOutputToSc #-}
     isOutputToSc :: TxOut -> Bool
-    isOutputToSc output = isPayToScriptOut output
+    isOutputToSc output = (txOutAddress output) == scriptAdress
 
     {-# INLINABLE oneLovelaceValueFromInput #-}
     oneLovelaceValueFromInput :: TxInInfo -> Maybe Integer
