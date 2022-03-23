@@ -26,8 +26,8 @@ const ERROR = {
 export type CardanoWASM = typeof import('@emurgo/cardano-serialization-lib-browser');
 
 export class CardanoWallet {
+    _walletApi: WalletApi | undefined
     private _wasm: CardanoWASM
-    private _walletApi: WalletApi | undefined
     private _protocolParameter: ProtocolParameters | undefined
 
     public constructor(wasm: CardanoWASM) {
@@ -36,9 +36,11 @@ export class CardanoWallet {
 
     public async enable(walletname: string){
         this._walletApi = await (walletConfig as any)[walletname.toLowerCase()].enable()
-        if(this._walletApi) return true 
+        if(this._walletApi) {
+            localStorage.setItem('cardano-web3-wallet', walletname)
+            return true     
+        }
         else return false
-        // localStorage.setItem('cardano-web3-wallet', walletname)
     }
    
     public setWallet(walletApi: WalletApi) {
@@ -267,7 +269,6 @@ export class CardanoWallet {
             metadataHash: string | null,
             addMetadata: boolean,
             utxosRaw: TransactionUnspentOutput[] | undefined,
-            networkId: number,
             ttl: number,
             multiSig: boolean,
             delegation: Delegation | null,
@@ -711,7 +712,7 @@ export class CardanoWallet {
             witnesses,
             aux
         );
-        
+
         //todo minfee
 
         const size = transaction.to_bytes().length * 2;
