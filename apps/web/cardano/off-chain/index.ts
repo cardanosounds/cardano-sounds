@@ -8,7 +8,7 @@ import CardanoWallet from '..';
 
 import { validator, validatorAddress } from "../on-chain/nftMediaLibPlutus";
 import { ProtocolParameters } from '../query-api';
-import { Asset, MintedAsset } from '../types';
+import { Asset, MintedAsset, Policy } from '../types';
 
 export type CardanoWASM = typeof import('@emurgo/cardano-serialization-lib-browser');
 
@@ -121,7 +121,6 @@ export class LibraryValidator {
     lock = async (
         protocolParameters: ProtocolParameters,
         asset: Asset,
-        lockTokenMint: MintedAsset,
         adaPrice: number,
         metadata: Object = null) => {
         const localWallet = localStorage.getItem('cardano-web3-wallet')
@@ -134,7 +133,17 @@ export class LibraryValidator {
         const walletAddr = await this.cardano.wallet.getAddress()
 
         if(!walletAddr) return
+
+        const policy: Policy = this.cardano.createLockingPolicyScript(walletAddr, new Date(new Date().getTime() + 60*60000))//address: string, expirationTime: Date, protocolParameters: ProtocolParameters
+       
         let utxos = await this.cardano.wallet.getUtxos();
+        const lockTokenMint = {
+            assetName: 'CSlock' + asset.unit,
+            quantity: '1',
+            policyId: policy.id,
+            policyScript: policy.script,
+            address: walletAddr
+        }
         let tx = this.cardano.transaction({
             ProtocolParameters: protocolParameters,
             PaymentAddress: walletAddr,
