@@ -8,6 +8,7 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "@apollo/client": "^3.5.10",
     "@azure/cosmos": "^3.12.0",
     "@chakra-ui/icons": "^1.0.13",
     "@chakra-ui/react": "^1.6.1",
@@ -17,6 +18,7 @@
     "@emurgo/cip14-js": "^3.0.1",
     "@fontsource/share-tech-mono": "^4.4.2",
     "@fontsource/space-mono": "^4.4.2",
+    "axios": "^0.26.1",
     "date-fns": "^2.21.2",
     "emotion": "^11.0.0",
     "font-awesome": "^4.7.0",
