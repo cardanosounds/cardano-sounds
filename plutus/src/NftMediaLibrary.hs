@@ -14,6 +14,8 @@
 module NftMediaLibrary
   ( nftMediaLibrary
   , nftMediaLibraryBs
+  , LibraryDatum(..)
+  , LibraryRedeemer(..)
   ) where
 
 import           Codec.Serialise
@@ -45,16 +47,12 @@ data LibraryDatum = LibraryDatum {
       lovelacePrice        :: Integer
     } 
 
-data LibraryAction =  Lock | Unlock | Use
-
-data LibraryRedeemer = LibraryRedeemer {
-      libraryAction     ::  LibraryAction
-    } 
+data LibraryRedeemer = Lock | Unlock | Use
 
 {-# INLINABLE libraryValidator #-}
 libraryValidator :: LibraryDatum -> LibraryRedeemer -> ScriptContext -> Bool
 libraryValidator libraryDatum libraryRedeemer ctx =
-  case (libraryAction libraryRedeemer) of
+  case libraryRedeemer of
     Use ->
       traceIfFalse "Tx doesn't have just one script input" (PlutusTx.Prelude.isJust oneScIn) &&
       traceIfFalse "Tx doesn't have just one output to script" (PlutusTx.Prelude.isJust oneOutToSc) &&
@@ -236,12 +234,10 @@ validator :: Validator
 validator = Scripts.validatorScript typedValidator
 
 PlutusTx.makeIsDataIndexed ''LibraryDatum [('LibraryDatum, 0)]
-PlutusTx.makeIsDataIndexed ''LibraryAction [ ('Lock,       0)
+PlutusTx.makeIsDataIndexed ''LibraryRedeemer [ ('Lock,       0)
                                          , ('Unlock,    1)
                                          , ('Use,    2)
                                         ]
-PlutusTx.makeIsDataIndexed ''LibraryRedeemer [('LibraryRedeemer, 0)]
-
 script :: Script
 script = Ledger.unValidatorScript validator
 
