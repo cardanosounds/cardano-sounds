@@ -13,6 +13,8 @@
     "@chakra-ui/react": "^1.6.1",
     "@emotion/react": "^11.1.5",
     "@emotion/styled": "^11.3.0",
+    "@emurgo/cardano-serialization-lib-browser": "^10.0.4",
+    "@emurgo/cip14-js": "^3.0.1",
     "@fontsource/share-tech-mono": "^4.4.2",
     "@fontsource/space-mono": "^4.4.2",
     "date-fns": "^2.21.2",
