@@ -47,7 +47,7 @@ data LibraryDatum = LibraryDatum {
       lovelacePrice        :: Integer
     } 
 
-data LibraryRedeemer = Lock | Unlock | Use
+data LibraryRedeemer = Unlock | Use
 
 {-# INLINABLE libraryValidator #-}
 libraryValidator :: LibraryDatum -> LibraryRedeemer -> ScriptContext -> Bool
@@ -64,12 +64,6 @@ libraryValidator libraryDatum libraryRedeemer ctx =
       traceIfFalse "Datums don't match" (datumsNotEmptyAndEqual inDatumHash outDatumHash) &&
       traceIfFalse "Tx didn't pay correct ADA amount to the script." paidRoyalty
 
-    Lock -> 
-      traceIfFalse "Locking can't use script's input" (length scInputs < 1) &&
-      traceIfFalse "Tx doesn't have just one output to the script" (PlutusTx.Prelude.isJust oneOutToSc) &&
-      traceIfFalse "Tx doesn't have just one AssetClass in output to script" (PlutusTx.Prelude.isJust scOutAsset) &&
-      traceIfFalse "Specified lock token is not being minted" (forgedTokens == 1)
-    
     Unlock ->
       traceIfFalse "Tx doesn't have just one script input" (PlutusTx.Prelude.isJust oneScIn) &&
       traceIfFalse "There should be just one Asset in sc inputs " (PlutusTx.Prelude.isJust scInAsset) &&
@@ -234,9 +228,8 @@ validator :: Validator
 validator = Scripts.validatorScript typedValidator
 
 PlutusTx.makeIsDataIndexed ''LibraryDatum [('LibraryDatum, 0)]
-PlutusTx.makeIsDataIndexed ''LibraryRedeemer [ ('Lock,       0)
-                                         , ('Unlock,    1)
-                                         , ('Use,    2)
+PlutusTx.makeIsDataIndexed ''LibraryRedeemer [ ('Unlock,       0)
+                                         , ('Use,    1)
                                         ]
 script :: Script
 script = Ledger.unValidatorScript validator

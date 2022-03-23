@@ -6,10 +6,13 @@ import           Cardano.Api.Shelley
 
 import qualified Cardano.Ledger.Alonzo.Data as Alonzo
 import qualified Plutus.V1.Ledger.Api as Plutus
-
+import           Ledger                 hiding (singleton)
+import           Ledger.Ada           (adaSymbol, adaToken, lovelaceValueOf)
+import           Plutus.V1.Ledger.Value (assetClass)
+import           Data.Aeson (encode)
 import qualified Data.ByteString.Short as SBS
 
-import           NftMediaLibrary (nftMediaLibraryBs, nftMediaLibrary)
+import           NftMediaLibrary (nftMediaLibraryBs, nftMediaLibrary, LibraryDatum(..), LibraryRedeemer(..))
 
 main :: IO ()
 main = do
@@ -22,12 +25,25 @@ main = do
     then writePlutusScript scriptnum scriptname nftMediaLibrary nftMediaLibraryBs 
     else return ()
 
+
+
+libraryDatum :: LibraryDatum
+libraryDatum = LibraryDatum {
+      tokensClass          = assetClass adaSymbol adaToken,
+      lovelacePrice        = 10000000
+    } 
+libraryRedeemer :: LibraryRedeemer
+libraryRedeemer = Use
+
 writePlutusScript :: Integer -> FilePath -> PlutusScript PlutusScriptV1 -> SBS.ShortByteString -> IO ()
 writePlutusScript scriptnum filename scriptSerial scriptSBS =
   do
+  print $ "Datum value: " <> encode (scriptDataToJson ScriptDataJsonDetailedSchema $ fromPlutusData (Plutus.toData libraryDatum))
+  print $ "Redeemer value: " <> encode (scriptDataToJson ScriptDataJsonDetailedSchema $ fromPlutusData (Plutus.toData libraryRedeemer))
   case Plutus.defaultCostModelParams of
         Just m ->
           let Alonzo.Data pData = toAlonzoData (ScriptDataNumber scriptnum)
+             
               (logout, e) = Plutus.evaluateScriptCounting Plutus.Verbose m scriptSBS [pData]
           in do print ("Log output" :: String) >> print logout
                 case e of
