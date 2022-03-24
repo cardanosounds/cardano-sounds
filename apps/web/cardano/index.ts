@@ -1,6 +1,6 @@
 import { Buffer } from 'buffer';
 import AssetFingerprint from '@emurgo/cip14-js';
-import { TransactionBuilder, Transaction, TransactionOutputs, TransactionUnspentOutput, CoinSelectionStrategyCIP2, NativeScript, AssetName, Int, BigNum, BaseAddress, PlutusData, Redeemer, PlutusScript } from '@emurgo/cardano-serialization-lib-browser'
+import { TransactionBuilder, Transaction, TransactionOutputs, TransactionUnspentOutput, CoinSelectionStrategyCIP2, NativeScript, AssetName, Int, BigNum, BaseAddress, PlutusData, Redeemer, PlutusScript, hash_plutus_data } from '@emurgo/cardano-serialization-lib-browser'
 
 import { ProtocolParameters } from './query-api'
 import { Value } from '@emurgo/cardano-serialization-lib-browser'
@@ -308,6 +308,7 @@ export class CardanoWallet {
                 if (this.lib.BigNum.from_str(lovelace).compare(minAda) < 0)
                     outputValue.set_coin(minAda)
             }
+
             (recipient?.mintedAssets || []).map((asset) => {
                 minting += 1
                 mintedAssetsArray.push({
@@ -316,8 +317,6 @@ export class CardanoWallet {
                 })
             })
 
-            if (parseInt(outputValue.coin().to_str()) > 0) {
-            }
             if ((recipient.mintedAssets || []).length > 0) {
                 minAdaMint = this.lib.min_ada_required(
                     mintedAssets,
@@ -337,37 +336,42 @@ export class CardanoWallet {
                 costValues[ReceiveAddress] = outputValue;
 
             const multiasst = outputValue.multiasset()
+            let addr
+            try{
+                addr = this.lib.Address.from_bytes(Buffer.from(recipient.address, "hex"))
+            }
+            catch {
+                addr = this.lib.Address.from_bech32(recipient.address)
+
+            }
+            let outputBuilder = this.lib.TransactionOutputBuilder.new().with_address(addr)
+            // let outputBuilder = this.lib.TransactionOutputBuilder.new().with_address(addr)
+            let output
+            if(datums?.length >= 1 && redeemers?.length < 1){
+                //datums  should be moved to recipient so it can be easily assigned to correct utxos
+                outputBuilder = outputBuilder.with_data_hash(hash_plutus_data(datums[0]))
+            }
             if (parseInt(outputValue.coin().to_str()) > 0) {
                 if(multiasst){
-                    outputs.add(
-                        this.lib.TransactionOutputBuilder.new()
-                        .with_address(this.lib.Address.from_bech32(ReceiveAddress))
-                        .next()
-                        .with_coin_and_asset(outputValue.coin(), multiasst)
-                        .build() 
-                    )
+                    output = outputBuilder.next()
+                    .with_coin_and_asset(outputValue.coin(), multiasst)
+                    .build() 
                 } else {
-                    outputs.add(
-                        this.lib.TransactionOutputBuilder.new()
-                        .with_address(this.lib.Address.from_bech32(ReceiveAddress))
-                        .next()
-                        .with_coin(outputValue.coin())
-                        .build() 
-                    )
+                    output = outputBuilder.next()
+                    .with_coin(outputValue.coin())
+                    .build() 
                 }
             } else if(multiasst) {
-                outputs.add(
-                    this.lib.TransactionOutputBuilder.new()
-                    .with_address(this.lib.Address.from_bech32(ReceiveAddress))
-                    .next()
-                    .with_asset_and_min_required_coin(multiasst, this.lib.BigNum.from_str(ProtocolParameters.coinsPerUtxoWord.toString()))
-                    .build() 
-                )
+                output = outputBuilder.next()
+                .with_asset_and_min_required_coin(multiasst, this.lib.BigNum.from_str(ProtocolParameters.coinsPerUtxoWord.toString()))
+                .build() 
             }
+            if(output) outputs.add(output)
         }
+        console.log('recipients loop done')
         let RawTransaction = null
-        if (datums?.length >= 1) {
-            RawTransaction = await this._txBuilderPlutusScript({
+        if (redeemers?.length >= 1) {
+            RawTransaction = await this._txBuilderSpendFromPlutusScript({
                 PaymentAddress: PaymentAddress,
                 Utxos: utxos,
                 Outputs: outputs,
@@ -380,10 +384,19 @@ export class CardanoWallet {
                 redeemers: redeemers,
                 plutusValidators: plutusValidators,
                 plutusPolicies: plutusPolicies
-
             })
-        }
-        else if (minting > 0) {
+        } else if (datums?.length >= 1) {
+            RawTransaction = await this._txBuilderPayToPlutusScript({
+                PaymentAddress: PaymentAddress,
+                Utxos: utxos,
+                Outputs: outputs,
+                mintedAssetsArray: mintedAssetsArray,
+                ProtocolParameter: this._protocolParameter,
+                metadata: metadata,
+                metadataHash: metadataHash,
+                ttl: ttl
+            })
+        } else if (minting > 0) {
             RawTransaction = await this._txBuilderMinting({
                 PaymentAddress: PaymentAddress,
                 Utxos: utxos,
@@ -413,15 +426,15 @@ export class CardanoWallet {
         return RawTransaction
     }
 
-    async createLockingPolicyScript(address: string, expirationTime: Date, protocolParameters: ProtocolParameters) {
+    async createLockingPolicyScript(address: string, expirationTime: Date | null, protocolParameters: ProtocolParameters) {
         var now = new Date();
-        if(!protocolParameters) return null
+        // if(!protocolParameters) return null
         this._protocolParameter = protocolParameters;
 
-        const slot = this._protocolParameter.slot
-        const duration = expirationTime.getTime() - now.getTime();
+        const slot = this._protocolParameter?.slot
+        const duration = !expirationTime ? null : expirationTime.getTime() - now.getTime();
 
-        const ttl = slot + duration;
+        const ttl = !expirationTime ? null : slot + duration;
 
         const paymentKeyHash = this.lib.BaseAddress.from_address(
             this.lib.Address.from_bytes(Buffer.from(address, 'hex'))
@@ -433,11 +446,14 @@ export class CardanoWallet {
         const nativeScripts = this.lib.NativeScripts.new();
         const script = this.lib.ScriptPubkey.new(paymentKeyHash);
         const nativeScript = this.lib.NativeScript.new_script_pubkey(script);
-        const lockScript = this.lib.NativeScript.new_timelock_expiry(
-            this.lib.TimelockExpiry.new(ttl)
-        );
         nativeScripts.add(nativeScript);
-        nativeScripts.add(lockScript);
+        if(expirationTime) {
+            const lockScript = this.lib.NativeScript.new_timelock_expiry(
+                this.lib.TimelockExpiry.new(ttl)
+            );
+            nativeScripts.add(lockScript);
+        }
+        
         const finalScript = this.lib.NativeScript.new_script_all(
             this.lib.ScriptAll.new(nativeScripts)
         );
@@ -589,7 +605,7 @@ export class CardanoWallet {
         return assets;
     }
 
-    async _txBuilderPlutusScript({
+    async _txBuilderSpendFromPlutusScript({
         PaymentAddress,
         Utxos,
         Outputs,
@@ -654,7 +670,17 @@ export class CardanoWallet {
         }
 
         txbuilder.add_inputs_from(utxos, CoinSelectionStrategyCIP2.RandomImproveMultiAsset)
-        txbuilder.add_change_if_needed(this.lib.Address.from_bech32(PaymentAddress));
+        console.log('inputs added')
+        let addr
+        try{
+            addr = this.lib.Address.from_bytes(Buffer.from(PaymentAddress, "hex"))
+        }
+        catch {
+            addr = this.lib.Address.from_bech32(PaymentAddress)
+
+        }
+        console.log(addr)
+        txbuilder.add_change_if_needed(addr);
 
         const txBody = txbuilder.build()
 
@@ -717,6 +743,115 @@ export class CardanoWallet {
 
         const size = transaction.to_bytes().length * 2;
         if (size > ProtocolParameter.maxTxSize) throw ERROR.TX_TOO_BIG;
+
+        return transaction;
+    }
+
+    async _txBuilderPayToPlutusScript({
+        PaymentAddress,
+        Utxos,
+        Outputs,
+        ProtocolParameter,
+        mintedAssetsArray = [],
+        metadata = null,
+        metadataHash = null,
+        ttl = null,
+    }: {
+        PaymentAddress: string,
+        Utxos: TransactionUnspentOutput[],
+        Outputs: TransactionOutputs,
+        ProtocolParameter: ProtocolParameters,
+        mintedAssetsArray: MintedAsset[],
+        metadata: object | null,
+        metadataHash: string | null,
+        ttl: number | null,
+    }): Promise<Transaction | null> {
+
+        const nativeScripts = this.lib.NativeScripts.new();
+        const txbuilder = this.createTxBuilder(ProtocolParameter)
+
+        mintedAssetsArray.forEach(a => {
+            const policyScript = this.lib.NativeScript.from_bytes(
+                Buffer.from(a.policyScript, 'hex'),
+            );
+            txbuilder.add_mint_asset(
+                policyScript,
+                AssetName.new(Buffer.from(a.assetName, 'ascii')),
+                Int.new(BigNum.from_str(a.quantity.toString()))
+            )
+        })
+
+        let aux = this.lib.AuxiliaryData.new();
+        for (let i = 0; i < Outputs.len(); i++) {
+            txbuilder.add_output(Outputs.get(i));
+        }
+        const utxos = this.lib.TransactionUnspentOutputs.new()
+        for (let i = 0; i < Utxos.length; i++) {
+            if (typeof Utxos[i] === 'string' || Utxos[i] instanceof String){
+                utxos.add(
+                    this.lib.TransactionUnspentOutput.from_bytes(
+                        Buffer.from(Utxos[i].toString(), 'hex')
+                    )
+                )
+            }
+            else if(typeof Utxos[i] === 'object'){
+                utxos.add(Utxos[i] as TransactionUnspentOutput)
+            }
+        }
+
+        if(ttl){
+            txbuilder.set_ttl(ttl)
+        }
+
+        txbuilder.add_inputs_from(utxos, CoinSelectionStrategyCIP2.LargestFirstMultiAsset)
+        let addr
+        try{
+            addr = this.lib.Address.from_bytes(Buffer.from(PaymentAddress, "hex"))
+        }
+        catch {
+            addr = this.lib.Address.from_bech32(PaymentAddress)
+
+        }
+        txbuilder.add_change_if_needed(addr);
+        const txBody = txbuilder.build()
+
+
+        if (metadata) {
+            const generalMetadata = this.lib.GeneralTransactionMetadata.new();
+            Object.entries(metadata).map(([MetadataLabel, Metadata]) => {
+                generalMetadata.insert(
+                    this.lib.BigNum.from_str(MetadataLabel),
+                    this.lib.encode_json_str_to_metadatum(JSON.stringify(Metadata), 0),
+                );
+            });
+
+            aux.set_metadata(generalMetadata);
+        }
+        if (metadataHash) {
+            const auxDataHash = this.lib.AuxiliaryDataHash.from_bytes(
+                Buffer.from(metadataHash, 'hex'),
+            );
+            console.log(auxDataHash);
+            txBody.set_auxiliary_data_hash(auxDataHash);
+        } else txBody.set_auxiliary_data_hash(this.lib.hash_auxiliary_data(aux));
+        const witnesses = this.lib.TransactionWitnessSet.new();
+
+        witnesses.set_native_scripts(nativeScripts);
+
+        const vkeys = this.lib.Vkeywitnesses.new();
+       
+        witnesses.set_vkeys(vkeys);
+
+        const transaction = this.lib.Transaction.new(
+            txBody,
+            witnesses,
+            aux
+        );
+
+        const size = transaction.to_bytes().length * 2;
+        if (size > ProtocolParameter.maxTxSize) {
+            throw ERROR.TX_TOO_BIG;
+        }
 
         return transaction;
     }
