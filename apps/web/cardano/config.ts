@@ -17,8 +17,9 @@ type Config = {
 }
 
 const defaultConfig: Config = {
-  isMainnet: true,
-  queryAPI: { type: 'koios' }
+  isMainnet: false,
+  // queryAPI: { type: 'koios' }
+  queryAPI: { type: 'graphql',  URI: 'https://graphql-api.testnet.dandelion.link/'}
 }
 
 const ConfigContext = createContext<[Config, (x: Config) => void]>([defaultConfig, (_) => { }])

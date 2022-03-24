@@ -1,12 +1,15 @@
 import {
     BigInt,
+    NativeScript,
     PlutusData,
-    PlutusScript
+    PlutusScript,
+    Transaction,
+    TransactionWitnessSet
 } from '@emurgo/cardano-serialization-lib-browser'
 
 import CardanoWallet from '..';
 
-import { validator, validatorAddress } from "../on-chain/nftMediaLibPlutus";
+import { validator, validatorAddress, validatorAddressTestnet } from "../on-chain/nftMediaLibPlutus";
 import { ProtocolParameters } from '../query-api';
 import { Asset, MintedAsset, Policy } from '../types';
 import TransactionParams from '../types/TransactionParams';
@@ -112,7 +115,7 @@ export class LibraryRedeemer {
 
 export class LibraryValidator {
 
-    private cardano
+    private cardano: CardanoWallet
 
     constructor(cardano: CardanoWallet) {
         this.cardano = cardano
@@ -124,77 +127,91 @@ export class LibraryValidator {
             adaPrice: number,
             metadata: Object = null
         ) => {
-            console.log({
-                protocolParameters: protocolParameters,
-                asset: asset,
-                adaPrice: adaPrice,
-                metadata: null
-            })
-            const localWallet = localStorage.getItem('cardano-web3-wallet')
-            console.log(await this.cardano.enable('nami'))
-            if(!this.cardano.wallet && localWallet) {
-                if(!await this.cardano.enable(localWallet)) return
-            } else if (!this.cardano.wallet){
-                return
-            }
-            console.log(this.cardano.wallet)
-            const walletAddr = await this.cardano.getAddressHexString()
-            console.log(walletAddr)
+        console.log({
+            protocolParameters: protocolParameters,
+            asset: asset,
+            adaPrice: adaPrice,
+            metadata: null
+        })
+        const localWallet = localStorage.getItem('cardano-web3-wallet')
+        console.log(await this.cardano.enable('nami'))
+        if(!this.cardano.wallet && localWallet) {
+            if(!await this.cardano.enable(localWallet)) return
+        } else if (!this.cardano.wallet){
+            return
+        }
+        console.log(this.cardano.wallet)
+        const walletAddr = await this.cardano.getAddressHexString()
+        console.log(walletAddr)
 
 
-            if(!walletAddr) return
+        if(!walletAddr) return
 
-            const policy: Policy = await this.cardano.createLockingPolicyScript(walletAddr, null, protocolParameters)//address: string, expirationTime: Date, protocolParameters: ProtocolParameters
-            console.log('policy')
-            console.log(policy)
-            let utxos = await this.cardano.wallet.getUtxos();
-            const lockTokenMint: MintedAsset = {
-                assetName: 'CSlock' + asset.unit.split('.')[1],
-                quantity: '1',
-                policyId: policy.id,
-                policyScript: policy.script,
-                address: walletAddr
-            }
-            let tx = await this.cardano.transaction({
-                ProtocolParameters: protocolParameters,
-                PaymentAddress: walletAddr,
-                recipients: [{
-                    address: validatorAddress,
-                    amount: 2.5,
-                    assets:[asset]
-                }, {
-                    address: walletAddr,
-                    amount: 0,
-                    mintedAssets: [lockTokenMint]
-                }],
-                metadata: metadata,
-                metadataHash: null,
-                addMetadata: true,
-                utxosRaw: utxos,
-                ttl: 0,
-                multiSig: false,
-                delegation: null,
-                datums: [
-                    new LibraryDatum({ 
-                        lockTokenPolicy: lockTokenMint.policyId,
-                        lockTokenName: lockTokenMint.assetName,
-                        lovelacePrice: BigInt.from_str((adaPrice * 1000000).toString())
-                    }).toPlutusData(this.cardano.lib)
-                ],
-                redeemers: [],
-                plutusValidators: [],
-                plutusPolicies: []
-            })
-            console.log('tx')
-            console.log(tx)
-            console.log('tx typeof')
-            console.log(typeof tx)
-            const signature = await this.cardano.wallet.signTx(Buffer.from(tx.to_bytes()).toString('hex'), false)
-            if(signature) {
-                console.log(
-                    await this.cardano.wallet.submitTx(signature)
-                )
-            }
+        const policy: Policy = await this.cardano.createLockingPolicyScript(walletAddr, null, protocolParameters)//address: string, expirationTime: Date, protocolParameters: ProtocolParameters
+        console.log('policy')
+        console.log(policy)
+        let utxos = await this.cardano.wallet.getUtxos();
+        const lockTokenMint: MintedAsset = {
+            assetName: 'CSlock' + asset.unit.split('.')[1],
+            quantity: '1',
+            policyId: policy.id,
+            policyScript: policy.script,
+            address: walletAddr
+        }
+        let tx: Transaction = await this.cardano.transaction({
+            ProtocolParameters: protocolParameters,
+            PaymentAddress: walletAddr,
+            recipients: [{
+                address: validatorAddressTestnet,
+                amount: '2.5',
+                assets:[asset]
+            }, {
+                address: walletAddr,
+                amount: '0',
+                mintedAssets: [lockTokenMint]
+            }],
+            metadata: metadata,
+            metadataHash: null,
+            addMetadata: true,
+            utxosRaw: utxos,
+            ttl: 0,
+            multiSig: false,
+            delegation: null,
+            datums: [
+                new LibraryDatum({ 
+                    lockTokenPolicy: lockTokenMint.policyId,
+                    lockTokenName: lockTokenMint.assetName,
+                    lovelacePrice: BigInt.from_str((adaPrice * 1000000).toString())
+                }).toPlutusData(this.cardano.lib)
+            ],
+            redeemers: [],
+            plutusValidators: [],
+            plutusPolicies: []
+        })
+        console.log('tx')
+        console.log(tx)
+        console.log('tx typeof')
+        console.log(typeof tx)
+
+        const transactionWitnessSet = TransactionWitnessSet.new();
+
+        const txVkeyWitnessesStr = await this.cardano.wallet.signTx(Buffer.from(tx.to_bytes()).toString("hex"), true);
+        const txVkeyWitnessesSer = TransactionWitnessSet.from_bytes(Buffer.from(txVkeyWitnessesStr, "hex"));
+        transactionWitnessSet.set_vkeys(txVkeyWitnessesSer.vkeys());
+        const policyScripts = this.cardano.lib.NativeScripts.new()
+        policyScripts.add(NativeScript.from_bytes(Buffer.from(policy.script, 'hex')))
+        transactionWitnessSet.set_native_scripts(policyScripts)
+        const txBody = tx.body()
+        let aux = tx.auxiliary_data();
+        txBody.set_auxiliary_data_hash(this.cardano.lib.hash_auxiliary_data(aux))
+        const signedTx = Transaction.new(
+            txBody,
+            transactionWitnessSet,
+            aux
+        );
+        
+        const submittedTxHash = await this.cardano.wallet.submitTx(Buffer.from(signedTx.to_bytes()).toString("hex"));
+        console.log({submittedTxHash: submittedTxHash})
     }
 
     unlock = async (
@@ -263,7 +280,7 @@ export class LibraryValidator {
             plutusPolicies: []
         }
 
-        let tx = this.cardano.transaction(txParams)
+        let tx = await this.cardano.transaction(txParams)
         const signature = await this.cardano.wallet.signTx(Buffer.from(tx.to_bytes()).toString('hex'), false)
         if(signature) {
             console.log(

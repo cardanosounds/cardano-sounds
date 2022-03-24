@@ -187,6 +187,9 @@ type ProtocolParameters = {
 
 const ProtocolParametersQuery = gql`
 query getProtocolParameters {
+  tip {
+    slotNo
+  }
   cardano {
     currentEpoch {
       protocolParams {
@@ -217,6 +220,9 @@ const useProtocolParametersQuery = (config: Config) => {
 
         type QueryData = {
           genesis: {
+            tip: {
+              slotNo: number
+            }
             shelley: {
               protocolParams: {
                 minFeeA: number
@@ -244,7 +250,7 @@ const useProtocolParametersQuery = (config: Config) => {
               coinsPerUtxoWord: params.coinsPerUtxoWord,
               maxValSize: parseFloat(params.maxValSize),
               maxTxSize: params.maxTxSize,
-              slot: 0
+              slot: data.genesis.tip.slotNo
 
             }
           })

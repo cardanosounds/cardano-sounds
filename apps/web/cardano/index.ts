@@ -1050,17 +1050,12 @@ export class CardanoWallet {
         return transaction;
     }
 
-    async submitTx({
-        transactionRaw,
-        witnesses,
-        metadata
-    }
-        : {
-            transactionRaw: string,
-            witnesses: string[],
-            metadata?: object
-            // scripts: any,
-        }) {
+    async submitTx(transactionRaw: string,
+        witnesses: string[],
+        metadata?: object
+        ) {
+        console.log('transactionRaw')
+        console.log(transactionRaw)
         let transaction = this.lib.Transaction.from_bytes(
             Buffer.from(transactionRaw, 'hex'),
         );
@@ -1070,7 +1065,10 @@ export class CardanoWallet {
         const txScripts = txWitnesses.native_scripts();
         const totalVkeys = this.lib.Vkeywitnesses.new();
         const totalScripts = this.lib.NativeScripts.new();
+        console.log('submitTx before for')
         for (var witness in witnesses) {
+            console.log("witness")
+            console.log(witness)
             const addWitnesses = this.lib.TransactionWitnessSet.from_bytes(
                 Buffer.from(witness, 'hex'),
             );
@@ -1087,6 +1085,7 @@ export class CardanoWallet {
                 }
             }
         }
+        console.log('submitTx after for')
 
         if (txVkeys) {
             for (let i = 0; i < txVkeys.len(); i++) {
@@ -1103,6 +1102,7 @@ export class CardanoWallet {
         const totalWitnesses = this.lib.TransactionWitnessSet.new();
         totalWitnesses.set_vkeys(totalVkeys);
         totalWitnesses.set_native_scripts(totalScripts);
+        console.log('submitTx2')
 
         let aux;
         if (metadata) {
@@ -1119,11 +1119,13 @@ export class CardanoWallet {
         } else {
             aux = transaction.auxiliary_data();
         }
+        console.log('submitTx3')
         const signedTx = this.lib.Transaction.new(
             transaction.body(),
             totalWitnesses,
             aux
         );
+        console.log('submitTx4')
         return await this.wallet?.submitTx(signedTx);
     }
 
