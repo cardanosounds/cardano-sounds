@@ -15,13 +15,16 @@ import {
   AccordionButton,
   AccordionPanel,
   useColorMode,
+  FormControl,
+  FormLabel,
   Popover, PopoverTrigger, PopoverContent, PopoverCloseButton, PopoverHeader, PopoverBody, PopoverArrow
 } from "@chakra-ui/react";
-import { getFilesMeta, prepMetadata } from "../lib/mintMetadata"
+import { prepMetadata } from "../lib/mintMetadata"
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { useContext, useState, useEffect } from "react";
 import WalletJs from "../wallet-js";
 import WalletContext from "../lib/WalletContext";
-import { BsInfoCircleFill } from 'react-icons/bs'
 import NextChakraLink from "./NextChakraLink";
 import { NotConnectedToast, NftLimitToast, SuccessTransactionToast, PendingTransactionToast, FailedTransactionToast, TxErrorSubmitToast, NoWalletToast } from '../lib/toasts'
 
@@ -38,6 +41,8 @@ const Mint = () => {
   const [quantityDict, setQuantityDict] = useState({})
   const [policy, setPolicy] = useState(null)
   const [nfts, setNfts] = useState([])
+  const [startDate, setStartDate] = useState(null);
+  const [policyLockDate, setPolicyLockDate] = useState(null)
 
   const [inputs, setInputs] = useState({
     image: "",
@@ -119,26 +124,31 @@ const Mint = () => {
     setLoading(true)
     await init()
     let mintPolicy = policy
-    if (!policy) {
-      mintPolicy = await wallet.createLockingPolicyScript()
+    // if (!policy) {
+      console.log('policyLockDate')
+      console.log(policyLockDate)
+      mintPolicy = await wallet.createLockingPolicyScript(policyLockDate)
       setPolicy(mintPolicy)
+      const policyScript = {
+        type: "all",
+        scripts: [
+          {
+            keyHash: mintPolicy.paymentKeyHash,
+            type: "sig",
+          },
+          { slot: mintPolicy.ttl, type: "before" }
+        ],
+      }
+      if(policyLockDate) policyScript.scripts.push({ slot: mintPolicy.ttl, type: "before" })
+      console.log(JSON.stringify(policyScript))
       fetch(`https://pool.pm/register/policy/${mintPolicy.id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          type: "all",
-          scripts: [
-            {
-              keyHash: mintPolicy.paymentKeyHash,
-              type: "sig",
-            },
-            { slot: mintPolicy.ttl, type: "before" },
-          ],
-        }),
+        body: JSON.stringify(policyScript),
       })
-    }
+    // }
 
     let metadata = {
       [mintPolicy.id]: prepMetadata(inputs.image, filesWithType, inputs)
@@ -278,6 +288,18 @@ const Mint = () => {
         }
         <Flex flexDirection="row" w="80%">
           <Flex flexDirection="column" w="75%">
+            <Box h="3rem" />
+            {/* <Label>Policy lock (empty if no limit)</Label> */}
+            <Text>Policy lock (empty if no limit)</Text>
+            <DatePicker 
+              id='policy-timelock'
+              showTimeInput
+              timeInputLabel="Time:"
+              dateFormat="MM/dd/yyyy h:mm aa"
+              selected={startDate} onChange={(date) => {
+                setStartDate(date)
+                setPolicyLockDate(date)
+            }}/>
             <Box h="3rem" />
             <Input
               focusBorderColor="blue.700"

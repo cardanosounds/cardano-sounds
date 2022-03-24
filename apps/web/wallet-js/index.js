@@ -604,10 +604,23 @@ class WalletJs {
       .to_bech32();
   }
 
-  async createLockingPolicyScript() {
-    const protocolParameters = await this.getProtocolParameters();
-    const slot = parseInt(protocolParameters.slot);
-    const ttl = slot + 36000;
+  async createLockingPolicyScript(expirationTime) {
+    // const protocolParameters = await this.getProtocolParameters();
+    const slotAndTime = {
+      slot: 56596019,
+      time: 1648162313347
+    }
+    // const slot = parseInt(protocolParameters.slot);
+    // const ttl = slot + 36000;
+    // const timeWhenSlot = new Date().getTime()
+    // console.log('slot, timeWhenSlot')
+    // console.log(slot, timeWhenSlot)
+    const duration = !expirationTime ? null : expirationTime.getTime() - slotAndTime.time;
+
+    console.log('duration')
+    console.log(duration)
+
+    const ttl = !expirationTime ? null : slotAndTime.slot + duration;
     const address = Buffer.from(
       (await this.walletApi.getChangeAddress()),
       "hex"
@@ -620,11 +633,13 @@ class WalletJs {
     const nativeScripts = Loader.Cardano.NativeScripts.new();
     const script = Loader.Cardano.ScriptPubkey.new(paymentKeyHash);
     const nativeScript = Loader.Cardano.NativeScript.new_script_pubkey(script);
-    const lockScript = Loader.Cardano.NativeScript.new_timelock_expiry(
-      Loader.Cardano.TimelockExpiry.new(ttl)
-    );
+    // if(ttl) {
+      const lockScript = Loader.Cardano.NativeScript.new_timelock_expiry(
+        Loader.Cardano.TimelockExpiry.new(ttl)
+      );
+      nativeScripts.add(lockScript);
+    // }
     nativeScripts.add(nativeScript);
-    nativeScripts.add(lockScript);
     const finalScript = Loader.Cardano.NativeScript.new_script_all(
       Loader.Cardano.ScriptAll.new(nativeScripts)
     );
