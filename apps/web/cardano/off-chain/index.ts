@@ -161,15 +161,24 @@ export class LibraryValidator {
         let tx: Transaction = await this.cardano.transaction({
             ProtocolParameters: protocolParameters,
             PaymentAddress: walletAddr,
-            recipients: [{
-                address: validatorAddressTestnet,
+            recipients: [
+            {
+                address: validatorAddressTestnet,//'addr_test1qqrsm4vj985epelhc8qpv8jahaqpjll7ed67647dk47ku4x5x8xk48yntkwhc2s20manmqartkchrp2qxgfwdaezsq5qu9urvd',
                 amount: '2.5',
-                assets:[asset]
-            }, {
+                assets:[asset],
+                datum: new LibraryDatum({ 
+                    lockTokenPolicy: lockTokenMint.policyId,
+                    lockTokenName: lockTokenMint.assetName,
+                    lovelacePrice: BigInt.from_str((adaPrice * 1000000).toString())
+                }).toPlutusData(this.cardano.lib)
+            }
+            ,
+            {
                 address: walletAddr,
                 amount: '0',
                 mintedAssets: [lockTokenMint]
-            }],
+            }
+            ],
             metadata: metadata,
             metadataHash: null,
             addMetadata: true,
@@ -177,13 +186,6 @@ export class LibraryValidator {
             ttl: 0,
             multiSig: false,
             delegation: null,
-            datums: [
-                new LibraryDatum({ 
-                    lockTokenPolicy: lockTokenMint.policyId,
-                    lockTokenName: lockTokenMint.assetName,
-                    lovelacePrice: BigInt.from_str((adaPrice * 1000000).toString())
-                }).toPlutusData(this.cardano.lib)
-            ],
             redeemers: [],
             plutusValidators: [],
             plutusPolicies: []
@@ -195,7 +197,8 @@ export class LibraryValidator {
 
         const transactionWitnessSet = TransactionWitnessSet.new();
 
-        const txVkeyWitnessesStr = await this.cardano.wallet.signTx(Buffer.from(tx.to_bytes()).toString("hex"), true);
+        // const signedTx = await this.cardano.wallet.signTx(Buffer.from(tx.to_bytes()).toString("hex"), false);
+        const txVkeyWitnessesStr = await this.cardano.wallet.signTx(Buffer.from(tx.to_bytes()).toString("hex"), false);
         const txVkeyWitnessesSer = TransactionWitnessSet.from_bytes(Buffer.from(txVkeyWitnessesStr, "hex"));
         transactionWitnessSet.set_vkeys(txVkeyWitnessesSer.vkeys());
         const policyScripts = this.cardano.lib.NativeScripts.new()
@@ -209,7 +212,37 @@ export class LibraryValidator {
             transactionWitnessSet,
             aux
         );
+
+        // console.log('signedTx')
+        // console.log(signedTx)
+
+        // const txVkeyWitness = await this.cardano.wallet.signTx(
+        //     Buffer.from(tx.to_bytes()).toString('hex'),
+        //     false
+        // )
+        // console.log('txVkeyWitness')
+        // console.log(txVkeyWitness)
+        // const txWitnesses = TransactionWitnessSet.from_bytes(
+        //     Buffer.from(txVkeyWitness, 'hex')
+        // );
+        // console.log('txWitnesses')
+        // console.log(txWitnesses)
+        // console.log('txWitnesses.vkeys()')
+        // console.log(txWitnesses.vkeys().len())
+        // const nativescripts = NativeScripts.new()
+        // const policyscript = NativeScript.from_bytes(Buffer.from(policy.script, 'hex'))
+        // nativescripts.add(policyscript)
+        // txWitnesses.set_native_scripts(nativescripts)
         
+        // const signedTx = Transaction.new(
+        //     tx.body(),
+        //     txWitnesses,
+        //     tx.auxiliary_data()
+        // );
+
+        
+        // const submittedTxHash = await this.cardano.submitTx(Buffer.from(tx.to_bytes()).toString('hex'), [txVkeyWitness])
+        // const submittedTxHash = await this.cardano.wallet.submitTx(signedTx)
         const submittedTxHash = await this.cardano.wallet.submitTx(Buffer.from(signedTx.to_bytes()).toString("hex"));
         console.log({submittedTxHash: submittedTxHash})
     }
@@ -258,7 +291,8 @@ export class LibraryValidator {
             PaymentAddress: walletAddr,
             recipients: [{
                 address: walletAddr,
-                amount: '0',
+                amount: '0'
+                ,
                 mintedAssets: [lockTokenBurn]
             }],
             metadata: metadata,
