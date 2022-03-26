@@ -177,6 +177,7 @@ export async function _txBuilderMinting({
             AssetName.new(Buffer.from(a.assetName, 'ascii')),
             Int.new(BigNum.from_str(a.quantity.toString()))
         )
+        nativeScripts.add(policyScript)
     })
     
     let aux = AuxiliaryData.new();
