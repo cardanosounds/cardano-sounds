@@ -29,8 +29,8 @@ export default function Buy(data){
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const saleDateString = "2022-03-27 20:00:00 GMT+0100"
-    const saleEndDateString = "2022-03-30 20:00:00 GMT+0100"
+    const saleDateString = "2022-03-27 20:00:00 GMT+0200"
+    const saleEndDateString = "2022-03-30 20:00:00 GMT+0200"
     const saleDate =  new Date(saleDateString) 
     const saleEndDate =  new Date(saleEndDateString) 
 
