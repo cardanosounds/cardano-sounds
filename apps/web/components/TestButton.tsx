@@ -19,7 +19,7 @@ export default function TestButton() {
         console.log({pParams, validator})
         if(pParams.type !== 'ok') return
 
-        await validator.lock(pParams.data, {unit: '74f43bdf645aaeb25f39c6392cdb771ff4eb4da0c017cc183c490b8f.CSNFT18', quantity: '1'}, 5, null)
+        await validator.lock(pParams.data, {unit: '74f43bdf645aaeb25f39c6392cdb771ff4eb4da0c017cc183c490b8f.CSNFT19', quantity: '1'}, 5, null)
     }
 
     return (

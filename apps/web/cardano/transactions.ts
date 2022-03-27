@@ -208,9 +208,6 @@ export async function _txBuilderMinting({
         addr = Address.from_bech32(PaymentAddress)
 
     }
-    txbuilder.add_change_if_needed(addr);
-    const txBody = txbuilder.build()
-
     if (metadata) {
         const generalMetadata = GeneralTransactionMetadata.new();
         Object.entries(metadata).map(([MetadataLabel, Metadata]) => {
@@ -221,41 +218,11 @@ export async function _txBuilderMinting({
         });
         aux.set_metadata(generalMetadata);
     }
-    if (metadataHash) {
-        const auxDataHash = AuxiliaryDataHash.from_bytes(
-            Buffer.from(metadataHash, 'hex'),
-        );
-        console.log(auxDataHash);
-        txBody.set_auxiliary_data_hash(auxDataHash);
-    } else txBody.set_auxiliary_data_hash(hash_auxiliary_data(aux));
-    const witnesses = TransactionWitnessSet.new();
-    witnesses.set_native_scripts(nativeScripts);
+    txbuilder.set_auxiliary_data(aux);
 
-    const dummyVkeyWitness =
-        '8258208814c250f40bfc74d6c64f02fc75a54e68a9a8b3736e408d9820a6093d5e38b95840f04a036fa56b180af6537b2bba79cec75191dc47419e1fd8a4a892e7d84b7195348b3989c15f1e7b895c5ccee65a1931615b4bdb8bbbd01e6170db7a6831310c';
+    txbuilder.add_change_if_needed(addr);
 
-    const vkeys = Vkeywitnesses.new();
-    vkeys.add(
-        Vkeywitness.from_bytes(Buffer.from(dummyVkeyWitness, 'hex')),
-    );
-
-    if (multiSig) {
-        vkeys.add(
-            Vkeywitness.from_bytes(Buffer.from(dummyVkeyWitness, 'hex')),
-        );
-    }
-    witnesses.set_vkeys(vkeys);
-
-    const txMultiassts = txBody.multiassets()
-    const txAuxData = txBody.auxiliary_data_hash()
-    if (!txMultiassts || !txAuxData) {
-        return null
-    }
-    const transaction = Transaction.new(
-        txBody,
-        witnesses,
-        aux
-    );
+    const transaction = txbuilder.build_tx()
 
     const size = transaction.to_bytes().length * 2;
     if (size > ProtocolParameter.maxTxSize) throw 'ERROR.TX_TOO_BIG';
