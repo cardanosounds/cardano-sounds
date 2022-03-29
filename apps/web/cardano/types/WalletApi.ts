@@ -1,4 +1,4 @@
-import { TransactionUnspentOutput, BaseAddress, RewardAddress, Transaction, Value } from '@emurgo/cardano-serialization-lib-browser';
+import { TransactionUnspentOutput, BaseAddress, RewardAddress, Transaction, Value } from '../custom_modules/@emurgo/cardano-serialization-lib-browser';
 
 interface AppVersion { major: number; minor: number; patch: number; };
 interface Experimental { appVersion: () => AppVersion | undefined; getCollateral: () =>  Promise<TransactionUnspentOutput>; };

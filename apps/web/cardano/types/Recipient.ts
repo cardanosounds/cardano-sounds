@@ -1,4 +1,4 @@
-import { PlutusData } from '@emurgo/cardano-serialization-lib-browser';
+import { PlutusData } from '../custom_modules/@emurgo/cardano-serialization-lib-browser';
 import { Asset, MintedAsset } from './index';
 
 export default interface Recipient {

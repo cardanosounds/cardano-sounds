@@ -1,4 +1,4 @@
-import { Address, AssetName, AuxiliaryData, AuxiliaryDataHash, BigNum, CoinSelectionStrategyCIP2, Costmdls, CostModel, encode_json_str_to_metadatum, GeneralTransactionMetadata, hash_auxiliary_data, hash_script_data, Int, LinearFee, NativeScript, NativeScripts, PlutusData, PlutusList, PlutusScript, PlutusScripts, Redeemer, Redeemers, Transaction, TransactionBuilder, TransactionBuilderConfigBuilder, TransactionOutputs, TransactionUnspentOutput, TransactionUnspentOutputs, TransactionWitnessSet, Vkeywitness, Vkeywitnesses } from "@emurgo/cardano-serialization-lib-browser";
+import { Address, AssetName, AuxiliaryData, AuxiliaryDataHash, BigNum, CoinSelectionStrategyCIP2, Costmdls, CostModel, encode_json_str_to_metadatum, GeneralTransactionMetadata, hash_auxiliary_data, hash_script_data, Int, LinearFee, NativeScript, NativeScripts, PlutusData, PlutusList, PlutusScript, PlutusScripts, Redeemer, Redeemers, Transaction, TransactionBuilder, TransactionBuilderConfigBuilder, TransactionOutputs, TransactionUnspentOutput, TransactionUnspentOutputs, TransactionWitnessSet, Vkeywitnesses } from "./custom_modules/@emurgo/cardano-serialization-lib-browser";
 import { ProtocolParameters } from "./query-api";
 import { MintedAsset } from "./types";
 
@@ -50,26 +50,26 @@ export async function _txBuilderSpendFromPlutusScript({
     }
     const utxos = TransactionUnspentOutputs.new()
     for (let i = 0; i < Utxos.length; i++) {
-        if (typeof Utxos[i] === 'string' || Utxos[i] instanceof String){
+        if (typeof Utxos[i] === 'string' || Utxos[i] instanceof String) {
             utxos.add(
                 TransactionUnspentOutput.from_bytes(
                     Buffer.from(Utxos[i].toString(), 'hex')
                 )
             )
         }
-        else if(typeof Utxos[i] === 'object'){
+        else if (typeof Utxos[i] === 'object') {
             utxos.add(Utxos[i] as TransactionUnspentOutput)
         }
     }
 
-    if(ttl){
+    if (ttl) {
         txbuilder.set_ttl(ttl)
     }
 
     txbuilder.add_inputs_from(utxos, CoinSelectionStrategyCIP2.RandomImproveMultiAsset)
     console.log('inputs added')
     let addr
-    try{
+    try {
         addr = Address.from_bytes(Buffer.from(PaymentAddress, "hex"))
     }
     catch {
@@ -117,7 +117,7 @@ export async function _txBuilderSpendFromPlutusScript({
     witnesses.set_redeemers(pRedeemers)
 
     const vkeys = Vkeywitnesses.new();
-   
+
     witnesses.set_vkeys(vkeys);
 
     const cost_model_vals = [197209, 0, 1, 1, 396231, 621, 0, 1, 150000, 1000, 0, 1, 150000, 32, 2477736, 29175, 4, 29773, 100, 29773, 100, 29773, 100, 29773, 100, 29773, 100, 29773, 100, 100, 100, 29773, 100, 150000, 32, 150000, 32, 150000, 32, 150000, 1000, 0, 1, 150000, 32, 150000, 1000, 0, 8, 148000, 425507, 118, 0, 1, 1, 150000, 1000, 0, 8, 150000, 112536, 247, 1, 150000, 10000, 1, 136542, 1326, 1, 1000, 150000, 1000, 1, 150000, 32, 150000, 32, 150000, 32, 1, 1, 150000, 1, 150000, 4, 103599, 248, 1, 103599, 248, 1, 145276, 1366, 1, 179690, 497, 1, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 148000, 425507, 118, 0, 1, 1, 61516, 11218, 0, 1, 150000, 32, 148000, 425507, 118, 0, 1, 1, 148000, 425507, 118, 0, 1, 1, 2477736, 29175, 4, 0, 82363, 4, 150000, 5000, 0, 1, 150000, 32, 197209, 0, 1, 1, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 3345831, 1, 1];
@@ -179,7 +179,7 @@ export async function _txBuilderMinting({
         )
         nativeScripts.add(policyScript)
     })
-    
+
     let aux = AuxiliaryData.new();
     for (let i = 0; i < Outputs.len(); i++) {
         txbuilder.add_output(Outputs.get(i));
@@ -187,21 +187,21 @@ export async function _txBuilderMinting({
 
     const utxos = TransactionUnspentOutputs.new()
     for (let i = 0; i < Utxos.length; i++) {
-        if (typeof Utxos[i] === 'string' || Utxos[i] instanceof String){
+        if (typeof Utxos[i] === 'string' || Utxos[i] instanceof String) {
             utxos.add(
                 TransactionUnspentOutput.from_bytes(
                     Buffer.from(Utxos[i].toString(), 'hex')
                 )
             )
         }
-        else if(typeof Utxos[i] === 'object'){
+        else if (typeof Utxos[i] === 'object') {
             utxos.add(Utxos[i] as TransactionUnspentOutput)
         }
     }
 
     txbuilder.add_inputs_from(utxos, CoinSelectionStrategyCIP2.LargestFirstMultiAsset)
     let addr
-    try{
+    try {
         addr = Address.from_bytes(Buffer.from(PaymentAddress, "hex"))
     }
     catch {
@@ -241,13 +241,13 @@ export async function _txBuilder({
     nativescript = null,
 }: {
     PaymentAddress: string,
-    Utxos: TransactionUnspentOutput[] | string [],
+    Utxos: TransactionUnspentOutput[] | string[],
     Outputs: TransactionOutputs,
     ProtocolParameter: ProtocolParameters,
     multiSig: boolean,
     metadata: object | null,
     nativescript: NativeScript | null,
-}) : Promise <Transaction|null> {
+}): Promise<Transaction | null> {
     const txBuilder = createTxBuilder(ProtocolParameter)
 
     let AUXILIARY_DATA = AuxiliaryData.new()
@@ -273,25 +273,22 @@ export async function _txBuilder({
     }
     const utxos = TransactionUnspentOutputs.new()
     for (let i = 0; i < Utxos.length; i++) {
-        if (typeof Utxos[i] === 'string' || Utxos[i] instanceof String){
+        if (typeof Utxos[i] === 'string' || Utxos[i] instanceof String) {
             utxos.add(
                 TransactionUnspentOutput.from_bytes(
                     Buffer.from(Utxos[i].toString(), 'hex')
                 )
             )
         }
-        else if(typeof Utxos[i] === 'object'){
+        else if (typeof Utxos[i] === 'object') {
             utxos.add(Utxos[i] as TransactionUnspentOutput)
         }
     }
-    console.log('utxos')
     console.log(utxos.len())
-    console.log('CoinSelectionStrategyCIP2.RandomImproveMultiAsset')
+    console.log('CoinSelectionStrategyCIP2.LargestFirstMultiAsset')
     txBuilder.add_inputs_from(utxos, CoinSelectionStrategyCIP2.LargestFirstMultiAsset)
-    console.log('inputs added')
     console.log(PaymentAddress)
     txBuilder.add_change_if_needed(Address.from_bytes(Buffer.from(PaymentAddress, 'hex')))
-    console.log('change added')
 
     const transaction = Transaction.new(
         txBuilder.build(),

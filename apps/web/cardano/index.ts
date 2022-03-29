@@ -1,9 +1,8 @@
 import { Buffer } from 'buffer';
 import AssetFingerprint from '@emurgo/cip14-js';
-import { TransactionBuilder, Transaction, TransactionUnspentOutput, BaseAddress, PlutusData, Redeemer, PlutusScript, hash_plutus_data } from '@emurgo/cardano-serialization-lib-browser'
+import { Transaction, TransactionUnspentOutput, BaseAddress, Redeemer, PlutusScript, hash_plutus_data, Value } from './custom_modules/@emurgo/cardano-serialization-lib-browser'
 import { _txBuilder, _txBuilderMinting, _txBuilderSpendFromPlutusScript} from './transactions'
 import { ProtocolParameters } from './query-api'
-import { Value } from '@emurgo/cardano-serialization-lib-browser'
 import {
     MintedAsset,
     Policy,
@@ -18,7 +17,7 @@ import {
 import { walletConfig } from './wallet-config';
 
 
-export type CardanoWASM = typeof import('@emurgo/cardano-serialization-lib-browser');
+export type CardanoWASM = typeof import('./custom_modules/@emurgo/cardano-serialization-lib-browser');
 
 export class CardanoWallet {
     _walletApi: WalletApi | undefined
