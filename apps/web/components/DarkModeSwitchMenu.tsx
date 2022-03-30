@@ -233,9 +233,9 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                         <NextChakraLink href="/litepaper-slideshow">
                             <Heading size="lg" as="h4">ABOUT</Heading>
                         </NextChakraLink>
-                        <NextChakraLink href="/buy">{/*  className={mainStyles.disableEvents} */}
+                        {/* <NextChakraLink href="/buy">
                             <Heading size="lg" as="h4">BUY</Heading>
-                        </NextChakraLink>
+                        </NextChakraLink> */}
                       </DrawerBody>
                     </DrawerContent>
                   </Drawer>
