@@ -1,4 +1,4 @@
-import { Address, AssetName, AuxiliaryData, AuxiliaryDataHash, BigNum, CoinSelectionStrategyCIP2, Costmdls, CostModel, encode_json_str_to_metadatum, GeneralTransactionMetadata, hash_auxiliary_data, hash_script_data, Int, LinearFee, NativeScript, NativeScripts, PlutusData, PlutusList, PlutusScript, PlutusScripts, Redeemer, Redeemers, Transaction, TransactionBuilder, TransactionBuilderConfigBuilder, TransactionOutputs, TransactionUnspentOutput, TransactionUnspentOutputs, TransactionWitnessSet, Vkeywitnesses } from "./custom_modules/@emurgo/cardano-serialization-lib-browser";
+import { Address, AssetName, AuxiliaryData, AuxiliaryDataHash, BigNum, CoinSelectionStrategyCIP2, Costmdls, CostModel, encode_json_str_to_metadatum, GeneralTransactionMetadata, hash_auxiliary_data, hash_script_data, Int, LinearFee, NativeScript, NativeScripts, PlutusData, PlutusList, PlutusScript, PlutusScripts, Redeemer, Redeemers, Transaction, TransactionBuilder, TransactionBuilderConfigBuilder, TransactionInputs, TransactionOutputs, TransactionUnspentOutput, TransactionUnspentOutputs, TransactionWitnessSet, Vkeywitnesses } from "./custom_modules/@emurgo/cardano-serialization-lib-browser";
 import { ProtocolParameters } from "./query-api";
 import { MintedAsset } from "./types";
 
@@ -14,7 +14,8 @@ export async function _txBuilderSpendFromPlutusScript({
     datums = [],
     redeemers = [],
     plutusValidators = [],
-    plutusPolicies = []
+    plutusPolicies = [],
+    collateral = null
 }: {
     PaymentAddress: string,
     Utxos: TransactionUnspentOutput[],
@@ -27,7 +28,8 @@ export async function _txBuilderSpendFromPlutusScript({
     datums: PlutusData[],
     redeemers: Redeemer[],
     plutusValidators: PlutusScript[],
-    plutusPolicies: PlutusScript[]
+    plutusPolicies: PlutusScript[],
+    collateral: TransactionUnspentOutput
 }): Promise<Transaction | null> {
 
     const nativeScripts = NativeScripts.new();
@@ -79,7 +81,6 @@ export async function _txBuilderSpendFromPlutusScript({
     console.log(addr)
     txbuilder.add_change_if_needed(addr);
 
-    const txBody = txbuilder.build()
 
 
     if (metadata) {
@@ -93,13 +94,7 @@ export async function _txBuilderSpendFromPlutusScript({
 
         aux.set_metadata(generalMetadata);
     }
-    if (metadataHash) {
-        const auxDataHash = AuxiliaryDataHash.from_bytes(
-            Buffer.from(metadataHash, 'hex'),
-        );
-        console.log(auxDataHash);
-        txBody.set_auxiliary_data_hash(auxDataHash);
-    } else txBody.set_auxiliary_data_hash(this.lib.hash_auxiliary_data(aux));
+    
     const witnesses = TransactionWitnessSet.new();
 
     witnesses.set_native_scripts(nativeScripts);
@@ -116,6 +111,21 @@ export async function _txBuilderSpendFromPlutusScript({
     redeemers.forEach((pR) => pRedeemers.add(pR))
     witnesses.set_redeemers(pRedeemers)
 
+    txbuilder.set_redeemers(
+        Redeemers.from_bytes(pRedeemers.to_bytes())
+    );
+    txbuilder.set_plutus_data(
+        pData
+    );
+    txbuilder.set_plutus_scripts(pScripts);
+    // const collateral = (
+    //     await this.wallet.getCollateral()
+    // ).map((utxo) =>
+    //     this.lib.TransactionUnspentOutput.from_bytes(fromHex(utxo))
+    // );
+    if (!collateral) throw new Error("NO_COLLATERAL");
+    setCollateral(txbuilder, collateral);
+
     const vkeys = Vkeywitnesses.new();
 
     witnesses.set_vkeys(vkeys);
@@ -128,20 +138,48 @@ export async function _txBuilderSpendFromPlutusScript({
     const costModels = Costmdls.new();
     costModels.insert(this.lib.Language.new_plutus_v1(), costModel);
 
-    const scriptDataHash = hash_script_data(pRedeemers, costModels, pData);
-    txBody.set_script_data_hash(scriptDataHash);
+    // const scriptDataHash = hash_script_data(pRedeemers, costModels, pData);
+
+    let txBody
+    // const txBody = txbuilder.build()
+    if (metadataHash) {
+        const auxDataHash = AuxiliaryDataHash.from_bytes(
+            Buffer.from(metadataHash, 'hex'),
+        );
+        console.log(auxDataHash);
+        txBody = txbuilder.build()
+
+        txBody.set_auxiliary_data_hash(auxDataHash);
+    } else {
+        txbuilder.set_auxiliary_data(aux)
+        txBody = txbuilder.build()
+        // txBody.set_auxiliary_data_hash(auxDataHash);
+        // txBody.set_auxiliary_data_hash(this.lib.hash_auxiliary_data(aux))
+    }
+
+    // txBody.set_script_data_hash(scriptDataHash);
     const transaction = Transaction.new(
         txBody,
         witnesses,
         aux
     );
 
-    //todo minfee
-
     const size = transaction.to_bytes().length * 2;
     if (size > ProtocolParameter.maxTxSize) throw 'Error.TX_TOO_BIG';
 
     return transaction;
+}
+
+/**
+   * @private
+   */
+async function setCollateral(txBuilder: TransactionBuilder, collateral: TransactionUnspentOutput) {
+    const inputs = TransactionInputs.new();
+    // utxos.forEach((utxo) => {
+    inputs.add(collateral.input());
+    txBuilder.add_address_witness(collateral.output().address());
+    // });
+    txBuilder.set_collateral(inputs);
 }
 
 export async function _txBuilderMinting({
@@ -185,7 +223,7 @@ export async function _txBuilderMinting({
     console.log('Outputs.len()')
     console.log(Outputs.len())
     for (let i = 0; i < Outputs.len(); i++) {
-        console.log('_txBuilderMinting Outputs.get('+ i + ')')
+        console.log('_txBuilderMinting Outputs.get(' + i + ')')
         console.log(Outputs.get(i))
         txbuilder.add_output(Outputs.get(i));
     }

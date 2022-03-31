@@ -75,13 +75,8 @@ type Asset = {
   name: string
 }
 
-type UTxOId = {
-  txHash: string,
-  index: number
-}
-
 const useAssetUTxOsQuery = (address: string, asset: Asset, config: Config) => {
-  const [result, setResult] = useState<QueryResult<UTxOId[]>>({ type: 'loading' })
+  const [result, setResult] = useState<QueryResult<UTxO[]>>({ type: 'loading' })
 
   useEffect(() => {
     let isMounted = true
@@ -97,6 +92,14 @@ const useAssetUTxOsQuery = (address: string, asset: Asset, config: Config) => {
           utxos: {
             txHash: string
             index: number
+            value: string
+            tokens: {
+              asset: {
+                policyId: string
+                assetName: string
+              }
+              quantity: string
+            }[]
           }[]
         }
 
@@ -117,7 +120,15 @@ const useAssetUTxOsQuery = (address: string, asset: Asset, config: Config) => {
             data: utxos.map((utxo) => {
               return {
                 txHash: utxo.txHash,
-                index: utxo.index
+                index: utxo.index,
+                lovelace: BigInt(utxo.value),
+                assets: utxo.tokens.map(({ asset, quantity }) => {
+                  return {
+                    policyId: asset.policyId,
+                    assetName: asset.assetName,
+                    quantity: BigInt(quantity)
+                  }
+                })
               }
             })
           })
@@ -445,6 +456,6 @@ const useProtocolParametersQuery = (config: Config) => {
   return result
 }
 
-export type { Value, ProtocolParameters, UTxO, UTxOId }
+export type { Value, ProtocolParameters, UTxO }
 
 export { getBalance, useAddressUTxOsQuery, useProtocolParametersQuery, useAssetUTxOsQuery }

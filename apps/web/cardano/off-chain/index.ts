@@ -10,7 +10,7 @@ import {
 import CardanoWallet from '..';
 
 import { validator, validatorAddress, validatorAddressTestnet } from "../on-chain/nftMediaLibPlutus";
-import { ProtocolParameters } from '../query-api';
+import { ProtocolParameters, UTxO } from '../query-api';
 import { Asset, MintedAsset, Policy } from '../types';
 import TransactionParams from '../types/TransactionParams';
 
@@ -200,7 +200,6 @@ export class LibraryValidator {
 
         const transactionWitnessSet = TransactionWitnessSet.new();
 
-        // const signedTx = await this.cardano.wallet.signTx(Buffer.from(tx.to_bytes()).toString("hex"), false);
         const txVkeyWitnessesStr = await this.cardano.wallet.signTx(Buffer.from(tx.to_bytes()).toString("hex"), false);
         const txVkeyWitnessesSer = TransactionWitnessSet.from_bytes(Buffer.from(txVkeyWitnessesStr, "hex"));
         transactionWitnessSet.set_vkeys(txVkeyWitnessesSer.vkeys());
@@ -216,36 +215,6 @@ export class LibraryValidator {
             aux
         );
 
-        // console.log('signedTx')
-        // console.log(signedTx)
-
-        // const txVkeyWitness = await this.cardano.wallet.signTx(
-        //     Buffer.from(tx.to_bytes()).toString('hex'),
-        //     false
-        // )
-        // console.log('txVkeyWitness')
-        // console.log(txVkeyWitness)
-        // const txWitnesses = TransactionWitnessSet.from_bytes(
-        //     Buffer.from(txVkeyWitness, 'hex')
-        // );
-        // console.log('txWitnesses')
-        // console.log(txWitnesses)
-        // console.log('txWitnesses.vkeys()')
-        // console.log(txWitnesses.vkeys().len())
-        // const nativescripts = NativeScripts.new()
-        // const policyscript = NativeScript.from_bytes(Buffer.from(policy.script, 'hex'))
-        // nativescripts.add(policyscript)
-        // txWitnesses.set_native_scripts(nativescripts)
-        
-        // const signedTx = Transaction.new(
-        //     tx.body(),
-        //     txWitnesses,
-        //     tx.auxiliary_data()
-        // );
-
-        
-        // const submittedTxHash = await this.cardano.submitTx(Buffer.from(tx.to_bytes()).toString('hex'), [txVkeyWitness])
-        // const submittedTxHash = await this.cardano.wallet.submitTx(signedTx)
         const submittedTxHash = await this.cardano.wallet.submitTx(Buffer.from(signedTx.to_bytes()).toString("hex"));
         console.log({submittedTxHash: submittedTxHash})
     }
@@ -254,6 +223,7 @@ export class LibraryValidator {
         protocolParameters: ProtocolParameters,
         asset: Asset,
         adaPrice: number,
+        validatorUtxo: UTxO,
         metadata: Object = null
     ) => {
         console.log({
@@ -279,7 +249,11 @@ export class LibraryValidator {
         const policy: Policy = await this.cardano.createLockingPolicyScript(walletAddr, null, protocolParameters)//address: string, expirationTime: Date, protocolParameters: ProtocolParameters
         console.log('policy')
         console.log(policy)
-        let utxos = await this.cardano.wallet.getUtxos();
+        
+        const convertedValidatorUTXO = await this.cardano.utxoFromData(validatorUtxo, validatorAddressTestnet)
+        console.log('convertedValidatorUTXO')
+        console.log(convertedValidatorUTXO)
+        let utxos = (await this.cardano.wallet.getUtxos()).concat(convertedValidatorUTXO);
         
         const lockTokenBurn = {
             assetName: 'CSlock' + asset.unit,
@@ -294,7 +268,8 @@ export class LibraryValidator {
             PaymentAddress: walletAddr,
             recipients: [{
                 address: walletAddr,
-                amount: '0'
+                amount: '0',
+                assets: [{quantity: '1', unit: asset.unit }]
                 ,
                 mintedAssets: [lockTokenBurn]
             }],
@@ -305,25 +280,43 @@ export class LibraryValidator {
             ttl: 7200,
             multiSig: false,
             delegation: null,
-            // datums: [
-            //     new LibraryDatum({ 
-            //         lockTokenPolicy: lockTokenBurn.policyId,
-            //         lockTokenName: lockTokenBurn.assetName,
-            //         lovelacePrice: BigInt.from_str((adaPrice * 1000000).toString())
-            //     }).toPlutusData(this.cardano.lib)
-            // ],
+            datums: [
+                new LibraryDatum({ 
+                    lockTokenPolicy: lockTokenBurn.policyId,
+                    lockTokenName: lockTokenBurn.assetName,
+                    lovelacePrice: BigInt.from_str((adaPrice * 1000000).toString())
+                }).toPlutusData(this.cardano.lib)
+            ],
             redeemers: [new LibraryRedeemer(LibraryAction.Unlock).toRedeemer(this.cardano.lib)],
             plutusValidators: [PlutusScript.new(fromHex(validator))],
             plutusPolicies: []
         }
 
-        let tx = await this.cardano.transaction(txParams)
-        const signature = await this.cardano.wallet.signTx(Buffer.from(tx.to_bytes()).toString('hex'), false)
-        if(signature) {
-            console.log(
-                await this.cardano.wallet.submitTx(signature)
-            )
-        }
+        let tx: Transaction = await this.cardano.transaction(txParams)
+        console.log('tx')
+        console.log(tx)
+        console.log('tx typeof')
+        console.log(typeof tx)
+
+        const transactionWitnessSet = TransactionWitnessSet.new();
+
+        const txVkeyWitnessesStr = await this.cardano.wallet.signTx(Buffer.from(tx.to_bytes()).toString("hex"), false);
+        const txVkeyWitnessesSer = TransactionWitnessSet.from_bytes(Buffer.from(txVkeyWitnessesStr, "hex"));
+        transactionWitnessSet.set_vkeys(txVkeyWitnessesSer.vkeys());
+        const policyScripts = this.cardano.lib.NativeScripts.new()
+        policyScripts.add(NativeScript.from_bytes(Buffer.from(policy.script, 'hex')))
+        transactionWitnessSet.set_native_scripts(policyScripts)
+        const txBody = tx.body()
+        let aux = tx.auxiliary_data();
+        txBody.set_auxiliary_data_hash(this.cardano.lib.hash_auxiliary_data(aux))
+        const signedTx = Transaction.new(
+            txBody,
+            transactionWitnessSet,
+            aux
+        );
+
+        const submittedTxHash = await this.cardano.wallet.submitTx(Buffer.from(signedTx.to_bytes()).toString("hex"));
+        console.log({submittedTxHash: submittedTxHash})
     }
 
     use = () => {

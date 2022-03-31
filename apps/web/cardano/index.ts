@@ -1,8 +1,8 @@
 import { Buffer } from 'buffer';
 import AssetFingerprint from '@emurgo/cip14-js';
 import { Transaction, TransactionUnspentOutput, BaseAddress, Value } from './custom_modules/@emurgo/cardano-serialization-lib-browser'
-import { _txBuilder, _txBuilderMinting, _txBuilderSpendFromPlutusScript} from './transactions'
-import { ProtocolParameters } from './query-api'
+import { _txBuilder, _txBuilderMinting, _txBuilderSpendFromPlutusScript } from './transactions'
+import { ProtocolParameters, UTxO } from './query-api'
 import {
     MintedAsset,
     Policy,
@@ -52,6 +52,7 @@ export class CardanoWallet {
         if (this.wallet) return true
         return false
     }
+
     async getBaseAddress(): Promise<BaseAddress | null> {
         if (!this.wallet) return null
         try {
@@ -63,6 +64,78 @@ export class CardanoWallet {
             return null
         }
     }
+
+    async utxoFromData(output: UTxO, address: string): Promise<TransactionUnspentOutput> {
+        let addr
+        try {
+            addr = this.lib.Address.from_bytes(Buffer.from(address, "hex"))
+        }
+        catch {
+            addr = this.lib.Address.from_bech32(address)
+    
+        }
+        console.log('output.txHash')
+        console.log(output.txHash)
+        return this.lib.TransactionUnspentOutput.new(
+            this.lib.TransactionInput.new(
+                this.lib.TransactionHash.from_bytes(
+                    Buffer.from(output.txHash, 'hex')
+                ),
+                output.index
+            ),
+            this.lib.TransactionOutput.new(
+                
+                addr,
+                await this.assetsToValue(output.assets, output.lovelace)
+            )
+        );
+    };
+
+    async assetsToValue(assets: {
+        policyId: string;
+        assetName: string;
+        quantity: bigint;
+    }[], lovelace: bigint): Promise<Value> {
+        console.log('start assetsToValue')
+        const multiAsset = this.lib.MultiAsset.new();
+        const policies = [
+            ...new Set(
+                assets
+                    .filter((asset) => asset.policyId !== '')
+                    .map((asset) => asset.assetName)
+            ),
+        ];
+        console.log('policies created in  assetsToValue')
+
+        console.log('policies')
+        console.log(policies)
+        policies.forEach((policy) => {
+            const policyAssets = assets.filter(
+                (asset) => asset.policyId === policy
+            );
+            const assetsValue = this.lib.Assets.new();
+            policyAssets.forEach((asset) => {
+                console.log(asset.assetName)
+                assetsValue.insert(
+                    this.lib.AssetName.new(Buffer.from(asset.assetName, 'hex')),
+                    this.lib.BigNum.from_str(asset.quantity.toString())
+                );
+            });
+            multiAsset.insert(
+                this.lib.ScriptHash.from_bytes(Buffer.from(policy, 'hex')),
+                assetsValue
+            );
+        });
+        console.log('policies looped in  assetsToValue')
+
+        const value = this.lib.Value.new(
+            this.lib.BigNum.from_str(lovelace ? lovelace.toString() : '0')
+        );
+        if (assets.length > 1 || !lovelace) value.set_multiasset(multiAsset);
+        console.log('end assetsToValue')
+        return value;
+    };
+
     async getAddressHex(): Promise<Buffer | null> {
         if (!this.wallet) return null
         try {
@@ -235,9 +308,10 @@ export class CardanoWallet {
         delegation = null,
         redeemers = [],
         plutusValidators = [],
-        plutusPolicies = []
-    } : TransactionParams
-       ) {
+        plutusPolicies = [],
+        datums = []
+    }: TransactionParams
+    ) {
 
         if (!ProtocolParameters) return null
         this._protocolParameter = ProtocolParameters
@@ -307,6 +381,7 @@ export class CardanoWallet {
             }
             let outputBuilder = this.lib.TransactionOutputBuilder.new().with_address(addr)
             let output
+
             if (recipient.datum) {
                 console.log('has plutusDataHash')
                 console.log(recipient.datum)
@@ -345,10 +420,11 @@ export class CardanoWallet {
                 metadata: metadata,
                 metadataHash: metadataHash,
                 ttl: ttl,
-                datums: recipients.map(r => r.datum),
+                datums: datums,
                 redeemers: redeemers,
                 plutusValidators: plutusValidators,
-                plutusPolicies: plutusPolicies
+                plutusPolicies: plutusPolicies,
+                collateral: await this.wallet.experimental.getCollateral()
             })
         } else if (minting > 0) {
             RawTransaction = await _txBuilderMinting({
@@ -589,7 +665,7 @@ export class CardanoWallet {
                 }
             }
         })
-        
+
         if (txVkeys) {
             for (let i = 0; i < txVkeys.len(); i++) {
                 totalVkeys.add(txVkeys.get(i));

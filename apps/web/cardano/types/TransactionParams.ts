@@ -14,7 +14,7 @@ export default interface TransactionParams {
     ttl: number,
     multiSig: boolean,
     delegation: Delegation | null,
-    // datums: PlutusData[],
+    datums?: PlutusData[],
     redeemers: Redeemer[],
     plutusValidators: PlutusScript[],
     plutusPolicies: PlutusScript[]
