@@ -189,7 +189,8 @@ export class LibraryValidator {
             delegation: null,
             redeemers: [],
             plutusValidators: [],
-            plutusPolicies: []
+            plutusPolicies: [],
+            burn: false
         }
 
         let tx: Transaction = await this.cardano.transaction(txParams)
@@ -253,7 +254,12 @@ export class LibraryValidator {
         const convertedValidatorUTXO = await this.cardano.utxoFromData(validatorUtxo, validatorAddressTestnet)
         console.log('convertedValidatorUTXO')
         console.log(convertedValidatorUTXO)
-        let utxos = (await this.cardano.wallet.getUtxos()).concat(convertedValidatorUTXO);
+        let utxos = await this.cardano.wallet.getUtxos()
+        console.log('utxos.length')
+        console.log(utxos.length)
+        utxos = utxos.concat(convertedValidatorUTXO)
+        console.log('utxos.length')
+        console.log(utxos.length)
         
         const lockTokenBurn = {
             assetName: 'CSlock' + asset.unit.split('.')[1],
@@ -289,7 +295,8 @@ export class LibraryValidator {
             ],
             redeemers: [new LibraryRedeemer(LibraryAction.Unlock).toRedeemer(this.cardano.lib)],
             plutusValidators: [PlutusScript.new(fromHex(validator))],
-            plutusPolicies: []
+            plutusPolicies: [],
+            burn: true
         }
 
         let tx: Transaction = await this.cardano.transaction(txParams)

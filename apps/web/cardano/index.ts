@@ -309,7 +309,8 @@ export class CardanoWallet {
         redeemers = [],
         plutusValidators = [],
         plutusPolicies = [],
-        datums = []
+        datums = [],
+        burn = false
     }: TransactionParams
     ) {
 
@@ -320,18 +321,33 @@ export class CardanoWallet {
         );
         let mintedAssetsArray: MintedAsset[] = []
         let outputs = this.lib.TransactionOutputs.new()
-
+        console.log('transaction')
         let minting = 0
         let costValues: any = {}
         for (let recipient of recipients) {
             let lovelace = Math.floor((Number(recipient.amount) || 0) * 1000000).toString()
+            console.log('tx loop 001');
             let ReceiveAddress = recipient.address
-            let multiAsset = this._makeMultiAsset(recipient?.assets || [])
-            let mintedAssets = this._makeMintedAsset(recipient?.mintedAssets || [])
+            let multiAsset, mintedAssets
+            try {
+                multiAsset = this._makeMultiAsset(recipient?.assets || [])
+            } catch (error) {
+                console.log('multiAsset')
+                console.log(error)
+                throw Error
+            }
 
+            try {
+                mintedAssets = burn ? [] : this._makeMintedAsset(recipient?.mintedAssets || [])
+            } catch (error) {
+                console.log('mintedAssets')
+                console.log(error)
+                throw Error
+            }
+
+            console.log('tx loop 01');
             let outputValue = this.lib.Value.new(this.lib.BigNum.from_str(lovelace))
             let minAdaMint = this.lib.BigNum.from_str('0')
-
             if ((recipient?.assets || []).length > 0) {
                 outputValue.set_multiasset(multiAsset)
                 let minAda = this.lib.min_ada_required(
@@ -343,16 +359,22 @@ export class CardanoWallet {
                 if (this.lib.BigNum.from_str(lovelace).compare(minAda) < 0)
                     outputValue.set_coin(minAda)
             }
-
-            (recipient?.mintedAssets || []).map((asset) => {
-                minting += 1
-                mintedAssetsArray.push({
-                    ...asset,
-                    address: recipient.address
+            console.log('tx loop 1');
+            if(!burn) { 
+                (recipient?.mintedAssets || []).map((asset) => {
+                    minting += 1
+                    mintedAssetsArray.push({
+                        ...asset,
+                        address: recipient.address
+                    })
                 })
-            })
+            } else {
+                recipient.mintedAssets.forEach((a) => {
+                    mintedAssetsArray.push(a)
+                })
+            }
 
-            if ((recipient.mintedAssets || []).length > 0) {
+            if (!burn && (recipient.mintedAssets || []).length > 0) {
                 minAdaMint = this.lib.min_ada_required(
                     mintedAssets,
                     false,
@@ -367,6 +389,8 @@ export class CardanoWallet {
                     outputValue = outputValue.checked_add(requiredMintAda);
                 }
             }
+            console.log('tx loop 2');
+
             if (ReceiveAddress != PaymentAddress)
                 costValues[ReceiveAddress] = outputValue;
 
@@ -385,11 +409,11 @@ export class CardanoWallet {
             if (recipient.datum) {
                 console.log('has plutusDataHash')
                 console.log(recipient.datum)
-                let plutusDataHash
-                plutusDataHash = this.lib.hash_plutus_data(recipient.datum)
+                const plutusDataHash = this.lib.hash_plutus_data(recipient.datum)
                 console.log(plutusDataHash)
                 outputBuilder = outputBuilder.with_data_hash(plutusDataHash)
             }
+
             if (parseInt(outputValue.coin().to_str()) > 0) {
                 if (multiasst) {
                     output = outputBuilder.next()
@@ -409,6 +433,8 @@ export class CardanoWallet {
             console.log('outputs i ' + minting)
             console.log(outputs)
         }
+        console.log('looped recipients')
+        console.log(recipients)
         let RawTransaction = null
         if (redeemers?.length >= 1) {
             RawTransaction = await _txBuilderSpendFromPlutusScript({
@@ -424,7 +450,7 @@ export class CardanoWallet {
                 redeemers: redeemers,
                 plutusValidators: plutusValidators,
                 plutusPolicies: plutusPolicies,
-                collateral: await this.wallet.experimental.getCollateral()
+                collateral: await this.wallet.experimental.getCollateral(),
             })
         } else if (minting > 0) {
             RawTransaction = await _txBuilderMinting({
@@ -436,7 +462,7 @@ export class CardanoWallet {
                 metadata: metadata,
                 metadataHash: metadataHash,
                 multiSig: multiSig,
-                ttl: ttl
+                ttl: ttl,
             })
         } else if (delegation != null) {
             //todo

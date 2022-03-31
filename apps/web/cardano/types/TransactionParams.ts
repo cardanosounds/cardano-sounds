@@ -17,5 +17,6 @@ export default interface TransactionParams {
     datums?: PlutusData[],
     redeemers: Redeemer[],
     plutusValidators: PlutusScript[],
-    plutusPolicies: PlutusScript[]
+    plutusPolicies: PlutusScript[],
+    burn: boolean
 }

@@ -1,6 +1,6 @@
 import { Address, AssetName, AuxiliaryData, AuxiliaryDataHash, BigNum, CoinSelectionStrategyCIP2, Costmdls, CostModel, encode_json_str_to_metadatum, GeneralTransactionMetadata, hash_auxiliary_data, hash_script_data, Int, LinearFee, NativeScript, NativeScripts, PlutusData, PlutusList, PlutusScript, PlutusScripts, Redeemer, Redeemers, Transaction, TransactionBuilder, TransactionBuilderConfigBuilder, TransactionInputs, TransactionOutputs, TransactionUnspentOutput, TransactionUnspentOutputs, TransactionWitnessSet, Vkeywitnesses } from "./custom_modules/@emurgo/cardano-serialization-lib-browser";
 import { ProtocolParameters } from "./query-api";
-import { MintedAsset } from "./types";
+import { MintedAsset, BurnAsset } from "./types";
 
 export async function _txBuilderSpendFromPlutusScript({
     PaymentAddress,
@@ -15,13 +15,13 @@ export async function _txBuilderSpendFromPlutusScript({
     redeemers = [],
     plutusValidators = [],
     plutusPolicies = [],
-    collateral = null
+    collateral = null,
 }: {
     PaymentAddress: string,
     Utxos: TransactionUnspentOutput[],
     Outputs: TransactionOutputs,
     ProtocolParameter: ProtocolParameters,
-    mintedAssetsArray: MintedAsset[],
+    mintedAssetsArray: MintedAsset[] | BurnAsset[],
     metadata: object | null,
     metadataHash: string | null,
     ttl: number | null,
@@ -29,7 +29,7 @@ export async function _txBuilderSpendFromPlutusScript({
     redeemers: Redeemer[],
     plutusValidators: PlutusScript[],
     plutusPolicies: PlutusScript[],
-    collateral: TransactionUnspentOutput
+    collateral: TransactionUnspentOutput,
 }): Promise<Transaction | null> {
 
     const nativeScripts = NativeScripts.new();
@@ -42,7 +42,7 @@ export async function _txBuilderSpendFromPlutusScript({
         txbuilder.add_mint_asset(
             policyScript,
             AssetName.new(Buffer.from(a.assetName, 'ascii')),
-            Int.new(BigNum.from_str(a.quantity.toString()))
+            Int.new_i32(Number(a.quantity))
         )
     })
 
@@ -191,7 +191,7 @@ export async function _txBuilderMinting({
     metadata = null,
     metadataHash = null,
     ttl = null,
-    multiSig = false,
+    multiSig = false
 }: {
     PaymentAddress: string,
     Utxos: TransactionUnspentOutput[],
@@ -201,7 +201,7 @@ export async function _txBuilderMinting({
     metadata: object | null,
     metadataHash: string | null,
     ttl: number,
-    multiSig: boolean,
+    multiSig: boolean
 }): Promise<Transaction | null> {
     console.log('_txBuilderMinting')
     const nativeScripts = NativeScripts.new();
