@@ -256,7 +256,7 @@ export class LibraryValidator {
         let utxos = (await this.cardano.wallet.getUtxos()).concat(convertedValidatorUTXO);
         
         const lockTokenBurn = {
-            assetName: 'CSlock' + asset.unit,
+            assetName: 'CSlock' + asset.unit.split('.')[1],
             quantity: '-1',
             policyId: policy.id,
             policyScript: policy.script,

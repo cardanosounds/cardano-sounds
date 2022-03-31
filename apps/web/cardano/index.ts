@@ -102,7 +102,7 @@ export class CardanoWallet {
             ...new Set(
                 assets
                     .filter((asset) => asset.policyId !== '')
-                    .map((asset) => asset.assetName)
+                    .map((asset) => asset.policyId)
             ),
         ];
         console.log('policies created in  assetsToValue')
