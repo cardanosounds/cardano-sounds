@@ -46,6 +46,139 @@ type QueryResult<T> =
   | { type: 'loading' }
   | { type: 'error' }
 
+
+const AssetUTxOQuery = gql`
+query UTxOWithAssetQuery($address: String!, $policyId: String!, $asset: String!) {
+  utxos(where: { 
+    address: { _eq: $address }, _and: {
+    tokens: { 
+      asset: {
+          policyId: {	
+              _eq: $policyId
+            }, 
+          _and:	{
+            assetName: {
+              _eq: $asset
+            }
+          }
+        }
+      }
+    }
+  }) {
+    txHash
+    index
+  }
+}`
+
+type Asset = {
+  policyId: string,
+  name: string
+}
+
+type UTxOId = {
+  txHash: string,
+  index: number
+}
+
+const useAssetUTxOsQuery = (address: string, asset: Asset, config: Config) => {
+  const [result, setResult] = useState<QueryResult<UTxOId[]>>({ type: 'loading' })
+
+  useEffect(() => {
+    let isMounted = true
+
+    switch (config.queryAPI.type) {
+      case 'graphql': {
+        const apollo = new ApolloClient({
+          uri: config.queryAPI.URI,
+          cache: new InMemoryCache()
+        })
+
+        type QueryData = {
+          utxos: {
+            txHash: string
+            index: number
+          }[]
+        }
+
+        type QueryVars = {
+          address: string,
+          policyId: string,
+          asset: string
+        }
+
+        address && apollo.query<QueryData, QueryVars>({
+          query: AssetUTxOQuery,
+          variables: { address: address, policyId: asset.policyId, asset: asset.name }
+        }).then(({ data }) => {
+          const utxos = data?.utxos
+
+          isMounted && utxos && setResult({
+            type: 'ok',
+            data: utxos.map((utxo) => {
+              return {
+                txHash: utxo.txHash,
+                index: utxo.index
+              }
+            })
+          })
+        }).catch(() => {
+          isMounted && setResult({ type: 'error' })
+        })
+      }
+
+      case 'koios': {
+        const koios = createKoios(config)
+
+        address && koios.get('/api/v0/address_info', { params: { _address: address } })
+          .then(({ data }) => {
+            type Info = {
+              balance: string
+              stake_address: string
+              utxo_set: {
+                tx_hash: string
+                tx_index: number
+                value: string
+                asset_list: {
+                  policy_id: string
+                  asset_name: string
+                  quantity: string
+                }[]
+              }[]
+            }
+            const info: Info = data?.[0]
+
+            isMounted && info && setResult({
+              type: 'ok',
+              data: info.utxo_set.map((utxo) => {
+                return {
+                  txHash: utxo.tx_hash,
+                  index: utxo.tx_index,
+                  lovelace: BigInt(utxo.value),
+                  assets: utxo.asset_list.map((asset) => {
+                    return {
+                      policyId: asset.policy_id,
+                      assetName: asset.asset_name,
+                      quantity: BigInt(asset.quantity)
+                    }
+                  })
+                }
+              })?.filter(info => info.assets?.find(asst => asst.assetName == asset.name && asst.policyId == asset.policyId))
+            })
+          }).catch(() => {
+            isMounted && setResult({ type: 'error' })
+          })
+      }
+    }
+
+    return () => {
+      isMounted = false
+    }
+  }, [address, config])
+
+  return result
+}
+
+
 const UTxOsQuery = gql`
 query UTxOsByAddress($address: String!) {
   utxos(where: { address: { _eq: $address } }) {
@@ -312,6 +445,6 @@ const useProtocolParametersQuery = (config: Config) => {
   return result
 }
 
-export type { Value, ProtocolParameters, UTxO }
+export type { Value, ProtocolParameters, UTxO, UTxOId }
 
-export { getBalance, useAddressUTxOsQuery, useProtocolParametersQuery }
+export { getBalance, useAddressUTxOsQuery, useProtocolParametersQuery, useAssetUTxOsQuery }
