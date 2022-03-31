@@ -165,7 +165,7 @@ export async function _txBuilderMinting({
     ttl: number,
     multiSig: boolean,
 }): Promise<Transaction | null> {
-
+    console.log('_txBuilderMinting')
     const nativeScripts = NativeScripts.new();
     const txbuilder = createTxBuilder(ProtocolParameter)
     mintedAssetsArray.forEach(a => {
@@ -179,11 +179,17 @@ export async function _txBuilderMinting({
         )
         nativeScripts.add(policyScript)
     })
+    console.log('_txBuilderMinting minting set')
 
     let aux = AuxiliaryData.new();
+    console.log('Outputs.len()')
+    console.log(Outputs.len())
     for (let i = 0; i < Outputs.len(); i++) {
+        console.log('_txBuilderMinting Outputs.get('+ i + ')')
+        console.log(Outputs.get(i))
         txbuilder.add_output(Outputs.get(i));
     }
+    console.log('_txBuilderMinting added outputs')
 
     const utxos = TransactionUnspentOutputs.new()
     for (let i = 0; i < Utxos.length; i++) {
@@ -198,7 +204,7 @@ export async function _txBuilderMinting({
             utxos.add(Utxos[i] as TransactionUnspentOutput)
         }
     }
-
+    console.log('_txBuilderMinting before adding inputs')
     txbuilder.add_inputs_from(utxos, CoinSelectionStrategyCIP2.LargestFirstMultiAsset)
     let addr
     try {
@@ -221,6 +227,7 @@ export async function _txBuilderMinting({
     txbuilder.set_auxiliary_data(aux);
 
     txbuilder.add_change_if_needed(addr);
+    console.log('_txBuilderMinting before after add change')
 
     const transaction = txbuilder.build_tx()
 

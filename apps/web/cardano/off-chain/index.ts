@@ -5,7 +5,7 @@ import {
     PlutusScript,
     Transaction,
     TransactionWitnessSet
-} from '@emurgo/cardano-serialization-lib-browser'
+} from '../custom_modules/@emurgo/cardano-serialization-lib-browser'
 
 import CardanoWallet from '..';
 
@@ -14,7 +14,7 @@ import { ProtocolParameters } from '../query-api';
 import { Asset, MintedAsset, Policy } from '../types';
 import TransactionParams from '../types/TransactionParams';
 
-export type CardanoWASM = typeof import('@emurgo/cardano-serialization-lib-browser');
+export type CardanoWASM = typeof import('../custom_modules/@emurgo/cardano-serialization-lib-browser');
 
 export const fromHex = (hex) => Buffer.from(hex, "hex");
 export const toHex = (bytes) => Buffer.from(bytes).toString("hex");
@@ -146,7 +146,7 @@ export class LibraryValidator {
 
 
         if(!walletAddr) return
-
+        
         const policy: Policy = await this.cardano.createLockingPolicyScript(walletAddr, null, protocolParameters)//address: string, expirationTime: Date, protocolParameters: ProtocolParameters
         console.log('policy')
         console.log(policy)
@@ -158,7 +158,8 @@ export class LibraryValidator {
             policyScript: policy.script,
             address: walletAddr
         }
-        let tx: Transaction = await this.cardano.transaction({
+
+        const txParams: TransactionParams = {
             ProtocolParameters: protocolParameters,
             PaymentAddress: walletAddr,
             recipients: [
@@ -189,7 +190,9 @@ export class LibraryValidator {
             redeemers: [],
             plutusValidators: [],
             plutusPolicies: []
-        })
+        }
+
+        let tx: Transaction = await this.cardano.transaction(txParams)
         console.log('tx')
         console.log(tx)
         console.log('tx typeof')
@@ -302,13 +305,13 @@ export class LibraryValidator {
             ttl: 7200,
             multiSig: false,
             delegation: null,
-            datums: [
-                new LibraryDatum({ 
-                    lockTokenPolicy: lockTokenBurn.policyId,
-                    lockTokenName: lockTokenBurn.assetName,
-                    lovelacePrice: BigInt.from_str((adaPrice * 1000000).toString())
-                }).toPlutusData(this.cardano.lib)
-            ],
+            // datums: [
+            //     new LibraryDatum({ 
+            //         lockTokenPolicy: lockTokenBurn.policyId,
+            //         lockTokenName: lockTokenBurn.assetName,
+            //         lovelacePrice: BigInt.from_str((adaPrice * 1000000).toString())
+            //     }).toPlutusData(this.cardano.lib)
+            // ],
             redeemers: [new LibraryRedeemer(LibraryAction.Unlock).toRedeemer(this.cardano.lib)],
             plutusValidators: [PlutusScript.new(fromHex(validator))],
             plutusPolicies: []

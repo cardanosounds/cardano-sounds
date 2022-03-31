@@ -1,6 +1,6 @@
 import { Buffer } from 'buffer';
 import AssetFingerprint from '@emurgo/cip14-js';
-import { Transaction, TransactionUnspentOutput, BaseAddress, Redeemer, PlutusScript, hash_plutus_data, Value } from './custom_modules/@emurgo/cardano-serialization-lib-browser'
+import { Transaction, TransactionUnspentOutput, BaseAddress, Value } from './custom_modules/@emurgo/cardano-serialization-lib-browser'
 import { _txBuilder, _txBuilderMinting, _txBuilderSpendFromPlutusScript} from './transactions'
 import { ProtocolParameters } from './query-api'
 import {
@@ -9,12 +9,11 @@ import {
     UTXO,
     AssetHolding,
     ValueHolding,
-    Recipient,
     WalletApi,
-    Asset,
-    Delegation
+    Asset
 } from './types';
 import { walletConfig } from './wallet-config';
+import TransactionParams from './types/TransactionParams';
 
 
 export type CardanoWASM = typeof import('./custom_modules/@emurgo/cardano-serialization-lib-browser');
@@ -237,22 +236,8 @@ export class CardanoWallet {
         redeemers = [],
         plutusValidators = [],
         plutusPolicies = []
-    }
-        : {
-            ProtocolParameters: ProtocolParameters,
-            PaymentAddress: string,
-            recipients: Recipient[],
-            metadata: object | null,
-            metadataHash: string | null,
-            addMetadata: boolean,
-            utxosRaw: TransactionUnspentOutput[] | undefined,
-            ttl: number,
-            multiSig: boolean,
-            delegation: Delegation | null,
-            redeemers: Redeemer[],
-            plutusValidators: PlutusScript[],
-            plutusPolicies: PlutusScript[]
-        }) {
+    } : TransactionParams
+       ) {
 
         if (!ProtocolParameters) return null
         this._protocolParameter = ProtocolParameters
@@ -323,7 +308,12 @@ export class CardanoWallet {
             let outputBuilder = this.lib.TransactionOutputBuilder.new().with_address(addr)
             let output
             if (recipient.datum) {
-                outputBuilder = outputBuilder.with_data_hash(hash_plutus_data(recipient.datum))
+                console.log('has plutusDataHash')
+                console.log(recipient.datum)
+                let plutusDataHash
+                plutusDataHash = this.lib.hash_plutus_data(recipient.datum)
+                console.log(plutusDataHash)
+                outputBuilder = outputBuilder.with_data_hash(plutusDataHash)
             }
             if (parseInt(outputValue.coin().to_str()) > 0) {
                 if (multiasst) {
@@ -341,6 +331,8 @@ export class CardanoWallet {
                     .build()
             }
             if (output) outputs.add(output)
+            console.log('outputs i ' + minting)
+            console.log(outputs)
         }
         let RawTransaction = null
         if (redeemers?.length >= 1) {

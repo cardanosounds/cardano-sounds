@@ -10,7 +10,7 @@ export class Factory {
 
     public async load() {
         if (!this.instance)
-            this._instance = new CardanoWallet(await import('@emurgo/cardano-serialization-lib-browser'));
+            this._instance = new CardanoWallet(await import('./custom_modules/@emurgo/cardano-serialization-lib-browser'));
         return this.instance;
     }
 }
