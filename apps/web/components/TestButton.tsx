@@ -26,6 +26,8 @@ export default function TestButton() {
         if(pParams.type !== 'ok' || utxosQ.type !== 'ok') return
         const validatorUtxo = utxosQ.data && utxosQ.data.length > 0 ? utxosQ.data[0] : null
         // if(utxosQ.type === 'ok') console.table(utxosQ.data)
+        console.log('validatorUtxo')
+        console.log(validatorUtxo)
         // await validator.lock(pParams.data, {unit: '74f43bdf645aaeb25f39c6392cdb771ff4eb4da0c017cc183c490b8f.CSNFT19', quantity: '1'}, 5, null)
         await validator.unlock(pParams.data, {unit: '74f43bdf645aaeb25f39c6392cdb771ff4eb4da0c017cc183c490b8f.CSNFT19', quantity: '1'}, 5, validatorUtxo, null)
     }

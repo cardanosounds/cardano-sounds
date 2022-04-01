@@ -18,5 +18,6 @@ export default interface TransactionParams {
     redeemers: Redeemer[],
     plutusValidators: PlutusScript[],
     plutusPolicies: PlutusScript[],
-    burn: boolean
+    burn: boolean,
+    scriptUtxos: TransactionUnspentOutput[]
 }

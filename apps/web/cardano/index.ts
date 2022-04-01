@@ -97,6 +97,8 @@ export class CardanoWallet {
         quantity: bigint;
     }[], lovelace: bigint): Promise<Value> {
         console.log('start assetsToValue')
+        console.log('assets')
+        console.table(assets)
         const multiAsset = this.lib.MultiAsset.new();
         const policies = [
             ...new Set(
@@ -310,7 +312,8 @@ export class CardanoWallet {
         plutusValidators = [],
         plutusPolicies = [],
         datums = [],
-        burn = false
+        burn = false,
+        scriptUtxos = []
     }: TransactionParams
     ) {
 
@@ -369,7 +372,7 @@ export class CardanoWallet {
                     })
                 })
             } else {
-                recipient.mintedAssets.forEach((a) => {
+                recipient.mintedAssets?.forEach((a) => {
                     mintedAssetsArray.push(a)
                 })
             }
@@ -451,6 +454,7 @@ export class CardanoWallet {
                 plutusValidators: plutusValidators,
                 plutusPolicies: plutusPolicies,
                 collateral: await this.wallet.experimental.getCollateral(),
+                scriptUtxos: scriptUtxos
             })
         } else if (minting > 0) {
             RawTransaction = await _txBuilderMinting({

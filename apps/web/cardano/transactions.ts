@@ -1,4 +1,5 @@
-import { Address, AssetName, AuxiliaryData, AuxiliaryDataHash, BigNum, CoinSelectionStrategyCIP2, Costmdls, CostModel, encode_json_str_to_metadatum, GeneralTransactionMetadata, hash_auxiliary_data, hash_script_data, Int, LinearFee, NativeScript, NativeScripts, PlutusData, PlutusList, PlutusScript, PlutusScripts, Redeemer, Redeemers, Transaction, TransactionBuilder, TransactionBuilderConfigBuilder, TransactionInputs, TransactionOutputs, TransactionUnspentOutput, TransactionUnspentOutputs, TransactionWitnessSet, Vkeywitnesses } from "./custom_modules/@emurgo/cardano-serialization-lib-browser";
+import CoinSelection from "./coinSelection";
+import { Address, AssetName, AuxiliaryData, AuxiliaryDataHash, BigNum, CoinSelectionStrategyCIP2, Costmdls, CostModel, encode_json_str_to_metadatum, GeneralTransactionMetadata, hash_auxiliary_data, hash_script_data, Int, Language, LinearFee, NativeScript, NativeScripts, PlutusData, PlutusList, PlutusScript, PlutusScripts, Redeemer, Redeemers, Transaction, TransactionBuilder, TransactionBuilderConfigBuilder, TransactionInputs, TransactionOutputs, TransactionUnspentOutput, TransactionUnspentOutputs, TransactionWitnessSet, Vkeywitnesses } from "./custom_modules/@emurgo/cardano-serialization-lib-browser";
 import { ProtocolParameters } from "./query-api";
 import { MintedAsset, BurnAsset } from "./types";
 
@@ -12,11 +13,12 @@ export async function _txBuilderSpendFromPlutusScript({
     metadataHash = null,
     ttl = null,
     datums = [],
+    scriptUtxos = [],
     redeemers = [],
     plutusValidators = [],
     plutusPolicies = [],
     collateral = null,
-}: {
+} : {
     PaymentAddress: string,
     Utxos: TransactionUnspentOutput[],
     Outputs: TransactionOutputs,
@@ -26,15 +28,15 @@ export async function _txBuilderSpendFromPlutusScript({
     metadataHash: string | null,
     ttl: number | null,
     datums: PlutusData[],
+    scriptUtxos: TransactionUnspentOutput[],
     redeemers: Redeemer[],
     plutusValidators: PlutusScript[],
     plutusPolicies: PlutusScript[],
-    collateral: TransactionUnspentOutput,
+    collateral: TransactionUnspentOutput
 }): Promise<Transaction | null> {
 
     const nativeScripts = NativeScripts.new();
     const txbuilder = createTxBuilder(ProtocolParameter)
-
     mintedAssetsArray.forEach(a => {
         const policyScript = NativeScript.from_bytes(
             Buffer.from(a.policyScript, 'hex'),
@@ -45,7 +47,6 @@ export async function _txBuilderSpendFromPlutusScript({
             Int.new_i32(Number(a.quantity))
         )
     })
-
     let aux = AuxiliaryData.new();
     for (let i = 0; i < Outputs.len(); i++) {
         txbuilder.add_output(Outputs.get(i));
@@ -67,8 +68,28 @@ export async function _txBuilderSpendFromPlutusScript({
     if (ttl) {
         txbuilder.set_ttl(ttl)
     }
-
-    txbuilder.add_inputs_from(utxos, CoinSelectionStrategyCIP2.RandomImproveMultiAsset)
+    console.log('adding inputs from')
+    console.log(utxos.len())
+    CoinSelection.setProtocolParameters(
+        ProtocolParameter.coinsPerUtxoWord,
+        ProtocolParameter.minFeeA,
+        ProtocolParameter.minFeeB,
+        ProtocolParameter.maxTxSize
+    )
+    let { input } = CoinSelection.randomImprove(
+        Utxos,
+        Outputs,
+        100,
+        scriptUtxos
+    );
+    input.forEach((utxo) => {
+        txbuilder.add_input(
+            utxo.output().address(),
+            utxo.input(),
+            utxo.output().amount()
+        );
+    });
+    txbuilder.add_inputs_from(utxos, CoinSelectionStrategyCIP2.LargestFirstMultiAsset)
     console.log('inputs added')
     let addr
     try {
@@ -123,8 +144,10 @@ export async function _txBuilderSpendFromPlutusScript({
     // ).map((utxo) =>
     //     this.lib.TransactionUnspentOutput.from_bytes(fromHex(utxo))
     // );
-    if (!collateral) throw new Error("NO_COLLATERAL");
-    setCollateral(txbuilder, collateral);
+    // if (!collateral) throw new Error("NO_COLLATERAL");
+    // console.log('collateral')
+    // console.log(collateral)
+    // setCollateral(txbuilder, collateral);
 
     const vkeys = Vkeywitnesses.new();
 
@@ -136,7 +159,7 @@ export async function _txBuilderSpendFromPlutusScript({
     cost_model_vals.forEach((x, i) => costModel.set(i, Int.new_i32(x)));
 
     const costModels = Costmdls.new();
-    costModels.insert(this.lib.Language.new_plutus_v1(), costModel);
+    costModels.insert(Language.new_plutus_v1(), costModel);
 
     // const scriptDataHash = hash_script_data(pRedeemers, costModels, pData);
 
