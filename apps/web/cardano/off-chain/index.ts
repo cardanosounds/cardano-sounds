@@ -192,8 +192,7 @@ export class LibraryValidator {
             redeemers: [],
             plutusValidators: [],
             plutusPolicies: [],
-            burn: false,
-            scriptUtxos: []
+            burn: false
         }
 
         let tx: Transaction = await this.cardano.transaction(txParams)
@@ -262,7 +261,7 @@ export class LibraryValidator {
         let utxos = await this.cardano.wallet.getUtxos()
         console.log('utxos.length')
         console.log(utxos.length)
-        // utxos = utxos.concat(convertedValidatorUTXO)
+        utxos = utxos.concat(convertedValidatorUTXO)
         console.log('utxos.length')
         console.log(utxos.length)
         
@@ -305,8 +304,7 @@ export class LibraryValidator {
             redeemers: [new LibraryRedeemer(LibraryAction.Unlock).toRedeemer(this.cardano.lib)],
             plutusValidators: [PlutusScript.new(fromHex(validator))],
             plutusPolicies: [],
-            burn: true,
-            scriptUtxos: [convertedValidatorUTXO]
+            burn: true
         }
 
         let tx: Transaction = await this.cardano.transaction(txParams)

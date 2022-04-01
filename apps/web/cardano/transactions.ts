@@ -1,4 +1,3 @@
-import CoinSelection from "./coinSelection";
 import { Address, AssetName, AuxiliaryData, AuxiliaryDataHash, BigNum, CoinSelectionStrategyCIP2, Costmdls, CostModel, encode_json_str_to_metadatum, GeneralTransactionMetadata, hash_auxiliary_data, hash_script_data, Int, Language, LinearFee, NativeScript, NativeScripts, PlutusData, PlutusList, PlutusScript, PlutusScripts, Redeemer, Redeemers, Transaction, TransactionBuilder, TransactionBuilderConfigBuilder, TransactionInputs, TransactionOutputs, TransactionUnspentOutput, TransactionUnspentOutputs, TransactionWitnessSet, Vkeywitnesses } from "./custom_modules/@emurgo/cardano-serialization-lib-browser";
 import { ProtocolParameters } from "./query-api";
 import { MintedAsset, BurnAsset } from "./types";
@@ -13,7 +12,6 @@ export async function _txBuilderSpendFromPlutusScript({
     metadataHash = null,
     ttl = null,
     datums = [],
-    scriptUtxos = [],
     redeemers = [],
     plutusValidators = [],
     plutusPolicies = [],
@@ -28,7 +26,6 @@ export async function _txBuilderSpendFromPlutusScript({
     metadataHash: string | null,
     ttl: number | null,
     datums: PlutusData[],
-    scriptUtxos: TransactionUnspentOutput[],
     redeemers: Redeemer[],
     plutusValidators: PlutusScript[],
     plutusPolicies: PlutusScript[],
@@ -70,25 +67,25 @@ export async function _txBuilderSpendFromPlutusScript({
     }
     console.log('adding inputs from')
     console.log(utxos.len())
-    CoinSelection.setProtocolParameters(
-        ProtocolParameter.coinsPerUtxoWord,
-        ProtocolParameter.minFeeA,
-        ProtocolParameter.minFeeB,
-        ProtocolParameter.maxTxSize
-    )
-    let { input } = CoinSelection.randomImprove(
-        Utxos,
-        Outputs,
-        100,
-        scriptUtxos
-    );
-    input.forEach((utxo) => {
-        txbuilder.add_input(
-            utxo.output().address(),
-            utxo.input(),
-            utxo.output().amount()
-        );
-    });
+    // CoinSelection.setProtocolParameters(
+    //     ProtocolParameter.coinsPerUtxoWord,
+    //     ProtocolParameter.minFeeA,
+    //     ProtocolParameter.minFeeB,
+    //     ProtocolParameter.maxTxSize
+    // )
+    // let { input } = CoinSelection.randomImprove(
+    //     Utxos,
+    //     Outputs,
+    //     100,
+    //     scriptUtxos
+    // );
+    // input.forEach((utxo) => {
+    //     txbuilder.add_input(
+    //         utxo.output().address(),
+    //         utxo.input(),
+    //         utxo.output().amount()
+    //     );
+    // });
     txbuilder.add_inputs_from(utxos, CoinSelectionStrategyCIP2.LargestFirstMultiAsset)
     console.log('inputs added')
     let addr

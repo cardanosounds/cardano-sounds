@@ -115,6 +115,9 @@ export class CardanoWallet {
             const policyAssets = assets.filter(
                 (asset) => asset.policyId === policy
             );
+            console.log('policyAssets')
+            console.log(policyAssets)
+
             const assetsValue = this.lib.Assets.new();
             policyAssets.forEach((asset) => {
                 console.log(asset.assetName)
@@ -133,7 +136,7 @@ export class CardanoWallet {
         const value = this.lib.Value.new(
             this.lib.BigNum.from_str(lovelace ? lovelace.toString() : '0')
         );
-        if (assets.length > 1 || !lovelace) value.set_multiasset(multiAsset);
+        if (assets.length > 0 || !lovelace) value.set_multiasset(multiAsset);
         console.log('end assetsToValue')
         return value;
     };
@@ -313,7 +316,6 @@ export class CardanoWallet {
         plutusPolicies = [],
         datums = [],
         burn = false,
-        scriptUtxos = []
     }: TransactionParams
     ) {
 
@@ -454,7 +456,6 @@ export class CardanoWallet {
                 plutusValidators: plutusValidators,
                 plutusPolicies: plutusPolicies,
                 collateral: await this.wallet.experimental.getCollateral(),
-                scriptUtxos: scriptUtxos
             })
         } else if (minting > 0) {
             RawTransaction = await _txBuilderMinting({
