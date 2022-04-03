@@ -12,7 +12,7 @@ import {
 import CardanoWallet from '..';
 
 import { validator, validatorAddress, validatorAddressTestnet } from "../on-chain/nftMediaLibPlutus";
-import { AlwaysSucceedsValidator, AlwaysSucceedsPolicy } from "../on-chain/alwaysSuceedsPlutus";
+import { AlwaysSucceedsPlutusValidator, AlwaysSucceedsPlutusPolicy } from "../on-chain/alwaysSuceedsPlutus";
 import { ProtocolParameters, UTxO } from '../query-api';
 import { Asset, MintedAsset, Policy } from '../types';
 import TransactionParams from '../types/TransactionParams';
@@ -338,6 +338,95 @@ export class LibraryValidator {
 
     use = () => {
 
+    }
+}
+
+export class TestValidator {
+    private cardano: CardanoWallet
+
+    constructor(cardano: CardanoWallet) {
+        this.cardano = cardano
+    }
+
+    payToScript = async (
+        protocolParameters: ProtocolParameters,
+        asset: Asset,
+        adaPrice: number,
+        metadata: Object = null
+    ) => {
+        console.log({
+            protocolParameters: protocolParameters,
+            asset: asset,
+            adaPrice: adaPrice,
+            metadata: null
+        })
+        let localWallet = localStorage.getItem('cardano-web3-wallet')
+        if(!localWallet) localWallet = 'nami'
+        console.log(await this.cardano.enable(localWallet))
+        if (!this.cardano.wallet && localWallet) {
+            if (!await this.cardano.enable(localWallet)) return
+        } else if (!this.cardano.wallet) {
+            return
+        }
+        console.log(this.cardano.wallet)
+        const walletAddr = await this.cardano.getAddressHexString()
+        console.log(walletAddr)
+
+
+        if (!walletAddr) return
+
+        let utxos = await this.cardano.wallet.getUtxos();
+
+        const txParams: TransactionParams = {
+            ProtocolParameters: protocolParameters,
+            PaymentAddress: walletAddr,
+            recipients: [
+                {
+                    address: AlwaysSucceedsPlutusValidator.testnetAddress,//'addr_test1qqrsm4vj985epelhc8qpv8jahaqpjll7ed67647dk47ku4x5x8xk48yntkwhc2s20manmqartkchrp2qxgfwdaezsq5qu9urvd',
+                    amount: '2.5',
+                    assets: [asset],
+                    datum: new LibraryDatum({
+                        lockTokenPolicy: asset.unit.split('.')[1],
+                        lockTokenName: asset.unit.split('.')[0],
+                        lovelacePrice: BigInt.from_str((adaPrice * 1000000).toString())
+                    }).toPlutusData(this.cardano.lib)
+                }
+            ],
+            metadata: metadata,
+            metadataHash: null,
+            addMetadata: true,
+            utxosRaw: utxos,
+            ttl: 0,
+            multiSig: false,
+            delegation: null,
+            redeemers: [],
+            plutusValidators: [],
+            plutusPolicies: [],
+            burn: false
+        }
+
+        let tx: Transaction = await this.cardano.transaction(txParams)
+        console.log('tx')
+        console.log(tx)
+        console.log('tx typeof')
+        console.log(typeof tx)
+
+        const transactionWitnessSet = TransactionWitnessSet.new();
+
+        const txVkeyWitnessesStr = await this.cardano.wallet.signTx(Buffer.from(tx.to_bytes()).toString("hex"), false);
+        const txVkeyWitnessesSer = TransactionWitnessSet.from_bytes(Buffer.from(txVkeyWitnessesStr, "hex"));
+        transactionWitnessSet.set_vkeys(txVkeyWitnessesSer.vkeys());
+        const txBody = tx.body()
+        let aux = tx.auxiliary_data();
+        txBody.set_auxiliary_data_hash(this.cardano.lib.hash_auxiliary_data(aux))
+        const signedTx = Transaction.new(
+            txBody,
+            transactionWitnessSet,
+            aux
+        );
+
+        const submittedTxHash = await this.cardano.wallet.submitTx(Buffer.from(signedTx.to_bytes()).toString("hex"));
+        console.log({ submittedTxHash: submittedTxHash })
     }
 }
 

@@ -3,7 +3,7 @@ const safelySetApi = (api: any) => {
 }
 export const walletConfig = {
     'nami': safelySetApi((window as any).cardano.nami),
-    'ccvault': safelySetApi((window as any).cardano.ccvault),
+    'eternl': safelySetApi((window as any).cardano.eternl),
     'flint': safelySetApi((window as any).cardano.flint),
     'yoroi': safelySetApi((window as any).cardano.yoroi),
     'cardwallet': safelySetApi((window as any).cardano.cardwallet),
