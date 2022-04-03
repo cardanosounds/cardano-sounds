@@ -5,12 +5,14 @@ import {
     PlutusScript,
     Transaction,
     TransactionUnspentOutput,
-    TransactionWitnessSet
+    TransactionWitnessSet,
+    Value
 } from '../custom_modules/@emurgo/cardano-serialization-lib-browser'
 
 import CardanoWallet from '..';
 
 import { validator, validatorAddress, validatorAddressTestnet } from "../on-chain/nftMediaLibPlutus";
+import { AlwaysSucceedsValidator, AlwaysSucceedsPolicy } from "../on-chain/alwaysSuceedsPlutus";
 import { ProtocolParameters, UTxO } from '../query-api';
 import { Asset, MintedAsset, Policy } from '../types';
 import TransactionParams from '../types/TransactionParams';
@@ -22,19 +24,19 @@ export const fromHex = (hex) => Buffer.from(hex, "hex");
 export const toHex = (bytes) => Buffer.from(bytes).toString("hex");
 
 export class LibraryDatum {
-    private lockTokenPolicy : string
-    private lockTokenName : string
-    private lovelacePrice : BigInt
+    private lockTokenPolicy: string
+    private lockTokenName: string
+    private lovelacePrice: BigInt
 
     constructor({
         lockTokenPolicy,
         lockTokenName,
         lovelacePrice
-    } : {
-        lockTokenPolicy : string,
-        lockTokenName : string,
-        lovelacePrice : BigInt
-    }){
+    }: {
+        lockTokenPolicy: string,
+        lockTokenName: string,
+        lovelacePrice: BigInt
+    }) {
         this.lockTokenPolicy = lockTokenPolicy
         this.lockTokenName = lockTokenName
         this.lovelacePrice = lovelacePrice
@@ -86,7 +88,7 @@ export enum LibraryAction {
 export class LibraryRedeemer {
     private libraryAction: LibraryAction
 
-    constructor(_libraryAction: LibraryAction){
+    constructor(_libraryAction: LibraryAction) {
         this.libraryAction = _libraryAction
     }
     // {
@@ -100,7 +102,7 @@ export class LibraryRedeemer {
                 cardano.PlutusList.new()
             )
         )
-        
+
     }
     toRedeemer = (cardano: CardanoWASM, index: number = 0) => {
         return cardano.Redeemer.new(
@@ -108,8 +110,8 @@ export class LibraryRedeemer {
             cardano.BigNum.from_str(index.toString()),
             this.toPlutusData(cardano),
             cardano.ExUnits.new(
-              cardano.BigNum.from_str("59900"),
-              cardano.BigNum.from_str("17804354")
+                cardano.BigNum.from_str("59900"),
+                cardano.BigNum.from_str("17804354")
             )
         );
     }
@@ -124,11 +126,11 @@ export class LibraryValidator {
     }
 
     lock = async (
-            protocolParameters: ProtocolParameters,
-            asset: Asset,
-            adaPrice: number,
-            metadata: Object = null
-        ) => {
+        protocolParameters: ProtocolParameters,
+        asset: Asset,
+        adaPrice: number,
+        metadata: Object = null
+    ) => {
         console.log({
             protocolParameters: protocolParameters,
             asset: asset,
@@ -137,9 +139,9 @@ export class LibraryValidator {
         })
         const localWallet = localStorage.getItem('cardano-web3-wallet')
         console.log(await this.cardano.enable('nami'))
-        if(!this.cardano.wallet && localWallet) {
-            if(!await this.cardano.enable(localWallet)) return
-        } else if (!this.cardano.wallet){
+        if (!this.cardano.wallet && localWallet) {
+            if (!await this.cardano.enable(localWallet)) return
+        } else if (!this.cardano.wallet) {
             return
         }
         console.log(this.cardano.wallet)
@@ -147,8 +149,8 @@ export class LibraryValidator {
         console.log(walletAddr)
 
 
-        if(!walletAddr) return
-        
+        if (!walletAddr) return
+
         const policy: Policy = await this.cardano.createLockingPolicyScript(walletAddr, null, protocolParameters)//address: string, expirationTime: Date, protocolParameters: ProtocolParameters
         console.log('policy')
         console.log(policy)
@@ -165,22 +167,22 @@ export class LibraryValidator {
             ProtocolParameters: protocolParameters,
             PaymentAddress: walletAddr,
             recipients: [
-            {
-                address: validatorAddressTestnet,//'addr_test1qqrsm4vj985epelhc8qpv8jahaqpjll7ed67647dk47ku4x5x8xk48yntkwhc2s20manmqartkchrp2qxgfwdaezsq5qu9urvd',
-                amount: '2.5',
-                assets:[asset],
-                datum: new LibraryDatum({ 
-                    lockTokenPolicy: lockTokenMint.policyId,
-                    lockTokenName: lockTokenMint.assetName,
-                    lovelacePrice: BigInt.from_str((adaPrice * 1000000).toString())
-                }).toPlutusData(this.cardano.lib)
-            }
-            ,
-            {
-                address: walletAddr,
-                amount: '0',
-                mintedAssets: [lockTokenMint]
-            }
+                {
+                    address: validatorAddressTestnet,//'addr_test1qqrsm4vj985epelhc8qpv8jahaqpjll7ed67647dk47ku4x5x8xk48yntkwhc2s20manmqartkchrp2qxgfwdaezsq5qu9urvd',
+                    amount: '2.5',
+                    assets: [asset],
+                    datum: new LibraryDatum({
+                        lockTokenPolicy: lockTokenMint.policyId,
+                        lockTokenName: lockTokenMint.assetName,
+                        lovelacePrice: BigInt.from_str((adaPrice * 1000000).toString())
+                    }).toPlutusData(this.cardano.lib)
+                }
+                ,
+                {
+                    address: walletAddr,
+                    amount: '0',
+                    mintedAssets: [lockTokenMint]
+                }
             ],
             metadata: metadata,
             metadataHash: null,
@@ -219,7 +221,7 @@ export class LibraryValidator {
         );
 
         const submittedTxHash = await this.cardano.wallet.submitTx(Buffer.from(signedTx.to_bytes()).toString("hex"));
-        console.log({submittedTxHash: submittedTxHash})
+        console.log({ submittedTxHash: submittedTxHash })
     }
 
     unlock = async (
@@ -237,9 +239,9 @@ export class LibraryValidator {
         })
         const localWallet = localStorage.getItem('cardano-web3-wallet')
         console.log(await this.cardano.enable('nami'))
-        if(!this.cardano.wallet && localWallet) {
-            if(!await this.cardano.enable(localWallet)) return
-        } else if (!this.cardano.wallet){
+        if (!this.cardano.wallet && localWallet) {
+            if (!await this.cardano.enable(localWallet)) return
+        } else if (!this.cardano.wallet) {
             return
         }
         console.log(this.cardano.wallet)
@@ -247,12 +249,12 @@ export class LibraryValidator {
         console.log(walletAddr)
 
 
-        if(!walletAddr) return
+        if (!walletAddr) return
 
         const policy: Policy = await this.cardano.createLockingPolicyScript(walletAddr, null, protocolParameters)//address: string, expirationTime: Date, protocolParameters: ProtocolParameters
         console.log('policy')
         console.log(policy)
-        
+
         const convertedValidatorUTXO = await this.cardano.utxoFromData(validatorUtxo, validatorAddressTestnet)
 
         console.log(utxoToJson(convertedValidatorUTXO))
@@ -264,7 +266,7 @@ export class LibraryValidator {
         utxos = utxos.concat(convertedValidatorUTXO)
         console.log('utxos.length')
         console.log(utxos.length)
-        
+
         const lockTokenBurn = {
             assetName: 'CSlock' + asset.unit.split('.')[1],
             quantity: '-1',
@@ -272,7 +274,7 @@ export class LibraryValidator {
             policyScript: policy.script,
             address: walletAddr
         }
-        
+
         const txParams: TransactionParams = {
             ProtocolParameters: protocolParameters,
             PaymentAddress: walletAddr,
@@ -280,7 +282,7 @@ export class LibraryValidator {
                 address: walletAddr,
                 amount: '0',
                 assets: [
-                    {quantity: '1', unit: asset.unit }
+                    { quantity: '1', unit: asset.unit }
                     // ,
                     // {quantity: '1', unit: lockTokenBurn.policyId + "." + lockTokenBurn.assetName}
                 ]
@@ -295,7 +297,7 @@ export class LibraryValidator {
             multiSig: false,
             delegation: null,
             datums: [
-                new LibraryDatum({ 
+                new LibraryDatum({
                     lockTokenPolicy: lockTokenBurn.policyId,
                     lockTokenName: lockTokenBurn.assetName,
                     lovelacePrice: BigInt.from_str((adaPrice * 1000000).toString())
@@ -331,7 +333,7 @@ export class LibraryValidator {
         );
 
         const submittedTxHash = await this.cardano.wallet.submitTx(Buffer.from(signedTx.to_bytes()).toString("hex"));
-        console.log({submittedTxHash: submittedTxHash})
+        console.log({ submittedTxHash: submittedTxHash })
     }
 
     use = () => {
@@ -347,61 +349,60 @@ export class LibraryValidator {
  * @param {TransactionUnspentOutput} utxo
  * @returns
  */
- export const utxoToJson = (utxo) => {
+export const utxoToJson = (utxo: TransactionUnspentOutput) => {
     const utxoT = typeof utxo === 'string' ? TransactionUnspentOutput.from_bytes(Buffer.from(utxo, 'hex')) : utxo
     const assets = valueToAssets(utxoT.output().amount());
     return {
-      txHash: Buffer.from(
-        utxoT.input().transaction_id().to_bytes(),
-        'hex'
-      ).toString('hex'),
-      txId: utxoT.input().index(),
-      amount: assets,
+        txHash: Buffer.from(
+            utxoT.input().transaction_id().to_bytes()
+        ).toString('hex'),
+        txId: utxoT.input().index(),
+        amount: assets,
     };
-  };
-  
-  /**
-   *
-   * @param {string} hex
-   * @returns
-   */
-   export const hexToAscii = (hex) => Buffer.from(hex, 'hex').toString();
-  
-  /**
-   *
-   * @param {Value} value
-   */
-   export const valueToAssets = (value) => {
+};
+
+/**
+ *
+ * @param {string} hex
+ * @returns
+ */
+export const hexToAscii = (hex: string) => Buffer.from(hex, 'hex').toString();
+
+/**
+ *
+ * @param {Value} value
+ */
+export const valueToAssets = (value: Value) => {
     const assets = [];
     assets.push({ unit: 'lovelace', quantity: value.coin().to_str() });
     if (value.multiasset()) {
-      const multiAssets = value.multiasset().keys();
-      for (let j = 0; j < multiAssets.len(); j++) {
-        const policy = multiAssets.get(j);
-        const policyAssets = value.multiasset().get(policy);
-        const assetNames = policyAssets.keys();
-        for (let k = 0; k < assetNames.len(); k++) {
-          const policyAsset = assetNames.get(k);
-          const quantity = policyAssets.get(policyAsset);
-          const asset =
-            Buffer.from(policy.to_bytes(), 'hex').toString('hex') +
-            Buffer.from(policyAsset.name(), 'hex').toString('hex');
-          const _policy = asset.slice(0, 56);
-          const _name = asset.slice(56);
-          const fingerprint = AssetFingerprint.fromParts(
-            Buffer.from(_policy, 'hex'),
-            Buffer.from(_name, 'hex'),
-          ).fingerprint();
-          assets.push({
-            unit: asset,
-            quantity: quantity.to_str(),
-            policy: _policy,
-            name: hexToAscii(_name),
-            fingerprint,
-          });
+        const multiAssets = value.multiasset().keys();
+        for (let j = 0; j < multiAssets.len(); j++) {
+            const policy = multiAssets.get(j);
+            const policyAssets = value.multiasset().get(policy);
+            const assetNames = policyAssets.keys();
+            for (let k = 0; k < assetNames.len(); k++) {
+                const policyAsset = assetNames.get(k);
+                const quantity = policyAssets.get(policyAsset);
+                const asset =
+                    Buffer.from(policy.to_bytes()).toString('hex') +
+                    Buffer.from(policyAsset.name()).toString('hex');
+                const _policy = asset.slice(0, 56);
+                const _name = asset.slice(56);
+                const fingerprint = AssetFingerprint.fromParts(
+                    Buffer.from(_policy, 'hex'),
+                    Buffer.from(_name, 'hex'),
+                ).fingerprint();
+                assets.push({
+                    unit: asset,
+                    quantity: quantity.to_str(),
+                    policy: _policy,
+                    name: hexToAscii(_name),
+                    fingerprint,
+                });
+            }
         }
-      }
     }
     // if (value.coin().to_str() == '0') return [];
     return assets;
-  };
+};
