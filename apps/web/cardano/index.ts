@@ -675,10 +675,13 @@ export class CardanoWallet {
         const txScripts = txWitnesses.native_scripts();
         const txPlutusScripts = txWitnesses.plutus_scripts();
         const txRedeemers = txWitnesses.redeemers();
+        const txPlutusData = txWitnesses.plutus_data()
         const totalVkeys = this.lib.Vkeywitnesses.new();
         const totalScripts = this.lib.NativeScripts.new();
         const totalPlutusScripts = this.lib.PlutusScripts.new();
         const totalRedeemers = this.lib.Redeemers.new()
+        const totalPlutusData = this.lib.PlutusList.new()
+
         witnesses.forEach((w) => {
             console.log('witness')
             console.log(w)
@@ -691,6 +694,7 @@ export class CardanoWallet {
             const addScripts = addWitnesses.native_scripts();
             const addPlutusScripts = addWitnesses.plutus_scripts();
             const addRedeemers = addWitnesses.redeemers();
+            const addPlutusData = addWitnesses.plutus_data();
             if (addVkeys) {
                 for (let i = 0; i < addVkeys.len(); i++) {
                     totalVkeys.add(addVkeys.get(i));
@@ -709,6 +713,11 @@ export class CardanoWallet {
             if (addRedeemers) {
                 for (let i = 0; i < addRedeemers.len(); i++) {
                     totalRedeemers.add(addRedeemers.get(i));
+                }
+            }
+            if (addPlutusData) {
+                for (let i = 0; i < addPlutusData.len(); i++) {
+                    totalPlutusData.add(addPlutusData.get(i));
                 }
             }
         })
@@ -731,6 +740,11 @@ export class CardanoWallet {
         if (txRedeemers) {
             for (let i = 0; i < txRedeemers.len(); i++) {
                 totalRedeemers.add(txRedeemers.get(i));
+            }
+        }
+        if (txPlutusData) {
+            for (let i = 0; i < txPlutusData.len(); i++) {
+                totalPlutusData.add(txPlutusData.get(i));
             }
         }
         const totalWitnesses = this.lib.TransactionWitnessSet.new();

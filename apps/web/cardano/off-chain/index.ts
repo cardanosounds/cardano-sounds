@@ -1,5 +1,7 @@
 import {
     BigInt,
+    BigNum,
+    ExUnits,
     NativeScript,
     PlutusData,
     PlutusScript,
@@ -340,6 +342,10 @@ export class LibraryValidator {
     }
 }
 
+export class TestRedeemer {
+
+}
+
 export class TestValidator {
     private cardano: CardanoWallet
 
@@ -493,7 +499,15 @@ export class TestValidator {
                     lovelacePrice: BigInt.from_str((adaPrice * 1000000).toString())
                 }).toPlutusData(this.cardano.lib)
             ],
-            redeemers: [new LibraryRedeemer(LibraryAction.Unlock).toRedeemer(this.cardano.lib)],
+            redeemers: [this.cardano.lib.Redeemer.new(
+                this.cardano.lib.RedeemerTag.new_spend(),
+                BigNum.zero(),
+                this.cardano.lib.PlutusData.new_integer(BigInt.from_str('0')),
+                ExUnits.new(
+                    BigNum.from_str(AlwaysSucceedsPlutusValidator.exBudget.exBudgetMemory.toString()),
+                    BigNum.from_str(AlwaysSucceedsPlutusValidator.exBudget.exBudgetCPU.toString())
+                )
+            )],
             plutusValidators: [PlutusScript.new(fromHex(AlwaysSucceedsPlutusValidator.validator))],
             plutusPolicies: [],
             burn: false
