@@ -673,8 +673,12 @@ export class CardanoWallet {
         const txWitnesses = transaction.witness_set();
         const txVkeys = txWitnesses.vkeys();
         const txScripts = txWitnesses.native_scripts();
+        const txPlutusScripts = txWitnesses.plutus_scripts();
+        const txRedeemers = txWitnesses.redeemers();
         const totalVkeys = this.lib.Vkeywitnesses.new();
         const totalScripts = this.lib.NativeScripts.new();
+        const totalPlutusScripts = this.lib.PlutusScripts.new();
+        const totalRedeemers = this.lib.Redeemers.new()
         witnesses.forEach((w) => {
             console.log('witness')
             console.log(w)
@@ -685,6 +689,8 @@ export class CardanoWallet {
             );
             const addVkeys = addWitnesses.vkeys();
             const addScripts = addWitnesses.native_scripts();
+            const addPlutusScripts = addWitnesses.plutus_scripts();
+            const addRedeemers = addWitnesses.redeemers();
             if (addVkeys) {
                 for (let i = 0; i < addVkeys.len(); i++) {
                     totalVkeys.add(addVkeys.get(i));
@@ -693,6 +699,16 @@ export class CardanoWallet {
             if (addScripts) {
                 for (let i = 0; i < addScripts.len(); i++) {
                     totalScripts.add(addScripts.get(i));
+                }
+            }
+            if (addPlutusScripts) {
+                for (let i = 0; i < addPlutusScripts.len(); i++) {
+                    totalPlutusScripts.add(addPlutusScripts.get(i));
+                }
+            }
+            if (addRedeemers) {
+                for (let i = 0; i < addRedeemers.len(); i++) {
+                    totalRedeemers.add(addRedeemers.get(i));
                 }
             }
         })
@@ -707,10 +723,21 @@ export class CardanoWallet {
                 totalScripts.add(txScripts.get(i));
             }
         }
+        if (txPlutusScripts) {
+            for (let i = 0; i < txPlutusScripts.len(); i++) {
+                totalPlutusScripts.add(txPlutusScripts.get(i));
+            }
+        }
+        if (txRedeemers) {
+            for (let i = 0; i < txRedeemers.len(); i++) {
+                totalRedeemers.add(txRedeemers.get(i));
+            }
+        }
         const totalWitnesses = this.lib.TransactionWitnessSet.new();
         totalWitnesses.set_vkeys(totalVkeys);
         totalWitnesses.set_native_scripts(totalScripts);
-
+        totalWitnesses.set_plutus_scripts(totalPlutusScripts)
+        totalWitnesses.set_redeemers(totalRedeemers)
         let aux;
         if (metadata) {
             aux = this.lib.AuxiliaryData.new();
