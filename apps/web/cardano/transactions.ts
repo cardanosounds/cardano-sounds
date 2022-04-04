@@ -61,9 +61,8 @@ export async function _txBuilderSpendFromPlutusScript({
             utxos.add(Utxos[i] as TransactionUnspentOutput)
         }
     }
-
     if (ttl) {
-        txbuilder.set_ttl(ttl)
+        txbuilder.set_ttl(ProtocolParameter.slot + ttl)
     }
     console.log('adding inputs from')
     console.log(utxos.len())
@@ -96,11 +95,7 @@ export async function _txBuilderSpendFromPlutusScript({
         addr = Address.from_bech32(PaymentAddress)
 
     }
-    console.log(addr)
-    txbuilder.add_change_if_needed(addr);
-
-
-
+   
     if (metadata) {
         const generalMetadata = GeneralTransactionMetadata.new();
         Object.entries(metadata).map(([MetadataLabel, Metadata]) => {
@@ -158,8 +153,9 @@ export async function _txBuilderSpendFromPlutusScript({
     const costModels = Costmdls.new();
     costModels.insert(Language.new_plutus_v1(), costModel);
 
-    // const scriptDataHash = hash_script_data(pRedeemers, costModels, pData);
-
+    const scriptDataHash = hash_script_data(pRedeemers, costModels, pData);
+    console.log(addr)
+    txbuilder.add_change_if_needed(addr);
     let txBody
     // const txBody = txbuilder.build()
     if (metadataHash) {
@@ -177,7 +173,7 @@ export async function _txBuilderSpendFromPlutusScript({
         // txBody.set_auxiliary_data_hash(this.lib.hash_auxiliary_data(aux))
     }
 
-    // txBody.set_script_data_hash(scriptDataHash);
+    txBody.set_script_data_hash(scriptDataHash);
     const transaction = Transaction.new(
         txBody,
         witnesses,
