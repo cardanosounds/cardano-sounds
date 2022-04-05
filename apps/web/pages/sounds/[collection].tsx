@@ -29,12 +29,32 @@ export default function SoundList({ errorCode, data }: {
 })
 {
   const [ collection, changeCollection ] = useState<string>("all")
+  const [ sort, setSort ] = useState<string>("default")
   const [ nfts, updateNfts ] = useState<Metadata[]>(data.nfts)
   const [ loadingMore, loadMore ] = useState<boolean>(false)
 
+  const changeSortOption = async (selectedIndex: number) => {
+    console.log('changeSortOption index ' + selectedIndex)
+    let selection
+    switch(selectedIndex){
+      case 0:
+        selection = "default"
+      case 1:
+        selection = 'deprobability'
+      case 2:
+        selection = 'asprobability'
+    }
+    
+    if(selection == sort) return
+    setSort(selection)
+    const res: SoundListData = await fetch(`/api/csnfts/${collection}/${selection}/1`).then(rs => rs.json())
+    updateNfts(res.nfts)   
+  }
+
   const changeCollectionOption = async (selectedIndex: number) => {
+    console.log('changeCollectionOption index ' + selectedIndex)
     let selection: string = "wave"
-    if(selectedIndex == 0 || selectedIndex == 1)
+    if(selectedIndex == 0)
     {
       selection = "all"
     }
@@ -44,7 +64,7 @@ export default function SoundList({ errorCode, data }: {
     }
     if(selection == collection) return
     changeCollection(selection)
-    const res: SoundListData = await fetch("/api/csnfts/" + selection + "/1").then(rs => rs.json())
+    const res: SoundListData = await fetch(`/api/csnfts/${selection}/${sort}/1`).then(rs => rs.json())
     updateNfts(res.nfts)   
   }
 
@@ -52,7 +72,7 @@ export default function SoundList({ errorCode, data }: {
       loadMore(true)
       data.page ++
 
-      const res: SoundListData = await fetch("/api/csnfts/" + collection + "/" + String(data.page)).then(rs => rs.json())
+      const res: SoundListData = await fetch(`/api/csnfts/${collection}/${sort}/` + String(data.page)).then(rs => rs.json())
       console.log(res)
 
       updateNfts(nfts.concat(res.nfts))
@@ -75,8 +95,9 @@ export default function SoundList({ errorCode, data }: {
       maxW={["95vw", "90vw", "80vw"]}
       minH="60vh"
       mt={["18vh", "17vh", "25vh", "25vh", "20vh"]}
+      mx='auto'
     >
-      {/*<Select 
+      <Select 
         variant="outline" 
         placeholder="Select collection" 
         mt="3vw" ml={["5vw", "5vw", "3vw"]} 
@@ -84,11 +105,21 @@ export default function SoundList({ errorCode, data }: {
         maxW={["70vw", "65vw", "50vw", "45vw"]}
         onChange={async (e) => await changeCollectionOption(e.target.options.selectedIndex)} 
       >
-        <option value="all">All</option>
         <option value="wave1">Wave 1</option>
         <option value="wave2">Wave 2</option>
         <option value="wave3">Wave 3</option>
-      </Select>*/}
+      </Select>
+      <Select 
+        variant="outline" 
+        placeholder="Order" 
+        mt="3vw" ml={["5vw", "5vw", "3vw"]} 
+        mb={0} 
+        maxW={["70vw", "65vw", "50vw", "45vw"]}
+        onChange={async (e) => await changeSortOption(e.target.options.selectedIndex)} 
+      >
+        <option value="deprobability">Probability ↓</option>
+        <option value="asprobability">Probability ↑</option>
+      </Select>
       <Flex
         display="column"
         align="center"
@@ -101,15 +132,15 @@ export default function SoundList({ errorCode, data }: {
           columns={[1,1,2,3]}
         >
           { nfts.map(( nftsound: Metadata ) => (
-            <Flex
-              rounded="lg"
-              py={["3vh", "3vh","3vw"]}
-              maxH={["60vh", "60vh", "75vh", "29vw"]}
-              key={nftsound.token_name} 
-              // _hover={{ boxShadow: "dark-lg", transform: "scale(1.1)", cursor: "pointer" }}
-              >
+            // <Flex
+            //   rounded="lg"
+            //   // py={["3vh", "3vh","3vw"]}
+            //   // maxH={["60vh", "60vh", "75vh", "29vw"]}
+            //   key={nftsound.token_name} 
+            //   // _hover={{ boxShadow: "dark-lg", transform: "scale(1.1)", cursor: "pointer" }}
+            //   >
               <SoundNFTPreviewSmall  metadata={nftsound}/>
-            </Flex>
+            // </Flex>
           ))}
         </SimpleGrid>
         <Button isLoading={loadingMore} display="flex" variant={"ghost"} mx="auto" title="Load more" onClick={loadNewPage}><ChevronDownIcon/></Button>

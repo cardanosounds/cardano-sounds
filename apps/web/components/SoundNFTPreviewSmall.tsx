@@ -16,11 +16,9 @@ import { Metadata } from '@prisma/client'
 export default function SoundNFTPreviewSmall({metadata, fullView}: { metadata: Metadata, fullView?: boolean } ) {
 	const [ glitching, setGlitching ]= useState<boolean>(false)
 
-	// const imageFilePath = fullView ? "glitch-light-v1.PNG" : "../../../glitch-light-v1.PNG"
 	const imageFilePath = 'https://infura-ipfs.io/ipfs/' + metadata?.image
 
 	const hoverShadow = { strokeWidth: "1em", strokeDashoffset: "0",  strokeDasharray: "760", cursor: "pointer" }
-	// const hoverShadow = fullView ? {boxShadow: "unset" } : { boxShadow: "dark-lg", transform: "scale(1.1)", cursor: "pointer" }
 	const audioPath = 'https://arweave.net/' + metadata?.arweave_id_sound
 
 	useEffect(() => {
@@ -50,16 +48,13 @@ export default function SoundNFTPreviewSmall({metadata, fullView}: { metadata: M
 			>
 				<Box
 					rounded="lg"
-					//bg="rgba(0,0,0,0.2)"
 					h={["85vw", "85vw", "30vw", "20vw"]}
 					w={["85vw", "85vw", "30vw", "20vw"]}
-					// bgImage={`url('${imageFilePath}')`}
 					
 				>
 					<img
 						audio-data-gifffer={audioPath} audio-giffer-format="audio/flac" data-gifffer={imageFilePath} 
 					/>
-					{/* <Image src={imageFilePath} style={{animationPlayState: "paused"}} rounded="lg" pos="relative" /> */}
 				</Box>
 				<NextChakraLink 
 					href={`${metadata?.arweave_website_uri}`}
@@ -89,11 +84,6 @@ export default function SoundNFTPreviewSmall({metadata, fullView}: { metadata: M
 					</Flex>
 				</NextChakraLink>	
 				
-				{/*<Text
-					wordBreak="break-all"
-				>
-					97de3506172e572d4e7ba9874af2616c41ae3027c9894fde2c484a62
-				</Text>*/}
 			</Flex>
 	)
 
