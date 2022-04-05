@@ -431,3 +431,8 @@ apps/Api.CardanoSounds/dump.rdb
 apps/web/next.config.js
 apps/web/public/workbox-9a8b0a38.js.map
 apps/web/public/workbox-9a8b0a38.js
+
+
+
+apps/web/db/migrations
+apps/web/db/dev.db

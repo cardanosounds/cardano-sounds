@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Metadata {
+  token_name          String @id @unique
+  player              String
+  image               String
+  probability         String
+  rarity              String
+  // track               Track  @relation(fields: [trackEnriching, trackMelody, trackDrums, trackBass, trackSignature], references: [enriching, melody, drums, bass, signature])
+  arweave_id_sound    String
+  ipfs_id_sound       String
+  arweave_website_uri String
+  trackEnriching      String
+  trackMelody         String
+  trackDrums          String
+  trackBass           String
+  trackSignature      String
+}
+
+// [{probability: "0.02435", filename: "enriching: w1_2_12", category: "enriching-mid"},
+// {probability: "0.04348", filename: "melody: w2_9", category: "melody"},
+// {probability: "0.0625", filename: "drums: w4_8", category: "drums"},
+// {probability: "0.09091", filename: "bass: w3_6", category: "bass"},
+// {probability: "0.001", filename: "signatures: w5_793", category: "signature"}]
+// model Track {
+//   enriching String
+//   melody    String
+//   drums     String
+//   bass      String
+//   signature String
+
+//   @@unique([enriching, melody, drums, bass, signature])
+//   Metadata Metadata[]
+// }
+
+// model User {
+//   id    Int     @id @default(autoincrement())
+//   email String  @unique
+//   name  String?
+//   posts Post[]
+// }
+
+// model Post {
+//   id        Int      @id @default(autoincrement())
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+//   title     String
+//   content   String?
+//   published Boolean  @default(false)
+//   viewCount Int      @default(0)
+//   author    User?    @relation(fields: [authorId], references: [id])
+//   authorId  Int?
+// }
