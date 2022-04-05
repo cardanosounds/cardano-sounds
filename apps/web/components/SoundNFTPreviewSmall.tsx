@@ -6,10 +6,10 @@ import {
 	Image,
 	Spacer
 } from '@chakra-ui/react'
-import { DatabaseTx, Metadata } from '../interfaces/databaseTx'
 import Gifffer from '../lib/gifffer-custom'
 import GlitchText from './GlitchText'
 import NextChakraLink from './NextChakraLink'
+import { Metadata } from '@prisma/client'
 
 
 

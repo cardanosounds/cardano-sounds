@@ -8,7 +8,8 @@ datasource db {
 }
 
 model Metadata {
-  token_name          String @id @unique
+  id                  Int    @id @default(autoincrement())
+  token_name          String @unique
   player              String
   image               String
   probability         String
@@ -21,4 +22,5 @@ model Metadata {
   trackDrums          String
   trackBass           String
   trackSignature      String
+  collection          String
 }

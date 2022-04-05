@@ -68,14 +68,13 @@ export default function SoundList({ errorCode, data }: {
       <Head>
         <title>CardanoSounds - NFTs</title>
       </Head>
-    <Flex
+     <Flex
       display="column"
       align="center"
       justify="center"
       maxW={["95vw", "90vw", "80vw"]}
       minH="60vh"
       mt={["18vh", "17vh", "25vh", "25vh", "20vh"]}
-      mx="auto"
     >
       {/*<Select 
         variant="outline" 
@@ -93,16 +92,14 @@ export default function SoundList({ errorCode, data }: {
       <Flex
         display="column"
         align="center"
-        minH="80vh"
         align-items="center"
         justify-content="center"
+        m='0'
       >
-        <SimpleGrid  w="100%" spacing={["1vh", "1vh", "1vw"]} minH="70vh" 
-          
+        <SimpleGrid w="85%" spacing={["1vh", "1vh", "1vw"]} 
           overflow-x="auto"
           columns={[1,1,2,3]}
         >
-          {/* {nfts} */}
           { nfts.map(( nftsound: Metadata ) => (
             <Flex
               rounded="lg"
@@ -111,13 +108,12 @@ export default function SoundList({ errorCode, data }: {
               key={nftsound.token_name} 
               // _hover={{ boxShadow: "dark-lg", transform: "scale(1.1)", cursor: "pointer" }}
               >
-              {/*href={`/sound/${nftsound.id}`} */}
               <SoundNFTPreviewSmall  metadata={nftsound}/>
             </Flex>
           ))}
         </SimpleGrid>
         <Button isLoading={loadingMore} display="flex" variant={"ghost"} mx="auto" title="Load more" onClick={loadNewPage}><ChevronDownIcon/></Button>
-      </Flex>
+       </Flex>
     </Flex>
     </Layout>
   )
