@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
+import { SoundListData } from '../../../../interfaces/interfaces'
 import prisma from '../../../../lib/prisma'
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {
@@ -11,7 +12,13 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
             skip: (Number(page) - 1) * 9,
             take: 9
         })
-        if(nftListData) return res.json(nftListData)
+        const sld: SoundListData = {
+            page: Number(page),
+            collection: collection.toString(),
+            nfts: nftListData
+            
+        } 
+        if(sld && sld.nfts) return res.json(sld)
     }
     return res.json({result: 'Not found'})
 }

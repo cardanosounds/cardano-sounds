@@ -1,4 +1,4 @@
-import { DatabaseTx, Metadata } from "./databaseTx"
+import { Metadata } from "@prisma/client"
 
 export interface ContextualHref {
     makeContextualHref: (extraQueryParams: { [key: string]: any }) => string

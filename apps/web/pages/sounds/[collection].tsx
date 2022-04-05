@@ -14,10 +14,9 @@ import Head from "next/head"
 import Layout from "../../components/layout"
 import SoundNFTPreviewSmall from "../../components/SoundNFTPreviewSmall"
 // import NextChakraLink from "../../components/NextChakraLink"
-import { DatabaseTx, Metadata } from "../../interfaces/databaseTx"
 import { ChevronDownIcon } from "@chakra-ui/icons"
+import { Metadata } from "@prisma/client"
 // import GlitchText from "../../components/GlitchText"
-import { getSoundsNFTData } from "../../lib/sounds"
 
 // const apiPath = "http://localhost:3000/api/"
 // const apiPath = "https://cs-main-app.azurewebsites.net/api/"
@@ -27,7 +26,6 @@ import { getSoundsNFTData } from "../../lib/sounds"
 export default function SoundList({ errorCode, data }: {
     errorCode: number
     data: SoundListData
-    
 })
 {
   const [ collection, changeCollection ] = useState<string>("all")
@@ -46,7 +44,7 @@ export default function SoundList({ errorCode, data }: {
     }
     if(selection == collection) return
     changeCollection(selection)
-    const res: SoundListData = await fetch("/api/sounds/" + selection + "/1").then(rs => rs.json())
+    const res: SoundListData = await fetch("/api/csnfts/" + selection + "/1").then(rs => rs.json())
     updateNfts(res.nfts)   
   }
 
@@ -54,7 +52,8 @@ export default function SoundList({ errorCode, data }: {
       loadMore(true)
       data.page ++
 
-      const res: SoundListData = await fetch("/api/sounds/" + collection + "/" + String(data.page)).then(rs => rs.json())
+      const res: SoundListData = await fetch("/api/csnfts/" + collection + "/" + String(data.page)).then(rs => rs.json())
+      console.log(res)
 
       updateNfts(nfts.concat(res.nfts))
       loadMore(false)
@@ -109,7 +108,7 @@ export default function SoundList({ errorCode, data }: {
               rounded="lg"
               py={["3vh", "3vh","3vw"]}
               maxH={["60vh", "60vh", "75vh", "29vw"]}
-              key={nftsound.id} 
+              key={nftsound.token_name} 
               // _hover={{ boxShadow: "dark-lg", transform: "scale(1.1)", cursor: "pointer" }}
               >
               {/*href={`/sound/${nftsound.id}`} */}
@@ -129,16 +128,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     let errorCode: number = null;
 
     const { collection } = context.query
+    const prisma = await import('../../lib/prisma')
 
     let data: SoundListData
 
     if (errorCode === null) {
-
-      const nftListData = await getSoundsNFTData(collection.toString(), Number(1))
-      console.log("nftListData")
-      console.log(nftListData)
+      const nftListData = await prisma.default.metadata.findMany({
+        skip: 0,
+        take: 9
+      })
       
-      if(nftListData instanceof String) {
+      if(!nftListData) {
         data = {
           collection: "all",
           page: 1,
@@ -150,22 +150,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         {
             collection: collection.toString(),
             page: Number(1),
-            nfts: nftListData.map(x => x.metadata).flat(1)
+            nfts: nftListData
         }
       }
-        // var nftListData = getSoundsNFTData()
-        // console.log("nftListData")
-        // console.log(nftListData)
-
-        // data = await fetch(apiPath + "sounds/" + collection + "/1").then(res => res.json())
-        // console.log(data)
-        // if(data == null) {
-        //     data = {
-        //       collection: "all",
-        //       page: 1,
-        //       nfts: []
-        //   }
-        // } 
     }
     else {
         data = {
