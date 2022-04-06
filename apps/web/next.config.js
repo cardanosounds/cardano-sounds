@@ -10,6 +10,8 @@ module.exports = withPWA({
     
         return config
     },
+    env: {
+    },
     pwa: {
         dest: "public",
 		register: true,

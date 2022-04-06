@@ -4,7 +4,7 @@ import "../p5.sound.js"
 import "../p5.dom.js"
 import { Flex, Button, Text } from '@chakra-ui/react'
 import MintBtn from './MintBtn.jsx'
-import useIpfs from "./mint/useIpfs";
+import useIpfs from "./useIpfs";
 
 let ipfs;
  
