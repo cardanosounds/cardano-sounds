@@ -434,5 +434,5 @@ apps/web/public/workbox-9a8b0a38.js
 
 
 
-apps/web/db/migrations
-apps/web/db/dev.db
+apps/web/prisma/migrations
+apps/web/prisma/dev.db
