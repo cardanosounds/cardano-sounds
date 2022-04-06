@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:dev.db"
+  provider = "postgres"
+  url      =  env("DB_CONNECTION_STRING")
 }
 
 model Metadata {
