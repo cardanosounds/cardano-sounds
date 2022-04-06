@@ -1,4 +1,3 @@
-import React, { SyntheticEvent } from "react"
 import Error from 'next/error'
 
 import { GetServerSideProps } from 'next'
@@ -13,15 +12,8 @@ import { SoundListData } from '../../interfaces/interfaces'
 import Head from "next/head"
 import Layout from "../../components/layout"
 import SoundNFTPreviewSmall from "../../components/SoundNFTPreviewSmall"
-// import NextChakraLink from "../../components/NextChakraLink"
 import { ChevronDownIcon } from "@chakra-ui/icons"
 import { Metadata } from "@prisma/client"
-// import GlitchText from "../../components/GlitchText"
-
-// const apiPath = "http://localhost:3000/api/"
-// const apiPath = "https://cs-main-app.azurewebsites.net/api/"
-// const apiPath = "https://csounds-app.azurewebsites.net/api/"
-// const apiPath = `http://localhost:${process.env.PORT || 3000}/api/`
 
 export default function SoundList({ errorCode, data }: {
     errorCode: number
@@ -35,16 +27,21 @@ export default function SoundList({ errorCode, data }: {
 
   const changeSortOption = async (selectedIndex: number) => {
     console.log('changeSortOption index ' + selectedIndex)
-    let selection
+    let selection = 'default'
     switch(selectedIndex){
-      case 0:
-        selection = "default"
       case 1:
-        selection = 'deprobability'
-      case 2:
         selection = 'asprobability'
+        break
+      case 2:
+        selection = 'deprobability'
+        break
+      case 3:
+        selection = 'asid'
+        break
+      case 4:
+          selection = 'deid'
     }
-    
+    console.log('selection: ' + selection)
     if(selection == sort) return
     setSort(selection)
     const res: SoundListData = await fetch(`/api/csnfts/${collection}/${selection}/1`).then(rs => rs.json())
@@ -96,35 +93,39 @@ export default function SoundList({ errorCode, data }: {
       minH="60vh"
       mt={["18vh", "17vh", "25vh", "25vh", "20vh"]}
       mx='auto'
+
     >
-      <Select 
-        variant="outline" 
-        placeholder="Select collection" 
-        mt="3vw" ml={["5vw", "5vw", "3vw"]} 
-        mb={0} 
-        maxW={["70vw", "65vw", "50vw", "45vw"]}
-        onChange={async (e) => await changeCollectionOption(e.target.options.selectedIndex)} 
-      >
-        <option value="wave1">Wave 1</option>
-        <option value="wave2">Wave 2</option>
-        <option value="wave3">Wave 3</option>
-      </Select>
-      <Select 
-        variant="outline" 
-        placeholder="Order" 
-        mt="3vw" ml={["5vw", "5vw", "3vw"]} 
-        mb={0} 
-        maxW={["70vw", "65vw", "50vw", "45vw"]}
-        onChange={async (e) => await changeSortOption(e.target.options.selectedIndex)} 
-      >
-        <option value="deprobability">Probability ↓</option>
-        <option value="asprobability">Probability ↑</option>
-      </Select>
+      <Flex direction={["column", "column", "row"]} w="85%" mx="auto">
+        <Select 
+          variant="outline" 
+          placeholder="Select collection" 
+          ml={["5vw", "2.5vw", "1.5vw"]} 
+          mt="3vw" 
+          mb={0} 
+          onChange={async (e) => await changeCollectionOption(e.target.options.selectedIndex)} 
+        >
+          <option value="wave1">Wave 1</option>
+          <option value="wave2">Wave 2</option>
+          <option value="wave3">Wave 3</option>
+        </Select>
+        <Select 
+          variant="outline" 
+          placeholder="Select sort" 
+          mt="3vw" ml={["5vw", "2.5vw", "1.5vw"]} 
+          mb={0} 
+          onChange={async (e) => await changeSortOption(e.target.options.selectedIndex)} 
+        >
+          <option value="asprobability">Probability ↑</option>
+          <option value="deprobability">Probability ↓</option>
+          <option value="asid">Id ↑</option>
+          <option value="deid">Id ↓</option>
+        </Select>
+      </Flex>
       <Flex
-        display="column"
         align="center"
         align-items="center"
         justify-content="center"
+        direction={'column'}
         m='0'
       >
         <SimpleGrid w="85%" spacing={["1vh", "1vh", "1vw"]} 
@@ -132,15 +133,7 @@ export default function SoundList({ errorCode, data }: {
           columns={[1,1,2,3]}
         >
           { nfts.map(( nftsound: Metadata ) => (
-            // <Flex
-            //   rounded="lg"
-            //   // py={["3vh", "3vh","3vw"]}
-            //   // maxH={["60vh", "60vh", "75vh", "29vw"]}
-            //   key={nftsound.token_name} 
-            //   // _hover={{ boxShadow: "dark-lg", transform: "scale(1.1)", cursor: "pointer" }}
-            //   >
-              <SoundNFTPreviewSmall  metadata={nftsound}/>
-            // </Flex>
+            <SoundNFTPreviewSmall  metadata={nftsound}/>
           ))}
         </SimpleGrid>
         <Button isLoading={loadingMore} display="flex" variant={"ghost"} mx="auto" title="Load more" onClick={loadNewPage}><ChevronDownIcon/></Button>
@@ -150,11 +143,10 @@ export default function SoundList({ errorCode, data }: {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async () => {
     // ...
     let errorCode: number = null;
 
-    const { collection } = context.query
     const prisma = await import('../../lib/prisma')
 
     let data: SoundListData
@@ -175,7 +167,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       else {
         data = 
         {
-            collection: collection.toString(),
+            collection: 'all',
             page: Number(1),
             nfts: nftListData
         }

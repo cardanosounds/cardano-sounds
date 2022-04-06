@@ -18,7 +18,6 @@ export default function SoundNFTPreviewSmall({metadata, fullView}: { metadata: M
 
 	const imageFilePath = 'https://infura-ipfs.io/ipfs/' + metadata?.image
 
-	const hoverShadow = { strokeWidth: "1em", strokeDashoffset: "0",  strokeDasharray: "760", cursor: "pointer" }
 	const audioPath = 'https://arweave.net/' + metadata?.arweave_id_sound
 
 	useEffect(() => {
@@ -37,14 +36,7 @@ export default function SoundNFTPreviewSmall({metadata, fullView}: { metadata: M
 				rounded="2em"
 				w={["85vw", "85vw", "30vw", "20vw"]}
 				textAlign="center"
-				_hover={hoverShadow}
-				mx="auto"
-				strokeDasharray={760}
-				strokeDashoffset={0}
-				strokeWidth="2px"
-				fill="transparent"
-				stroke="#19f6e8"
-				transition="stroke-width 1s, stroke-dashoffset 1s, stroke-dasharray 1s"
+				m="auto"
 			>
 				<Box
 					rounded="lg"

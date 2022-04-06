@@ -1,4 +1,4 @@
-import { useColorMode, Flex, Button, IconButton, Spacer, Heading, Box, Text, Stack, useDisclosure, Modal, ModalContent, ModalHeader, ModalOverlay, ModalCloseButton, ModalFooter, ModalBody } from '@chakra-ui/react'
+import { useColorMode, Flex, IconButton, Spacer, Heading, Box, Stack, useDisclosure } from '@chakra-ui/react'
 import { useState, useEffect, useContext } from 'react'
 import { FaChevronLeft } from 'react-icons/fa';
 import { MdAccountBalanceWallet } from 'react-icons/md';
@@ -13,7 +13,6 @@ import Logo from './Logo'
 import {
   Drawer,
   DrawerBody,
-  DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
   DrawerContent,
@@ -99,13 +98,10 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
           baseWalletApi = win.cardano.gerowallet
           break
       }
-      // if(await baseWalletApi.isEnabled()) return walletModal.onClose()
 
       switch(wallet){
         case 'nami':
           fullWalletApi = await baseWalletApi.enable()
-          // await baseWalletApi.enable()
-          // fullWalletApi = win.cardano
           break
         case 'ccvault':
           fullWalletApi = await baseWalletApi.enable()
@@ -128,21 +124,10 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
       if(!await baseWalletApi.isEnabled()) return
 
       walletCtx.update({walletApi: fullWalletApi})
-      // console.log(walletCtx.walletApi)
       allowWallet()
       playSwitchSound()
       walletModal.onClose()
     }
-
-    // const checkForWallet = async () => {
-    //   const win: any = window
-    //   if(win.cardano && await win.cardano.isEnabled() === true){
-    //     allowWallet()
-    //   }
-    //   else {
-    //     window.localStorage.setItem('cswallet', null)
-    //   }
-    // }
 
     const playSound = (id: string) => {
       if(window.localStorage.getItem('sound') === 'false') return
@@ -170,8 +155,6 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
       }
       
       const win: any = window
-      // checkForWallet()
-      // enableCardano()
       if(win.localStorage.getItem('sound') === null)
       {
         win.localStorage.setItem('sound', 'true')
@@ -191,11 +174,9 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
             <Flex
               pos="fixed"
               align="center"
-              //w="100vw"
               top="0px"
               left="0px"
               right="0px"
-              // bgColor={isDark ? "gray.800" : "white"}
               as="nav"
               justify="center"
               wrap="wrap"
@@ -224,8 +205,8 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                         <NextChakraLink href="/create">
                             <Heading size="lg" as="h4">CREATE</Heading>
                         </NextChakraLink>
-                        <NextChakraLink href="/sounds/all">
-                            <Heading size="lg" as="h4">SOUNDS</Heading>
+                        <NextChakraLink href="/csnfts">
+                            <Heading size="lg" as="h4">CSNFTS</Heading>
                         </NextChakraLink>
                         <NextChakraLink href="/mint">
                             <Heading size="lg" as="h4">MINTING</Heading>
@@ -233,16 +214,12 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                         <NextChakraLink href="/litepaper-slideshow">
                             <Heading size="lg" as="h4">ABOUT</Heading>
                         </NextChakraLink>
-                        {/* <NextChakraLink href="/buy">
-                            <Heading size="lg" as="h4">BUY</Heading>
-                        </NextChakraLink> */}
                       </DrawerBody>
                     </DrawerContent>
                   </Drawer>
                   <NextChakraLink href="/">
                     <Box 
                       align="flex-start"
-                      //50vw 5vh
                       margin={["3vh 0 2vh 8vw", "3vh 0 2vh 8vw", "4vh 0.5em 0.25em 3em", "7vh 0.5em 0.25em 4em", "5vh 0.5em 0.25em 6em",  "5vh 0.5em 0.25em 11em"]}
                       aria-label="Cardano Sounds home"
                       variant="ghost"
@@ -295,7 +272,6 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                       position="absolute"
                       right={["8vw", "6vw", "5vw", "5vw"]}
                       top="5vh"
-                      // isChecked={isDark}
                       onClick={() => {
                         toggleColorMode()
                         playSwitchSound()
