@@ -1,7 +1,7 @@
 import { TransactionUnspentOutput, BaseAddress, RewardAddress, Transaction, Value } from '../custom_modules/@emurgo/cardano-serialization-lib-browser';
 
 interface AppVersion { major: number; minor: number; patch: number; };
-interface Experimental { appVersion: () => AppVersion | undefined; getCollateral: () =>  Promise<TransactionUnspentOutput>; };
+interface Experimental { appVersion: () => AppVersion | undefined; getCollateral: () =>  Promise<string[]>; };
 interface Paginate { page: number; limit: number; };
 
 export default interface WalletApi {

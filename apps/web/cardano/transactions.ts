@@ -29,11 +29,18 @@ export async function _txBuilderSpendFromPlutusScript({
     redeemers: Redeemer[],
     plutusValidators: PlutusScript[],
     plutusPolicies: PlutusScript[],
-    collateral: TransactionUnspentOutput
+    collateral: string[]
 }): Promise<Transaction | null> {
+    const cost_model_vals = [197209, 0, 1, 1, 396231, 621, 0, 1, 150000, 1000, 0, 1, 150000, 32, 2477736, 29175, 4, 29773, 100, 29773, 100, 29773, 100, 29773, 100, 29773, 100, 29773, 100, 100, 100, 29773, 100, 150000, 32, 150000, 32, 150000, 32, 150000, 1000, 0, 1, 150000, 32, 150000, 1000, 0, 8, 148000, 425507, 118, 0, 1, 1, 150000, 1000, 0, 8, 150000, 112536, 247, 1, 150000, 10000, 1, 136542, 1326, 1, 1000, 150000, 1000, 1, 150000, 32, 150000, 32, 150000, 32, 1, 1, 150000, 1, 150000, 4, 103599, 248, 1, 103599, 248, 1, 145276, 1366, 1, 179690, 497, 1, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 148000, 425507, 118, 0, 1, 1, 61516, 11218, 0, 1, 150000, 32, 148000, 425507, 118, 0, 1, 1, 148000, 425507, 118, 0, 1, 1, 2477736, 29175, 4, 0, 82363, 4, 150000, 5000, 0, 1, 150000, 32, 197209, 0, 1, 1, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 3345831, 1, 1];
 
-    const nativeScripts = NativeScripts.new();
-    const txbuilder = createTxBuilder(ProtocolParameter)
+    const costModel = CostModel.new();
+    cost_model_vals.forEach((x, i) => costModel.set(i, Int.new_i32(x)));
+
+    const costModels = Costmdls.new();
+    costModels.insert(Language.new_plutus_v1(), costModel);
+    // const nativeScripts = NativeScripts.new();
+    const txbuilder = createTxBuilderPlutus(ProtocolParameter, costModels)
+    
     mintedAssetsArray.forEach(a => {
         const policyScript = NativeScript.from_bytes(
             Buffer.from(a.policyScript, 'hex'),
@@ -64,38 +71,15 @@ export async function _txBuilderSpendFromPlutusScript({
     if (ttl) {
         txbuilder.set_ttl(ProtocolParameter.slot + ttl)
     }
-    console.log('adding inputs from')
-    console.log(utxos.len())
-    // CoinSelection.setProtocolParameters(
-    //     ProtocolParameter.coinsPerUtxoWord,
-    //     ProtocolParameter.minFeeA,
-    //     ProtocolParameter.minFeeB,
-    //     ProtocolParameter.maxTxSize
-    // )
-    // let { input } = CoinSelection.randomImprove(
-    //     Utxos,
-    //     Outputs,
-    //     100,
-    //     scriptUtxos
-    // );
-    // input.forEach((utxo) => {
-    //     txbuilder.add_input(
-    //         utxo.output().address(),
-    //         utxo.input(),
-    //         utxo.output().amount()
-    //     );
-    // });
-    txbuilder.add_inputs_from(utxos, CoinSelectionStrategyCIP2.LargestFirstMultiAsset)
-    console.log('inputs added')
-    let addr
+    
+    txbuilder.add_inputs_from(utxos, CoinSelectionStrategyCIP2.RandomImproveMultiAsset)
+    let addr: Address
     try {
         addr = Address.from_bytes(Buffer.from(PaymentAddress, "hex"))
     }
     catch {
         addr = Address.from_bech32(PaymentAddress)
-
     }
-   
     if (metadata) {
         const generalMetadata = GeneralTransactionMetadata.new();
         Object.entries(metadata).map(([MetadataLabel, Metadata]) => {
@@ -104,13 +88,10 @@ export async function _txBuilderSpendFromPlutusScript({
                 encode_json_str_to_metadatum(JSON.stringify(Metadata), 0),
             );
         });
-
         aux.set_metadata(generalMetadata);
     }
     
     const witnesses = TransactionWitnessSet.new();
-
-    witnesses.set_native_scripts(nativeScripts);
 
     const pScripts = PlutusScripts.new()
     plutusValidators.forEach((pV) => pScripts.add(pV))
@@ -125,60 +106,49 @@ export async function _txBuilderSpendFromPlutusScript({
     witnesses.set_redeemers(pRedeemers)
 
     txbuilder.set_redeemers(
-        Redeemers.from_bytes(pRedeemers.to_bytes())
+        pRedeemers
     );
     txbuilder.set_plutus_data(
         pData
     );
     txbuilder.set_plutus_scripts(pScripts);
-    // const collateral = (
-    //     await this.wallet.getCollateral()
-    // ).map((utxo) =>
-    //     this.lib.TransactionUnspentOutput.from_bytes(fromHex(utxo))
-    // );
-    // if (!collateral) throw new Error("NO_COLLATERAL");
-    // console.log('collateral')
-    // console.log(collateral)
-    // setCollateral(txbuilder, collateral);
+    if (!collateral || collateral.length < 1) throw new Error("NO_COLLATERAL");
+    console.log('collateral')
+    console.log(collateral)
+    setCollateral(txbuilder, TransactionUnspentOutput.from_bytes(Buffer.from(collateral[0], 'hex')));
 
     const vkeys = Vkeywitnesses.new();
 
     witnesses.set_vkeys(vkeys);
 
-    const cost_model_vals = [197209, 0, 1, 1, 396231, 621, 0, 1, 150000, 1000, 0, 1, 150000, 32, 2477736, 29175, 4, 29773, 100, 29773, 100, 29773, 100, 29773, 100, 29773, 100, 29773, 100, 100, 100, 29773, 100, 150000, 32, 150000, 32, 150000, 32, 150000, 1000, 0, 1, 150000, 32, 150000, 1000, 0, 8, 148000, 425507, 118, 0, 1, 1, 150000, 1000, 0, 8, 150000, 112536, 247, 1, 150000, 10000, 1, 136542, 1326, 1, 1000, 150000, 1000, 1, 150000, 32, 150000, 32, 150000, 32, 1, 1, 150000, 1, 150000, 4, 103599, 248, 1, 103599, 248, 1, 145276, 1366, 1, 179690, 497, 1, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 148000, 425507, 118, 0, 1, 1, 61516, 11218, 0, 1, 150000, 32, 148000, 425507, 118, 0, 1, 1, 148000, 425507, 118, 0, 1, 1, 2477736, 29175, 4, 0, 82363, 4, 150000, 5000, 0, 1, 150000, 32, 197209, 0, 1, 1, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 3345831, 1, 1];
+    // const cost_model_vals = [197209, 0, 1, 1, 396231, 621, 0, 1, 150000, 1000, 0, 1, 150000, 32, 2477736, 29175, 4, 29773, 100, 29773, 100, 29773, 100, 29773, 100, 29773, 100, 29773, 100, 100, 100, 29773, 100, 150000, 32, 150000, 32, 150000, 32, 150000, 1000, 0, 1, 150000, 32, 150000, 1000, 0, 8, 148000, 425507, 118, 0, 1, 1, 150000, 1000, 0, 8, 150000, 112536, 247, 1, 150000, 10000, 1, 136542, 1326, 1, 1000, 150000, 1000, 1, 150000, 32, 150000, 32, 150000, 32, 1, 1, 150000, 1, 150000, 4, 103599, 248, 1, 103599, 248, 1, 145276, 1366, 1, 179690, 497, 1, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 148000, 425507, 118, 0, 1, 1, 61516, 11218, 0, 1, 150000, 32, 148000, 425507, 118, 0, 1, 1, 148000, 425507, 118, 0, 1, 1, 2477736, 29175, 4, 0, 82363, 4, 150000, 5000, 0, 1, 150000, 32, 197209, 0, 1, 1, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 3345831, 1, 1];
 
-    const costModel = CostModel.new();
-    cost_model_vals.forEach((x, i) => costModel.set(i, Int.new_i32(x)));
+    // const costModel = CostModel.new();
+    // cost_model_vals.forEach((x, i) => costModel.set(i, Int.new_i32(x)));
 
-    const costModels = Costmdls.new();
-    costModels.insert(Language.new_plutus_v1(), costModel);
+    // const costModels = Costmdls.new();
+    // costModels.insert(Language.new_plutus_v1(), costModel);
 
-    const scriptDataHash = hash_script_data(pRedeemers, costModels, pData);
-    console.log(addr)
+    // const scriptDataHash = hash_script_data(pRedeemers, costModels, pData);
+    txbuilder.set_auxiliary_data(aux)
     txbuilder.add_change_if_needed(addr);
-    let txBody
-    // const txBody = txbuilder.build()
-    if (metadataHash) {
-        const auxDataHash = AuxiliaryDataHash.from_bytes(
-            Buffer.from(metadataHash, 'hex'),
-        );
-        console.log(auxDataHash);
-        txBody = txbuilder.build()
+    // if (metadataHash) {
+    //     const auxDataHash = AuxiliaryDataHash.from_bytes(
+    //         Buffer.from(metadataHash, 'hex'),
+    //     );
+    //     console.log(auxDataHash);
+    //     txBody = txbuilder.build()
 
-        txBody.set_auxiliary_data_hash(auxDataHash);
-    } else {
-        txbuilder.set_auxiliary_data(aux)
-        txBody = txbuilder.build()
-        // txBody.set_auxiliary_data_hash(auxDataHash);
-        // txBody.set_auxiliary_data_hash(this.lib.hash_auxiliary_data(aux))
-    }
+    //     txBody.set_auxiliary_data_hash(auxDataHash);
+    // } else {
+    // }
 
-    txBody.set_script_data_hash(scriptDataHash);
+    // const transaction = txbuilder.build_tx()
     const transaction = Transaction.new(
-        txBody,
-        witnesses,
-        aux
-    );
+            txbuilder.build(),
+            witnesses,
+            aux
+    )
 
     const size = transaction.to_bytes().length * 2;
     if (size > ProtocolParameter.maxTxSize) throw 'Error.TX_TOO_BIG';
@@ -346,8 +316,7 @@ export async function _txBuilder({
         }
     }
     console.log(utxos.len())
-    console.log('CoinSelectionStrategyCIP2.LargestFirstMultiAsset')
-    txBuilder.add_inputs_from(utxos, CoinSelectionStrategyCIP2.LargestFirstMultiAsset)
+    txBuilder.add_inputs_from(utxos, CoinSelectionStrategyCIP2.RandomImproveMultiAsset)
     console.log(PaymentAddress)
     txBuilder.add_change_if_needed(Address.from_bytes(Buffer.from(PaymentAddress, 'hex')))
 
@@ -363,6 +332,25 @@ export async function _txBuilder({
     if (size > ProtocolParameter.maxTxSize) throw 'ERROR.TX_TOO_BIG';
 
     return transaction;
+}
+
+const createTxBuilderPlutus: (protocolParameters: ProtocolParameters, costModels: Costmdls) => TransactionBuilder = (protocolParameters: ProtocolParameters, costModels: Costmdls) => {
+    const { minFeeA, minFeeB, poolDeposit, keyDeposit,
+        coinsPerUtxoWord, maxTxSize, maxValSize } = protocolParameters
+    const toBigNum = (value: number) => BigNum.from_str(value.toString())
+    const config = TransactionBuilderConfigBuilder.new()
+        .fee_algo(LinearFee.new(toBigNum(minFeeA), toBigNum(minFeeB)))
+        .pool_deposit(toBigNum(poolDeposit))
+        .key_deposit(toBigNum(keyDeposit))
+        .coins_per_utxo_word(toBigNum(coinsPerUtxoWord))
+        .max_tx_size(maxTxSize)
+        .max_value_size(maxValSize)
+        .price_mem(protocolParameters.priceMem)
+        .price_step(protocolParameters.priceStep)
+        .costmdls(costModels)
+        .prefer_pure_change(false)
+        .build()
+    return TransactionBuilder.new(config)
 }
 
 const createTxBuilder: (protocolParameters: ProtocolParameters) => TransactionBuilder = (protocolParameters: ProtocolParameters) => {

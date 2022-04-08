@@ -9,4 +9,6 @@ export const AlwaysSucceedsPlutusValidator = {
     address: 'addr1w9nlxv2xv9a9ucvnvzqakwepzl9ltx7jzgm53av2e9ncv4slcd85z',
     testnetAddress: 'addr_test1wpnlxv2xv9a9ucvnvzqakwepzl9ltx7jzgm53av2e9ncv4sysemm8',
     exBudget: {exBudgetCPU: 297830, exBudgetMemory: 1100}
+    // exBudget: {exBudgetCPU: 6639479, exBudgetMemory: 22400}
+    // exBudget: {exBudgetCPU: 446695, exBudgetMemory: 1600}
 }

@@ -13,37 +13,27 @@ export default function TestButton() {
     let pParams = useProtocolParametersQuery(config);
     let cardanoWallet = useCardanoWallet()
 
-    // const utxosQ = useAssetUTxOsQuery(
-    //     validatorAddressTestnet,
-    //     { policyId: '74f43bdf645aaeb25f39c6392cdb771ff4eb4da0c017cc183c490b8f', name: '43534e46543139' },
-    //     config
-    // )
-
     const utxosQ = useAssetUTxOsQuery(
         AlwaysSucceedsPlutusValidator.testnetAddress,
-        { policyId: '74f43bdf645aaeb25f39c6392cdb771ff4eb4da0c017cc183c490b8f', name: '43534e46543231' },
+        { policyId: '74f43bdf645aaeb25f39c6392cdb771ff4eb4da0c017cc183c490b8f', name: '43534e465438' },
+        // { policyId: '74f43bdf645aaeb25f39c6392cdb771ff4eb4da0c017cc183c490b8f', name: '43534e46543231' },
         config
     )
 
-    // protocolParameters: ProtocolParameters,
-    // asset: Asset,
-    // adaPrice: number,
-    // metadata: Object = null
     const makeTx = async () => {
         const validator = new TestValidator(cardanoWallet)
-        console.log({pParams, validator, utxosQ})
+        // console.log({pParams, validator, utxosQ})
         // if(pParams.type !== 'ok') return
         if(pParams.type !== 'ok' || utxosQ.type !== 'ok') return
         const validatorUtxo = utxosQ.data && utxosQ.data.length > 0 ? utxosQ.data[0] : null
-        console.log('validatorUtxo: ' + validatorUtxo)
-        // if(utxosQ.type === 'ok') console.table(utxosQ.data)
-        // console.log('validatorUtxo')
-        // console.log(validatorUtxo)
+        console.log('validatorUtxo: ' + validatorUtxo.txHash+'#'+validatorUtxo.index)
+        if(utxosQ.type === 'ok') console.table(utxosQ.data)
+        console.log('validatorUtxo')
+        console.log(validatorUtxo)
 
 
-        // await validator.lock(pParams.data, {unit: '74f43bdf645aaeb25f39c6392cdb771ff4eb4da0c017cc183c490b8f.CSNFT19', quantity: '1'}, 5, null)
-        // await validator.payToScript(pParams.data, {unit: '74f43bdf645aaeb25f39c6392cdb771ff4eb4da0c017cc183c490b8f.CSNFT21', quantity: '1'}, 5, null)
-        await validator.spendFromScript(pParams.data, {unit: '74f43bdf645aaeb25f39c6392cdb771ff4eb4da0c017cc183c490b8f.CSNFT21', quantity: '1'}, 5, validatorUtxo)
+        // await validator.payToScript(pParams.data, {unit: '74f43bdf645aaeb25f39c6392cdb771ff4eb4da0c017cc183c490b8f.CSNFT8', quantity: '1'}, 5, null)
+        await validator.spendFromScript(pParams.data, {unit: '74f43bdf645aaeb25f39c6392cdb771ff4eb4da0c017cc183c490b8f.CSNFT8', quantity: '1'}, 5, validatorUtxo)
     }
 
     return (

@@ -1,6 +1,6 @@
 import { Buffer } from 'buffer';
 import AssetFingerprint from '@emurgo/cip14-js';
-import { Transaction, TransactionUnspentOutput, BaseAddress, Value } from './custom_modules/@emurgo/cardano-serialization-lib-browser'
+import { Transaction, TransactionUnspentOutput, BaseAddress, Value, TransactionOutput, MultiAsset, AuxiliaryData } from './custom_modules/@emurgo/cardano-serialization-lib-browser'
 import { _txBuilder, _txBuilderMinting, _txBuilderSpendFromPlutusScript } from './transactions'
 import { ProtocolParameters, UTxO } from './query-api'
 import {
@@ -326,31 +326,15 @@ export class CardanoWallet {
         );
         let mintedAssetsArray: MintedAsset[] = []
         let outputs = this.lib.TransactionOutputs.new()
-        console.log('transaction')
         let minting = 0
         let costValues: any = {}
         for (let recipient of recipients) {
             let lovelace = Math.floor((Number(recipient.amount) || 0) * 1000000).toString()
-            console.log('tx loop 001');
             let ReceiveAddress = recipient.address
-            let multiAsset, mintedAssets
-            try {
-                multiAsset = this._makeMultiAsset(recipient?.assets || [])
-            } catch (error) {
-                console.log('multiAsset')
-                console.log(error)
-                throw Error
-            }
+            let multiAsset: MultiAsset, mintedAssets: Value
+            multiAsset = this._makeMultiAsset(recipient?.assets || [])
+            if(!burn) mintedAssets = this._makeMintedAsset(recipient?.mintedAssets || [])
 
-            try {
-                mintedAssets = burn ? [] : this._makeMintedAsset(recipient?.mintedAssets || [])
-            } catch (error) {
-                console.log('mintedAssets')
-                console.log(error)
-                throw Error
-            }
-
-            console.log('tx loop 01');
             let outputValue = this.lib.Value.new(this.lib.BigNum.from_str(lovelace))
             let minAdaMint = this.lib.BigNum.from_str('0')
             if ((recipient?.assets || []).length > 0) {
@@ -364,7 +348,6 @@ export class CardanoWallet {
                 if (this.lib.BigNum.from_str(lovelace).compare(minAda) < 0)
                     outputValue.set_coin(minAda)
             }
-            console.log('tx loop 1');
             if(!burn) { 
                 (recipient?.mintedAssets || []).map((asset) => {
                     minting += 1
@@ -394,7 +377,6 @@ export class CardanoWallet {
                     outputValue = outputValue.checked_add(requiredMintAda);
                 }
             }
-            console.log('tx loop 2');
 
             if (ReceiveAddress != PaymentAddress)
                 costValues[ReceiveAddress] = outputValue;
@@ -409,13 +391,9 @@ export class CardanoWallet {
 
             }
             let outputBuilder = this.lib.TransactionOutputBuilder.new().with_address(addr)
-            let output
-
+            let output: TransactionOutput
             if (recipient.datum) {
-                console.log('has plutusDataHash')
-                console.log(recipient.datum)
                 const plutusDataHash = this.lib.hash_plutus_data(recipient.datum)
-                console.log(plutusDataHash)
                 outputBuilder = outputBuilder.with_data_hash(plutusDataHash)
             }
 
@@ -435,11 +413,7 @@ export class CardanoWallet {
                     .build()
             }
             if (output) outputs.add(output)
-            console.log('outputs i ' + minting)
-            console.log(outputs)
         }
-        console.log('looped recipients')
-        console.log(recipients)
         let RawTransaction = null
         if (redeemers?.length >= 1) {
             RawTransaction = await _txBuilderSpendFromPlutusScript({
@@ -667,6 +641,7 @@ export class CardanoWallet {
         witnesses: string[],
         metadata?: object
     ) {
+        if(!this.wallet) throw 'Error: wallet not connected'
         let transaction = this.lib.Transaction.from_bytes(
             Buffer.from(transactionRaw, 'hex')
         );
@@ -683,10 +658,6 @@ export class CardanoWallet {
         const totalPlutusData = this.lib.PlutusList.new()
 
         witnesses.forEach((w) => {
-            console.log('witness')
-            console.log(w)
-            console.log('witnesses')
-            console.log(witnesses)
             const addWitnesses = this.lib.TransactionWitnessSet.from_bytes(
                 Buffer.from(w, 'hex'),
             );
@@ -752,7 +723,8 @@ export class CardanoWallet {
         totalWitnesses.set_native_scripts(totalScripts);
         totalWitnesses.set_plutus_scripts(totalPlutusScripts)
         totalWitnesses.set_redeemers(totalRedeemers)
-        let aux;
+        totalWitnesses.set_plutus_data(totalPlutusData)
+        let aux: AuxiliaryData;
         if (metadata) {
             aux = this.lib.AuxiliaryData.new();
             const generalMetadata = this.lib.GeneralTransactionMetadata.new();
@@ -772,7 +744,7 @@ export class CardanoWallet {
             totalWitnesses,
             aux
         );
-        return await this.wallet?.submitTx(Buffer.from(signedTx.to_bytes()).toString('hex'));
+        return await this.wallet.submitTx(Buffer.from(signedTx.to_bytes()).toString('hex'));
     }
 
 }

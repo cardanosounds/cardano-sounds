@@ -4,6 +4,7 @@ import {
     ExUnits,
     NativeScript,
     PlutusData,
+    PlutusMap,
     PlutusScript,
     Transaction,
     TransactionUnspentOutput,
@@ -319,21 +320,8 @@ export class LibraryValidator {
         const transactionWitnessSet = TransactionWitnessSet.new();
 
         const txVkeyWitnessesStr = await this.cardano.wallet.signTx(Buffer.from(tx.to_bytes()).toString("hex"), false);
-        const txVkeyWitnessesSer = TransactionWitnessSet.from_bytes(Buffer.from(txVkeyWitnessesStr, "hex"));
-        transactionWitnessSet.set_vkeys(txVkeyWitnessesSer.vkeys());
-        const policyScripts = this.cardano.lib.NativeScripts.new()
-        policyScripts.add(NativeScript.from_bytes(Buffer.from(policy.script, 'hex')))
-        transactionWitnessSet.set_native_scripts(policyScripts)
-        const txBody = tx.body()
-        let aux = tx.auxiliary_data();
-        txBody.set_auxiliary_data_hash(this.cardano.lib.hash_auxiliary_data(aux))
-        const signedTx = Transaction.new(
-            txBody,
-            transactionWitnessSet,
-            aux
-        );
-
-        const submittedTxHash = await this.cardano.wallet.submitTx(Buffer.from(signedTx.to_bytes()).toString("hex"));
+        
+        const submittedTxHash = await this.cardano.submitTx(Buffer.from(tx.to_bytes()).toString('hex'), [txVkeyWitnessesStr])
         console.log({ submittedTxHash: submittedTxHash })
     }
 
@@ -389,11 +377,12 @@ export class TestValidator {
                     address: AlwaysSucceedsPlutusValidator.testnetAddress,
                     amount: '2.5',
                     assets: [asset],
-                    datum: new LibraryDatum({
-                        lockTokenPolicy: asset.unit.split('.')[1],
-                        lockTokenName: asset.unit.split('.')[0],
-                        lovelacePrice: BigInt.from_str((adaPrice * 1000000).toString())
-                    }).toPlutusData(this.cardano.lib)
+                    datum: PlutusData.new_integer(BigInt.from_str('42'))
+                    //new LibraryDatum({
+                    //     lockTokenPolicy: asset.unit.split('.')[0],
+                    //     lockTokenName: asset.unit.split('.')[1],
+                    //     lovelacePrice: BigInt.from_str((adaPrice * 1000000).toString())
+                    // }).toPlutusData(this.cardano.lib)
                 }
             ],
             metadata: metadata,
@@ -458,7 +447,6 @@ export class TestValidator {
         console.log(walletAddr)
 
         if (!walletAddr) return
-
         
         console.log('not converted utxo')
         console.log(validatorUtxo)
@@ -493,16 +481,17 @@ export class TestValidator {
             multiSig: false,
             delegation: null,
             datums: [
-                new LibraryDatum({
-                    lockTokenPolicy: asset.unit.split('.')[0],
-                    lockTokenName: asset.unit.split('.')[1],
-                    lovelacePrice: BigInt.from_str((adaPrice * 1000000).toString())
-                }).toPlutusData(this.cardano.lib)
+                PlutusData.new_integer(BigInt.from_str('42'))
+                // new LibraryDatum({
+                //     lockTokenPolicy: asset.unit.split('.')[0],
+                //     lockTokenName: asset.unit.split('.')[1],
+                //     lovelacePrice: BigInt.from_str((adaPrice * 1000000).toString())
+                // }).toPlutusData(this.cardano.lib)
             ],
             redeemers: [this.cardano.lib.Redeemer.new(
                 this.cardano.lib.RedeemerTag.new_spend(),
                 BigNum.zero(),
-                this.cardano.lib.PlutusData.new_integer(BigInt.from_str('0')),
+                this.cardano.lib.PlutusData.new_map(PlutusMap.new()),
                 ExUnits.new(
                     BigNum.from_str(AlwaysSucceedsPlutusValidator.exBudget.exBudgetMemory.toString()),
                     BigNum.from_str(AlwaysSucceedsPlutusValidator.exBudget.exBudgetCPU.toString())
@@ -519,9 +508,9 @@ export class TestValidator {
         console.log('tx typeof')
         console.log(typeof tx)
 
-        const transactionWitnessSet = TransactionWitnessSet.new();
+        // const transactionWitnessSet = TransactionWitnessSet.new();
 
-        const txVkeyWitnessesStr = await this.cardano.wallet.signTx(Buffer.from(tx.to_bytes()).toString("hex"), false);
+        const txVkeyWitnessesStr = await this.cardano.wallet.signTx(Buffer.from(tx.to_bytes()).toString("hex"), true);
         console.log(await this.cardano.submitTx(Buffer.from(tx.to_bytes()).toString('hex'), [txVkeyWitnessesStr]))
         // const txVkeyWitnessesSer = TransactionWitnessSet.from_bytes(Buffer.from(txVkeyWitnessesStr, "hex"));
         // transactionWitnessSet.set_vkeys(txVkeyWitnessesSer.vkeys());
