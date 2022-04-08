@@ -59,16 +59,12 @@ libraryValidator libraryDatum libraryRedeemer ctx =
       traceIfFalse "Tx doesn't have just one AssetClass in script input" (PlutusTx.Prelude.isJust scInAsset) &&
       traceIfFalse "Tx doesn't have just one AssetClass in output to script" (PlutusTx.Prelude.isJust scOutAsset) &&
       traceIfFalse "Script input and output AssetClass doesn't match" ((PlutusTx.Prelude.fromMaybe (assetClass adaSymbol adaToken) scInAsset) == (PlutusTx.Prelude.fromMaybe (assetClass adaSymbol adaToken) scOutAsset)) &&
-      traceIfFalse "Tx doesn't have just one script input with a Datum" (PlutusTx.Prelude.isJust inDatumHash) &&
-      traceIfFalse "Tx doesn't have just one output to script with a Datum" (PlutusTx.Prelude.isJust outDatumHash) &&
-      traceIfFalse "Datums don't match" (datumsNotEmptyAndEqual inDatumHash outDatumHash) &&
       traceIfFalse "Tx didn't pay correct ADA amount to the script." paidRoyalty
 
     Unlock ->
       traceIfFalse "Tx doesn't have just one script input" (PlutusTx.Prelude.isJust oneScIn) &&
       traceIfFalse "There should be just one Asset in sc inputs " (PlutusTx.Prelude.isJust scInAsset) &&
       traceIfFalse "Asset shouldn't go back to a script" (PlutusTx.Prelude.isNothing scOutAsset) &&
-      traceIfFalse "Datums don't match" (datumsNotEmptyAndEqual inDatumHash outDatumHash) &&
       traceIfFalse "Lock token isn't burn" tokensBurnt
 
   where
@@ -145,19 +141,7 @@ libraryValidator libraryDatum libraryRedeemer ctx =
     {-# INLINABLE txInListSingleDatumHash #-}
     txInListSingleDatumHash :: [TxInInfo] -> Maybe DatumHash
     txInListSingleDatumHash txInInfoList = txOutListSingleDatumHash (map txInInfoResolved txInInfoList)
-
-    {-# INLINABLE datumsNotEmptyAndEqual #-}
-    datumsNotEmptyAndEqual :: Maybe DatumHash -> Maybe DatumHash -> Bool
-    datumsNotEmptyAndEqual mInDatumHash mOutDatumHash = 
-      if PlutusTx.Prelude.isJust mInDatumHash && PlutusTx.Prelude.isJust mOutDatumHash then 
-        -- let
-        --   inDatumHashD = PlutusTx.Prelude.fromMaybe (DatumHash ) mInDatumHash
-        --   outDatumHashD = PlutusTx.Prelude.fromMaybe (DatumHash ) mOutDatumHash
-        -- in
-        -- True
-        mInDatumHash == mOutDatumHash
-      else
-        False
+    
     txInfo = scriptContextTxInfo ctx
     
     scInputs :: [TxInInfo]
@@ -195,9 +179,6 @@ libraryValidator libraryDatum libraryRedeemer ctx =
 
     inDatumHash :: Maybe DatumHash
     inDatumHash = txInListSingleDatumHash (txInfoInputs txInfo)
-
-    outDatumHash :: Maybe DatumHash
-    outDatumHash = txOutListSingleDatumHash (txInfoOutputs txInfo)
 
     forgedTokens = assetClassValueOf (txInfoMint txInfo) (tokensClass libraryDatum)
     tokensBurnt = (forgedTokens == negate 1)  && forgedTokens /= 0
