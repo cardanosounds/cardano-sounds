@@ -1,22 +1,23 @@
-import { PlutusData, PlutusScript, Redeemer, TransactionUnspentOutput } from "../custom_modules/@emurgo/cardano-serialization-lib-browser";
+import { TransactionUnspentOutput } from "../custom_modules/@emurgo/cardano-serialization-lib-browser";
 import { ProtocolParameters } from "../query-api";
 import Delegation from "./Delegation";
-import Recipient from "./Recipient";
+import WalletOutput from "./WalletOutput";
 
 export default interface TransactionParams {
-    ProtocolParameters: ProtocolParameters,
-    PaymentAddress: string,
-    recipients: Recipient[],
+    protocolParameters: ProtocolParameters,
+    paymentAddress: string,
+    walletOutputs: WalletOutput[],
     metadata: object | null,
     metadataHash: string | null,
     addMetadata: boolean,
     utxosRaw: TransactionUnspentOutput[] | undefined,
     ttl: number,
     multiSig: boolean,
-    delegation: Delegation | null,
-    datums?: PlutusData[],
-    redeemers: Redeemer[],
-    plutusValidators: PlutusScript[],
-    plutusPolicies: PlutusScript[],
-    burn: boolean
+    delegation: Delegation | null
+    // ,
+    // datums?: PlutusData[],
+    // redeemers: Redeemer[],
+    // plutusValidators: PlutusScript[],
+    // plutusPolicies: PlutusScript[],
+    // burn: boolean
 }

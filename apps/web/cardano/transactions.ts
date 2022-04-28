@@ -3,34 +3,37 @@ import { ProtocolParameters } from "./query-api";
 import { MintedAsset, BurnAsset } from "./types";
 
 export async function _txBuilderSpendFromPlutusScript({
-    PaymentAddress,
-    Utxos,
-    Outputs,
-    ProtocolParameter,
+    paymentAddress,
+    utxos,
+    outputs,
+    protocolParameter,
     mintedAssetsArray = [],
     metadata = null,
     metadataHash = null,
     ttl = null,
-    datums = [],
-    redeemers = [],
-    plutusValidators = [],
-    plutusPolicies = [],
+    // datums = [],
+    // redeemers = [],
+    // plutusValidators = [],
+    // plutusPolicies = [],
     collateral = null,
 } : {
-    PaymentAddress: string,
-    Utxos: TransactionUnspentOutput[],
-    Outputs: TransactionOutputs,
-    ProtocolParameter: ProtocolParameters,
+    paymentAddress: string,
+
+    utxos: TransactionUnspentOutput[],
+    outputs: TransactionOutputs,
+    protocolParameter: ProtocolParameters,
     mintedAssetsArray: MintedAsset[] | BurnAsset[],
     metadata: object | null,
     metadataHash: string | null,
     ttl: number | null,
-    datums: PlutusData[],
-    redeemers: Redeemer[],
-    plutusValidators: PlutusScript[],
-    plutusPolicies: PlutusScript[],
+    // datums: PlutusData[],
+    // redeemers: Redeemer[],
+    // plutusValidators: PlutusScript[],
+    // plutusPolicies: PlutusScript[],
     collateral: string[]
 }): Promise<Transaction | null> {
+    if (!collateral || collateral.length < 1) throw new Error("NO_COLLATERAL");
+
     const cost_model_vals = [197209, 0, 1, 1, 396231, 621, 0, 1, 150000, 1000, 0, 1, 150000, 32, 2477736, 29175, 4, 29773, 100, 29773, 100, 29773, 100, 29773, 100, 29773, 100, 29773, 100, 100, 100, 29773, 100, 150000, 32, 150000, 32, 150000, 32, 150000, 1000, 0, 1, 150000, 32, 150000, 1000, 0, 8, 148000, 425507, 118, 0, 1, 1, 150000, 1000, 0, 8, 150000, 112536, 247, 1, 150000, 10000, 1, 136542, 1326, 1, 1000, 150000, 1000, 1, 150000, 32, 150000, 32, 150000, 32, 1, 1, 150000, 1, 150000, 4, 103599, 248, 1, 103599, 248, 1, 145276, 1366, 1, 179690, 497, 1, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 148000, 425507, 118, 0, 1, 1, 61516, 11218, 0, 1, 150000, 32, 148000, 425507, 118, 0, 1, 1, 148000, 425507, 118, 0, 1, 1, 2477736, 29175, 4, 0, 82363, 4, 150000, 5000, 0, 1, 150000, 32, 197209, 0, 1, 1, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 3345831, 1, 1];
 
     const costModel = CostModel.new();
@@ -39,7 +42,7 @@ export async function _txBuilderSpendFromPlutusScript({
     const costModels = Costmdls.new();
     costModels.insert(Language.new_plutus_v1(), costModel);
     // const nativeScripts = NativeScripts.new();
-    const txbuilder = createTxBuilderPlutus(ProtocolParameter, costModels)
+    const txbuilder = createTxBuilderPlutus(protocolParameter, costModels)
     
     mintedAssetsArray.forEach(a => {
         const policyScript = NativeScript.from_bytes(
@@ -51,34 +54,35 @@ export async function _txBuilderSpendFromPlutusScript({
             Int.new_i32(Number(a.quantity))
         )
     })
+
     let aux = AuxiliaryData.new();
-    for (let i = 0; i < Outputs.len(); i++) {
-        txbuilder.add_output(Outputs.get(i));
+    for (let i = 0; i < outputs.len(); i++) {
+        txbuilder.add_output(outputs.get(i));
     }
-    const utxos = TransactionUnspentOutputs.new()
-    for (let i = 0; i < Utxos.length; i++) {
-        if (typeof Utxos[i] === 'string' || Utxos[i] instanceof String) {
-            utxos.add(
+    const eutxos = TransactionUnspentOutputs.new()
+    for (let i = 0; i < utxos.length; i++) {
+        if (typeof utxos[i] === 'string' || utxos[i] instanceof String) {
+            eutxos.add(
                 TransactionUnspentOutput.from_bytes(
-                    Buffer.from(Utxos[i].toString(), 'hex')
+                    Buffer.from(utxos[i].toString(), 'hex')
                 )
             )
         }
-        else if (typeof Utxos[i] === 'object') {
-            utxos.add(Utxos[i] as TransactionUnspentOutput)
+        else if (typeof utxos[i] === 'object') {
+            eutxos.add(utxos[i] as TransactionUnspentOutput)
         }
     }
     if (ttl) {
-        txbuilder.set_ttl(ProtocolParameter.slot + ttl)
+        txbuilder.set_ttl(protocolParameter.slot + ttl)
     }
     
-    txbuilder.add_inputs_from(utxos, CoinSelectionStrategyCIP2.RandomImproveMultiAsset)
+    txbuilder.add_inputs_from(eutxos, CoinSelectionStrategyCIP2.RandomImproveMultiAsset)
     let addr: Address
     try {
-        addr = Address.from_bytes(Buffer.from(PaymentAddress, "hex"))
+        addr = Address.from_bytes(Buffer.from(paymentAddress, "hex"))
     }
     catch {
-        addr = Address.from_bech32(PaymentAddress)
+        addr = Address.from_bech32(paymentAddress)
     }
     if (metadata) {
         const generalMetadata = GeneralTransactionMetadata.new();
@@ -93,56 +97,35 @@ export async function _txBuilderSpendFromPlutusScript({
     
     const witnesses = TransactionWitnessSet.new();
 
-    const pScripts = PlutusScripts.new()
-    plutusValidators.forEach((pV) => pScripts.add(pV))
-    witnesses.set_plutus_scripts(pScripts)
+    // const pScripts = PlutusScripts.new()
+    // plutusValidators.forEach((pV) => pScripts.add(pV))
+    // witnesses.set_plutus_scripts(pScripts)
 
-    const pData = PlutusList.new()
-    datums.forEach((pD) => pData.add(pD))
-    witnesses.set_plutus_data(pData)
+    // const pData = PlutusList.new()
+    // datums.forEach((pD) => pData.add(pD))
+    // witnesses.set_plutus_data(pData)
 
-    const pRedeemers = Redeemers.new()
-    redeemers.forEach((pR) => pRedeemers.add(pR))
-    witnesses.set_redeemers(pRedeemers)
+    // const pRedeemers = Redeemers.new()
+    // redeemers.forEach((pR) => pRedeemers.add(pR))
+    // witnesses.set_redeemers(pRedeemers)
 
-    txbuilder.set_redeemers(
-        pRedeemers
-    );
-    txbuilder.set_plutus_data(
-        pData
-    );
-    txbuilder.set_plutus_scripts(pScripts);
-    if (!collateral || collateral.length < 1) throw new Error("NO_COLLATERAL");
-    console.log('collateral')
-    console.log(collateral)
+    // txbuilder.set_redeemers(
+    //     pRedeemers
+    // );
+    // txbuilder.set_plutus_data(
+    //     pData
+    // );
+    // txbuilder.set_plutus_scripts(pScripts);
+    
     setCollateral(txbuilder, TransactionUnspentOutput.from_bytes(Buffer.from(collateral[0], 'hex')));
 
     const vkeys = Vkeywitnesses.new();
 
     witnesses.set_vkeys(vkeys);
 
-    // const cost_model_vals = [197209, 0, 1, 1, 396231, 621, 0, 1, 150000, 1000, 0, 1, 150000, 32, 2477736, 29175, 4, 29773, 100, 29773, 100, 29773, 100, 29773, 100, 29773, 100, 29773, 100, 100, 100, 29773, 100, 150000, 32, 150000, 32, 150000, 32, 150000, 1000, 0, 1, 150000, 32, 150000, 1000, 0, 8, 148000, 425507, 118, 0, 1, 1, 150000, 1000, 0, 8, 150000, 112536, 247, 1, 150000, 10000, 1, 136542, 1326, 1, 1000, 150000, 1000, 1, 150000, 32, 150000, 32, 150000, 32, 1, 1, 150000, 1, 150000, 4, 103599, 248, 1, 103599, 248, 1, 145276, 1366, 1, 179690, 497, 1, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 148000, 425507, 118, 0, 1, 1, 61516, 11218, 0, 1, 150000, 32, 148000, 425507, 118, 0, 1, 1, 148000, 425507, 118, 0, 1, 1, 2477736, 29175, 4, 0, 82363, 4, 150000, 5000, 0, 1, 150000, 32, 197209, 0, 1, 1, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 3345831, 1, 1];
-
-    // const costModel = CostModel.new();
-    // cost_model_vals.forEach((x, i) => costModel.set(i, Int.new_i32(x)));
-
-    // const costModels = Costmdls.new();
-    // costModels.insert(Language.new_plutus_v1(), costModel);
-
-    // const scriptDataHash = hash_script_data(pRedeemers, costModels, pData);
     txbuilder.set_auxiliary_data(aux)
     txbuilder.add_change_if_needed(addr);
-    // if (metadataHash) {
-    //     const auxDataHash = AuxiliaryDataHash.from_bytes(
-    //         Buffer.from(metadataHash, 'hex'),
-    //     );
-    //     console.log(auxDataHash);
-    //     txBody = txbuilder.build()
-
-    //     txBody.set_auxiliary_data_hash(auxDataHash);
-    // } else {
-    // }
-
+   
     // const transaction = txbuilder.build_tx()
     const transaction = Transaction.new(
             txbuilder.build(),
@@ -151,7 +134,7 @@ export async function _txBuilderSpendFromPlutusScript({
     )
 
     const size = transaction.to_bytes().length * 2;
-    if (size > ProtocolParameter.maxTxSize) throw 'Error.TX_TOO_BIG';
+    if (size > protocolParameter.maxTxSize) throw 'Error.TX_TOO_BIG';
 
     return transaction;
 }

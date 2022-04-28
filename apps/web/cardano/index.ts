@@ -302,25 +302,25 @@ export class CardanoWallet {
     }
 
     async transaction({
-        ProtocolParameters,
-        PaymentAddress = '',
-        recipients = [],
+        protocolParameters,
+        paymentAddress = '',
+        walletOutputs = [],
         metadata = null,
         metadataHash = null,
         utxosRaw = [],
         ttl = null,
         multiSig = false,
         delegation = null,
-        redeemers = [],
-        plutusValidators = [],
-        plutusPolicies = [],
-        datums = [],
-        burn = false,
+        // redeemers = [],
+        // plutusValidators = [],
+        // plutusPolicies = [],
+        // datums = [],
+        // burn = false,
     }: TransactionParams
     ) {
 
-        if (!ProtocolParameters) return null
-        this._protocolParameter = ProtocolParameters
+        if (!protocolParameters) return null
+        this._protocolParameter = protocolParameters
         let utxos = utxosRaw.map((u) =>
             u
         );
@@ -328,16 +328,18 @@ export class CardanoWallet {
         let outputs = this.lib.TransactionOutputs.new()
         let minting = 0
         let costValues: any = {}
-        for (let recipient of recipients) {
-            let lovelace = Math.floor((Number(recipient.amount) || 0) * 1000000).toString()
-            let ReceiveAddress = recipient.address
+        for (let walletOutput of walletOutputs) {
+            let lovelace = Math.floor((Number(walletOutput.amount) || 0) * 1000000).toString()
+            let ReceiveAddress = walletOutput.address
             let multiAsset: MultiAsset, mintedAssets: Value
-            multiAsset = this._makeMultiAsset(recipient?.assets || [])
-            if(!burn) mintedAssets = this._makeMintedAsset(recipient?.mintedAssets || [])
+            multiAsset = this._makeMultiAsset(walletOutput?.assets || [])
+            let mintOnlyAssets = walletOutput?.mintedAssets ? walletOutput.mintedAssets : []
+            if(mintOnlyAssets.length > 0) mintOnlyAssets = walletOutput.mintedAssets.filter(a => Number(a.quantity) > 0)
+            mintedAssets = this._makeMintedAsset(mintOnlyAssets)
 
             let outputValue = this.lib.Value.new(this.lib.BigNum.from_str(lovelace))
             let minAdaMint = this.lib.BigNum.from_str('0')
-            if ((recipient?.assets || []).length > 0) {
+            if ((walletOutput?.assets || []).length > 0) {
                 outputValue.set_multiasset(multiAsset)
                 let minAda = this.lib.min_ada_required(
                     outputValue,
@@ -348,21 +350,19 @@ export class CardanoWallet {
                 if (this.lib.BigNum.from_str(lovelace).compare(minAda) < 0)
                     outputValue.set_coin(minAda)
             }
-            if(!burn) { 
-                (recipient?.mintedAssets || []).map((asset) => {
-                    minting += 1
+            (walletOutput?.mintedAssets || []).map((asset) => {
+                minting += 1
+                if(Number(asset.quantity) > 0) {
                     mintedAssetsArray.push({
                         ...asset,
-                        address: recipient.address
+                        address: walletOutput.address
                     })
-                })
-            } else {
-                recipient.mintedAssets?.forEach((a) => {
-                    mintedAssetsArray.push(a)
-                })
-            }
-
-            if (!burn && (recipient.mintedAssets || []).length > 0) {
+                } else {
+                    mintedAssetsArray.push(asset)
+                }
+            })
+        
+            if (mintOnlyAssets.length > 0 && ((walletOutput.mintedAssets || []).length > 0)) {
                 minAdaMint = this.lib.min_ada_required(
                     mintedAssets,
                     false,
@@ -378,22 +378,21 @@ export class CardanoWallet {
                 }
             }
 
-            if (ReceiveAddress != PaymentAddress)
+            if (ReceiveAddress != paymentAddress)
                 costValues[ReceiveAddress] = outputValue;
 
             const multiasst = outputValue.multiasset()
             let addr
             try {
-                addr = this.lib.Address.from_bytes(Buffer.from(recipient.address, "hex"))
+                addr = this.lib.Address.from_bytes(Buffer.from(walletOutput.address, "hex"))
             }
             catch {
-                addr = this.lib.Address.from_bech32(recipient.address)
-
+                addr = this.lib.Address.from_bech32(walletOutput.address)
             }
             let outputBuilder = this.lib.TransactionOutputBuilder.new().with_address(addr)
             let output: TransactionOutput
-            if (recipient.datum) {
-                const plutusDataHash = this.lib.hash_plutus_data(recipient.datum)
+            if (walletOutput.datum) {
+                const plutusDataHash = this.lib.hash_plutus_data(walletOutput.datum)
                 outputBuilder = outputBuilder.with_data_hash(plutusDataHash)
             }
 
@@ -409,31 +408,32 @@ export class CardanoWallet {
                 }
             } else if (multiasst) {
                 output = outputBuilder.next()
-                    .with_asset_and_min_required_coin(multiasst, this.lib.BigNum.from_str(ProtocolParameters.coinsPerUtxoWord.toString()))
+                    .with_asset_and_min_required_coin(multiasst, this.lib.BigNum.from_str(protocolParameters.coinsPerUtxoWord.toString()))
                     .build()
             }
             if (output) outputs.add(output)
         }
         let RawTransaction = null
-        if (redeemers?.length >= 1) {
+        if (walletOutputs.filter(r => r.scInput)?.length >= 1) {
             RawTransaction = await _txBuilderSpendFromPlutusScript({
-                PaymentAddress: PaymentAddress,
-                Utxos: utxos,
-                Outputs: outputs,
+                paymentAddress: paymentAddress,
+                utxos: utxos,
+                outputs: outputs,
                 mintedAssetsArray: mintedAssetsArray,
-                ProtocolParameter: this._protocolParameter,
+                protocolParameter: this._protocolParameter,
                 metadata: metadata,
                 metadataHash: metadataHash,
                 ttl: ttl,
-                datums: datums,
-                redeemers: redeemers,
-                plutusValidators: plutusValidators,
-                plutusPolicies: plutusPolicies,
+                // ,
+                // datums: datums,
+                // redeemers: redeemers,
+                // plutusValidators: plutusValidators,
+                // plutusPolicies: plutusPolicies,
                 collateral: await this.wallet.experimental.getCollateral(),
             })
         } else if (minting > 0) {
             RawTransaction = await _txBuilderMinting({
-                PaymentAddress: PaymentAddress,
+                PaymentAddress: paymentAddress,
                 Utxos: utxos,
                 Outputs: outputs,
                 mintedAssetsArray: mintedAssetsArray,
@@ -448,7 +448,7 @@ export class CardanoWallet {
             throw 'not implemented'
         } else {
             RawTransaction = await _txBuilder({
-                PaymentAddress: PaymentAddress,
+                PaymentAddress: paymentAddress,
                 Utxos: utxos,
                 Outputs: outputs,
                 ProtocolParameter: this._protocolParameter,
