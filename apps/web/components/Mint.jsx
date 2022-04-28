@@ -15,9 +15,7 @@ import {
   AccordionButton,
   AccordionPanel,
   useColorMode,
-  FormControl,
-  FormLabel,
-  Popover, PopoverTrigger, PopoverContent, PopoverCloseButton, PopoverHeader, PopoverBody, PopoverArrow
+  Popover, PopoverTrigger, PopoverContent, PopoverCloseButton, PopoverHeader, PopoverBody, PopoverArrow, Checkbox
 } from "@chakra-ui/react";
 import { prepMetadata } from "../lib/mintMetadata"
 import DatePicker from "react-datepicker";
@@ -34,15 +32,14 @@ const Mint = () => {
   const { colorMode } = useColorMode()
   const isDark = colorMode === 'dark'
   const walletCtx = useContext(WalletContext)
-  // const initIpfs = useIpfs()
   const [connected, setConnected] = useState("")
   const [loading, setLoading] = useState(false)
   const [filesWithType, setFilesWithType] = useState([])
   const [quantityDict, setQuantityDict] = useState({})
   const [policy, setPolicy] = useState(null)
   const [nfts, setNfts] = useState([])
-  const [startDate, setStartDate] = useState(null);
   const [policyLockDate, setPolicyLockDate] = useState(null)
+  const [policyLock, setPolicyLock] = useState(null)
 
   const [inputs, setInputs] = useState({
     image: "",
@@ -62,13 +59,6 @@ const Mint = () => {
     mediaType: "",
     arweaveHash: ""
   })
-
-  // useEffect(() => { console.log(`files: ${JSON.stringify(nfts)}`) }, [nfts])
-  // useEffect(() => { 
-  //   init() 
-  //   console.log("refreshed walletCtx.walletApi")
-  //   console.log(walletCtx.walletApi)
-  // }, [walletCtx.walletApi])
 
   const init = async () => {
     wallet = new WalletJs(
@@ -289,17 +279,31 @@ const Mint = () => {
         <Flex flexDirection="row" w="80%">
           <Flex flexDirection="column" w="75%">
             <Box h="3rem" />
-            {/* <Label>Policy lock (empty if no limit)</Label> */}
-            <Text>Policy lock (empty if no limit)</Text>
+            <Flex flexDirection="row">
+              <Text mr={2}>Policy lock</Text>
+              <Checkbox
+                onChange={(e) => {
+                  if(!e.target.checked){
+                    setPolicyLockDate(undefined)
+                    setPolicyLock(false)
+                    console.log('uncheck')
+                  } else {
+                    setPolicyLockDate(null)
+                    setPolicyLock(true)
+                  }
+                }}
+              />
+            </Flex>
+            { policyLock ? 
             <DatePicker 
               id='policy-timelock'
               showTimeInput
               timeInputLabel="Time:"
               dateFormat="MM/dd/yyyy h:mm aa"
-              selected={startDate} onChange={(date) => {
-                setStartDate(date)
+              bg="#ffffff00"
+              selected={policyLockDate} onChange={(date) => {
                 setPolicyLockDate(date)
-            }}/>
+            }}/> : <></>}
             <Box h="3rem" />
             <Input
               focusBorderColor="blue.700"
