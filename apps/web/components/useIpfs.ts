@@ -1,7 +1,7 @@
 import * as IPFS from 'ipfs-core'
 // ipfs is the core API, a CLI and a HTTP server that functions as a HTTP to IPFS bridge
 // and an RPC endpoint. See https://www.npmjs.com/package/ipfs
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 let ipfs = null;
 
@@ -26,7 +26,7 @@ export default function useIpfs() {
     } else {
       try {
         console.time("IPFS Started"); // start timer
-        ipfs = await IPFS.create(options)
+        ipfs = await IPFS.create(options as IPFS.Options)
         console.timeEnd("IPFS Started"); // stop timer and log duration in console
       } catch (error) {
         console.error("IPFS init error:", error);

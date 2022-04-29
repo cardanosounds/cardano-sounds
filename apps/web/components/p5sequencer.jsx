@@ -3,8 +3,8 @@ import p5 from 'p5'
 import "../p5.sound.js"
 import "../p5.dom.js"
 import { Flex, Button, Text } from '@chakra-ui/react'
-import MintBtn from './MintBtn.jsx'
-import useIpfs from "./mint/useIpfs";
+import MintBtn from './MintBtn'
+import useIpfs from "./useIpfs";
 
 let ipfs;
  

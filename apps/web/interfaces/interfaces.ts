@@ -1,4 +1,4 @@
-import { DatabaseTx, Metadata } from "./databaseTx"
+import { Metadata } from "@prisma/client"
 
 export interface ContextualHref {
     makeContextualHref: (extraQueryParams: { [key: string]: any }) => string
@@ -30,20 +30,6 @@ export interface SoundListData {
     collection: string
     page: number
 }
-
-// export interface Metadata {
-// 	id: string;
-// 	policy_id: string;
-// 	token_name: string;
-// 	player: string;
-// 	image: string;
-// 	probability: number;
-// 	rarity: string;
-// 	sounds: Sound[];
-// 	arweave_id_sound: string;
-// 	ipfs_id_sound: string;
-// 	arweave_website_uri: string;
-// }
 
 export interface TokenValue {
     unit: string;

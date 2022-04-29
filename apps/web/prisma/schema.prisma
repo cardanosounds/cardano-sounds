@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgres"
+  url      =  env("DB_CONNECTION_STRING")
+}
+
+model Metadata {
+  id                  Int    @id @default(autoincrement())
+  token_name          String @unique
+  player              String
+  image               String
+  probability         String
+  rarity              String
+  arweave_id_sound    String
+  ipfs_id_sound       String
+  arweave_website_uri String
+  trackEnriching      String
+  trackMelody         String
+  trackDrums          String
+  trackBass           String
+  trackSignature      String
+  collection          String
+}
