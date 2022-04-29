@@ -164,4 +164,10 @@ h3 {
 .left {
   text-align: right;
   margin-right: 2%;
- }
+}
+
+#policy-timelock {
+  background-color: #ffffff00;
+  border-width: medium;
+  border-radius: 0.25rem;
+}
