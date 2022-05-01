@@ -344,9 +344,16 @@ export class LibraryValidator {
                 validator,
         };
 
-        const utxos = await Lucid.utxosAt(validatorAddressTestnet)//, asset.policyId + asset.assetName)
+        let utxos = await Lucid.utxosAt(validatorAddressTestnet)//, asset.policyId + asset.assetName)
         console.log({utxos: utxos})
         if(!utxos) throw "no validator utxos with an asset"
+
+        utxos = utxos.map((utxo) => {
+            // for each utxo the user owns we add the datum for this user in the transaction.
+            utxo.datum = datum;
+            return utxo
+        })
+
         const tx = await Tx.new()
             .collectFrom(utxos, datum)
             .attachSpendingValidator(spendingValidator)
