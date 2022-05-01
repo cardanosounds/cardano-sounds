@@ -1,6 +1,6 @@
 import { validator, validatorAddress, validatorAddressTestnet } from "../on-chain/nftMediaLibPlutus";
 import { AlwaysSucceedsPlutusValidator, AlwaysSucceedsPlutusPolicy } from "../on-chain/alwaysSuceedsPlutus";
-import { PlutusData, C, Lucid, Blockfrost, Tx} from 'lucid-cardano'
+import { PlutusData, C, Lucid, Blockfrost, Tx, UTxO, SpendingValidator} from 'lucid-cardano'
 import { estimateSlotByDate } from "../../lib/utils";
 import { BigNum, ScriptHashNamespace, NativeScript } from "lucid-cardano/custom_modules/cardano-multiplatform-lib-browser";
 export const fromHex = (hex) => Buffer.from(hex, "hex");
@@ -143,6 +143,7 @@ export class LibraryRedeemer {
         );
     }
 }
+
 export type Asset = {
     assetName: string
     policyId: string
@@ -269,103 +270,95 @@ export class LibraryValidator {
         // console.log({ submittedTxHash: submittedTxHash })
     }
 
-    // unlock = async (
-    //     protocolParameters: ProtocolParameters,
-    //     asset: Asset,
-    //     adaPrice: number,
-    //     validatorUtxo: UTxO,
-    //     metadata: Object = null
-    // ) => {
-    //     console.log({
-    //         protocolParameters: protocolParameters,
-    //         asset: asset,
-    //         adaPrice: adaPrice,
-    //         metadata: null
-    //     })
-    //     const localWallet = localStorage.getItem('cardano-web3-wallet')
-    //     console.log(await this.cardano.enable('nami'))
-    //     if (!this.cardano.wallet && localWallet) {
-    //         if (!await this.cardano.enable(localWallet)) return
-    //     } else if (!this.cardano.wallet) {
-    //         return
-    //     }
-    //     console.log(this.cardano.wallet)
-    //     const walletAddr = await this.cardano.getAddressHexString()
-    //     console.log(walletAddr)
+    unlock = async (
+        asset: Asset,
+        adaPrice: number,
+        // validatorUtxo: UTxO,
+    ) => {
+        console.log({
+            asset: asset,
+            adaPrice: adaPrice,
+            metadata: null
+        })
+        await Lucid.initialize(
+            'Testnet',
+            new Blockfrost('https://cardano-testnet.blockfrost.io/api/v0', 'testnetRvOtxC8BHnZXiBvdeM9b3mLbi8KQPwzA')
+        )
+        await Lucid.selectWallet('nami')
+        const walletAddr = Lucid.wallet.address
 
+        if (!walletAddr) return
 
-    //     if (!walletAddr) return
+        const policy: Policy = createLockingPolicyScript(null, walletAddr)//address: string, expirationTime: Date, protocolParameters: ProtocolParameters
 
-    //     const policy: Policy = await this.cardano.createLockingPolicyScript(walletAddr, null, protocolParameters)//address: string, expirationTime: Date, protocolParameters: ProtocolParameters
-    //     console.log('policy')
-    //     console.log(policy)
-    //     const convertedValidatorUTXO = await this.cardano.utxoFromData(validatorUtxo, validatorAddressTestnet)
+        const lockTokenBurn = {
+            assetName: 'CSlock' + Buffer.from(asset.assetName, 'hex').toString('ascii'),
+            quantity: '-1',
+            policyId: policy.policyId,
+            policyScript: policy.script,
+            address: walletAddr
+        }
 
-    //     console.log(utxoToJson(convertedValidatorUTXO))
-    //     console.log('convertedValidatorUTXO')
-    //     console.log(convertedValidatorUTXO)
-    //     let utxos = await this.cardano.wallet.getUtxos()
-    //     console.log('utxos.length')
-    //     console.log(utxos.length)
-    //     utxos = utxos.concat(convertedValidatorUTXO)
-    //     console.log('utxos.length')
-    //     console.log(utxos.length)
+        // const txParams: TransactionParams = {
+        //     ProtocolParameters: protocolParameters,
+        //     PaymentAddress: walletAddr,
+        //     recipients: [{
+        //         address: walletAddr,
+        //         amount: '0',
+        //         assets: [
+        //             { quantity: '1', unit: asset.unit }
+        //             // ,
+        //             // {quantity: '1', unit: lockTokenBurn.policyId + "." + lockTokenBurn.assetName}
+        //         ]
+        //         ,
+        //         mintedAssets: [lockTokenBurn]
+        //     }],
+        //     metadata: metadata,
+        //     metadataHash: null,
+        //     addMetadata: true,
+        //     utxosRaw: utxos,
+        //     ttl: 7200,
+        //     multiSig: false,
+        //     delegation: null,
+        //     datums: [
+        //         new LibraryDatum({
+        //             lockTokenPolicy: lockTokenBurn.policyId,
+        //             lockTokenName: lockTokenBurn.assetName,
+        //             lovelacePrice: BigInt.from_str((adaPrice * 1000000).toString())
+        //         }).toPlutusData(this.cardano.lib)
+        //     ],
+        //     redeemers: [new LibraryRedeemer(LibraryAction.Unlock).toRedeemer(this.cardano.lib)],
+        //     plutusValidators: [PlutusScript.new(fromHex(validator))],
+        //     plutusPolicies: [],
+        //     burn: true
+        // }
+        const datum = new LibraryDatum({
+            lockTokenPolicy: lockTokenBurn.policyId,
+            lockTokenName: lockTokenBurn.assetName,
+            lovelacePrice: BigInt(adaPrice * 1000000)
+        }).asPlutusDataHexString()
 
-    //     const lockTokenBurn = {
-    //         assetName: 'CSlock' + asset.unit.split('.')[1],
-    //         quantity: '-1',
-    //         policyId: policy.id,
-    //         policyScript: policy.script,
-    //         address: walletAddr
-    //     }
+        const spendingValidator: SpendingValidator = {
+            type: 'Plutus',
+            script: // 590ff6
+                validator,
+        };
 
-    //     const txParams: TransactionParams = {
-    //         ProtocolParameters: protocolParameters,
-    //         PaymentAddress: walletAddr,
-    //         recipients: [{
-    //             address: walletAddr,
-    //             amount: '0',
-    //             assets: [
-    //                 { quantity: '1', unit: asset.unit }
-    //                 // ,
-    //                 // {quantity: '1', unit: lockTokenBurn.policyId + "." + lockTokenBurn.assetName}
-    //             ]
-    //             ,
-    //             mintedAssets: [lockTokenBurn]
-    //         }],
-    //         metadata: metadata,
-    //         metadataHash: null,
-    //         addMetadata: true,
-    //         utxosRaw: utxos,
-    //         ttl: 7200,
-    //         multiSig: false,
-    //         delegation: null,
-    //         datums: [
-    //             new LibraryDatum({
-    //                 lockTokenPolicy: lockTokenBurn.policyId,
-    //                 lockTokenName: lockTokenBurn.assetName,
-    //                 lovelacePrice: BigInt.from_str((adaPrice * 1000000).toString())
-    //             }).toPlutusData(this.cardano.lib)
-    //         ],
-    //         redeemers: [new LibraryRedeemer(LibraryAction.Unlock).toRedeemer(this.cardano.lib)],
-    //         plutusValidators: [PlutusScript.new(fromHex(validator))],
-    //         plutusPolicies: [],
-    //         burn: true
-    //     }
+        const utxos = await Lucid.utxosAt(validatorAddressTestnet)//, asset.policyId + asset.assetName)
+        console.log({utxos: utxos})
+        if(!utxos) throw "no validator utxos with an asset"
+        const tx = await Tx.new()
+            .collectFrom(utxos, datum)
+            .attachSpendingValidator(spendingValidator)
+            .addSigner(walletAddr)
+            .complete();
 
-    //     let tx: Transaction = await this.cardano.transaction(txParams)
-    //     console.log('tx')
-    //     console.log(tx)
-    //     console.log('tx typeof')
-    //     console.log(typeof tx)
+        const signedTx = (await tx.sign()).complete();
 
-    //     const transactionWitnessSet = TransactionWitnessSet.new();
+        const txHash = await signedTx.submit();
 
-    //     const txVkeyWitnessesStr = await this.cardano.wallet.signTx(Buffer.from(tx.to_bytes()).toString("hex"), false);
-        
-    //     const submittedTxHash = await this.cardano.submitTx(Buffer.from(tx.to_bytes()).toString('hex'), [txVkeyWitnessesStr])
-    //     console.log({ submittedTxHash: submittedTxHash })
-    // }
+        console.log({ submittedTxHash: txHash })
+    }
 
     use = () => {
 
