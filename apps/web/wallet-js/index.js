@@ -2,7 +2,7 @@ import Loader from "./loader";
 import CoinSelection from "./coinSelection";
 import { Buffer } from "buffer";
 import { amountToValue, asciiToHex, assetsCount } from "./utils";
-import { estimateSlotByDate } from "../lib/utils";
+import { estimateSlotByDate } from "../cardano/utils";
 
 
 const Cardano = async () => {
