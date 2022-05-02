@@ -10,7 +10,7 @@ export default function TestButton() {
 
     const makeTx = async () => {
         const validator = new LibraryValidator()
-        validator.unlock({assetName: "43534e465438", policyId: "74f43bdf645aaeb25f39c6392cdb771ff4eb4da0c017cc183c490b8f"}, 2)
+        validator.use({assetName: "63736e66743337", policyId: "74f43bdf645aaeb25f39c6392cdb771ff4eb4da0c017cc183c490b8f"}, 2)
       
     }
 
