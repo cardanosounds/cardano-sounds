@@ -1,7 +1,5 @@
-import { validator, validatorAddressTestnet } from "../on-chain/nftMediaLibPlutus";
-import { PlutusData, C, Lucid, Blockfrost, Tx, SpendingValidator, MintingPolicy} from 'lucid-cardano'
+import { PlutusData, C, Lucid, Blockfrost, Tx, SpendingValidator } from 'lucid-cardano'
 import { createLockingPolicyScript, DATUM_LABEL, Policy } from "../utils";
-import { AlwaysSucceedsPlutusValidator } from "../on-chain/alwaysSuceedsPlutus";
 export const fromHex = (hex) => Buffer.from(hex, "hex");
 export const toHex = (bytes) => Buffer.from(bytes).toString("hex");
 
@@ -38,8 +36,8 @@ export class LibraryDatum {
     // }
     toPlutusData: () => PlutusData = () => {
         const fieldsInner = C.PlutusList.new();
-        fieldsInner.add(C.PlutusData.new_bytes(fromHex(this.lockTokenPolicy)));
         fieldsInner.add(C.PlutusData.new_bytes(fromHex(this.lockTokenName)));
+        fieldsInner.add(C.PlutusData.new_bytes(fromHex(this.lockTokenPolicy)));
 
         const libraryInput = C.PlutusList.new();
         libraryInput.add(
@@ -51,7 +49,7 @@ export class LibraryDatum {
             )
         )
 
-        libraryInput.add(C.PlutusData.new_bytes(Buffer.from(this.lovelacePrice.toString())))
+        libraryInput.add(C.PlutusData.new_integer(C.BigInt.from_str(this.lovelacePrice.toString())))
 
         return C.PlutusData.new_constr_plutus_data(
             C.ConstrPlutusData.new(
@@ -112,11 +110,23 @@ export type Asset = {
 }
 
 export class LibraryValidator {
+    validatorAddress: string
+    spendingValidator: SpendingValidator
+
+    constructor(validatorHex: string, validatorAddress: string) {
+        this.spendingValidator = {
+            type: 'Plutus',
+            script: // 590ff6
+                validatorHex
+        }
+        this.validatorAddress = validatorAddress
+    }
 
     lock = async (
         asset: Asset,
         adaPrice: number
     ) => {
+        asset.assetName = Buffer.from(asset.assetName, 'ascii').toString('hex')
         await Lucid.initialize(
             'Testnet',
             new Blockfrost('https://cardano-testnet.blockfrost.io/api/v0', 'testnetRvOtxC8BHnZXiBvdeM9b3mLbi8KQPwzA')
@@ -136,7 +146,7 @@ export class LibraryValidator {
         }
         const datum = new LibraryDatum({
             lockTokenPolicy: lockTokenMint.policyId,
-            lockTokenName: lockTokenMint.assetName,
+            lockTokenName: Buffer.from(lockTokenMint.assetName, 'ascii').toString('hex'),
             lovelacePrice: BigInt(adaPrice * 1000000)
         }).asPlutusDataHexString()
         
@@ -154,7 +164,7 @@ export class LibraryValidator {
                     script: Buffer.from(policy.script.to_bytes()).toString('hex')
                 })
                 .mintAssets(mintAssets)
-                .payToContract(AlwaysSucceedsPlutusValidator.testnetAddress, datum, assets)
+                .payToContract(this.validatorAddress, datum, assets)
                 .complete();
 
         const signedTx = (await tx.sign()).complete();
@@ -169,6 +179,7 @@ export class LibraryValidator {
         adaPrice: number,
         // validatorUtxo: UTxO,
     ) => {
+        asset.assetName = Buffer.from(asset.assetName, 'ascii').toString('hex')
         console.log({
             asset: asset,
             adaPrice: adaPrice,
@@ -195,25 +206,17 @@ export class LibraryValidator {
 
         const datum = new LibraryDatum({
             lockTokenPolicy: lockTokenBurn.policyId,
-            lockTokenName: lockTokenBurn.assetName,
+            lockTokenName: Buffer.from(lockTokenBurn.assetName, 'ascii').toString('hex'),
             lovelacePrice: BigInt(adaPrice * 1000000)
         }).asPlutusDataHexString()
 
-        const redeemer = new LibraryRedeemer(LibraryAction.Unlock).asPlutusDataHexString()
+        const redeemer = new LibraryRedeemer(LibraryAction.Unlock).asPlutusDataHexString()       
 
-        const spendingValidator: SpendingValidator = {
-            type: 'Plutus',
-            script: // 590ff6
-                AlwaysSucceedsPlutusValidator.validator
-                // validator,
-        };
-
-        let utxos = await Lucid.utxosAt(AlwaysSucceedsPlutusValidator.testnetAddress)//, asset.policyId + asset.assetName)
+        let utxos = await Lucid.utxosAt(this.validatorAddress)//, asset.policyId + asset.assetName)
         console.log({utxos: utxos})
         if(!utxos)
             throw "no validator utxos with an asset"
-
-        utxos = [utxos[399]]
+        utxos = [utxos[2]]
         utxos = utxos.map((utxo) => {
             // for each utxo the user owns we add the datum for this user in the transaction.
             utxo.datum = datum;
@@ -225,13 +228,13 @@ export class LibraryValidator {
         }
 
         const tx = await Tx.new()
-            .attachMintingPolicy({
-                type: "Native",
-                script: Buffer.from(policy.script.to_bytes()).toString('hex')
-            })
-            .mintAssets(mintAssets)
+            // .attachMintingPolicy({
+            //     type: "Native",
+            //     script: Buffer.from(policy.script.to_bytes()).toString('hex')
+            // })
+            // .mintAssets(mintAssets)
             .collectFrom(utxos, redeemer)
-            .attachSpendingValidator(spendingValidator)
+            .attachSpendingValidator(this.spendingValidator)
             .addSigner(walletAddr)
             .complete();
 
@@ -247,6 +250,7 @@ export class LibraryValidator {
         adaPrice: number,
         // validatorUtxo: UTxO,
     ) => {
+        asset.assetName = Buffer.from(asset.assetName, 'ascii').toString('hex')
         console.log({
             asset: asset,
             adaPrice: adaPrice,
@@ -273,26 +277,18 @@ export class LibraryValidator {
 
         const datum = new LibraryDatum({
             lockTokenPolicy: lockTokenBurn.policyId,
-            lockTokenName: lockTokenBurn.assetName,
+            lockTokenName: Buffer.from(lockTokenBurn.assetName, 'ascii').toString('hex'),
             lovelacePrice: BigInt(adaPrice * 1000000)
         }).asPlutusDataHexString()
 
-        const redeemer = new LibraryRedeemer(LibraryAction.Unlock).asPlutusDataHexString()
+        const redeemer = new LibraryRedeemer(LibraryAction.Use).asPlutusDataHexString()
 
-        const spendingValidator: SpendingValidator = {
-            type: 'Plutus',
-            script: // 590ff6
-                AlwaysSucceedsPlutusValidator.validator
-                // validator,
-        };
-
-        let utxos = await Lucid.utxosAt(AlwaysSucceedsPlutusValidator.testnetAddress)//, asset.policyId + asset.assetName)
+        let utxos = await Lucid.utxosAt(this.validatorAddress)///, asset.policyId + asset.assetName)
         console.log({utxos: utxos})
-        if(!utxos)
+        if(!utxos) {
             throw "no validator utxos with an asset"
-
-        utxos = [utxos[399]]
-        utxos = utxos.map((utxo) => {
+        }
+        utxos = [utxos[2]].map((utxo) => {
             // for each utxo the user owns we add the datum for this user in the transaction.
             utxo.datum = datum;
             return utxo
@@ -300,13 +296,13 @@ export class LibraryValidator {
 
         let assets = {
             [asset.policyId + asset.assetName]: BigInt(1),
-            ['lovelace']: BigInt(2500000)
+            ['lovelace']: BigInt(2000000)
         }
 
         const tx = await Tx.new()
             .collectFrom(utxos, redeemer)
-            .attachSpendingValidator(spendingValidator)
-            .payToContract(AlwaysSucceedsPlutusValidator.testnetAddress, datum, assets)
+            .attachSpendingValidator(this.spendingValidator)
+            .payToContract(this.validatorAddress, datum, assets)
             .addSigner(walletAddr)
             .complete();
 
