@@ -36,8 +36,8 @@ export class LibraryDatum {
     // }
     toPlutusData: () => PlutusData = () => {
         const fieldsInner = C.PlutusList.new();
-        fieldsInner.add(C.PlutusData.new_bytes(fromHex(this.lockTokenName)));
         fieldsInner.add(C.PlutusData.new_bytes(fromHex(this.lockTokenPolicy)));
+        fieldsInner.add(C.PlutusData.new_bytes(fromHex(this.lockTokenName)));
 
         const libraryInput = C.PlutusList.new();
         libraryInput.add(
@@ -211,12 +211,14 @@ export class LibraryValidator {
         }).asPlutusDataHexString()
 
         const redeemer = new LibraryRedeemer(LibraryAction.Unlock).asPlutusDataHexString()       
-
+        let walletUtxos = await Lucid.utxosAt(walletAddr)
+        console.log('walletUtxos')
+        console.log(walletUtxos)
         let utxos = await Lucid.utxosAt(this.validatorAddress)//, asset.policyId + asset.assetName)
         console.log({utxos: utxos})
         if(!utxos)
             throw "no validator utxos with an asset"
-        utxos = [utxos[2]]
+        utxos = [utxos[3]]
         utxos = utxos.map((utxo) => {
             // for each utxo the user owns we add the datum for this user in the transaction.
             utxo.datum = datum;
@@ -228,11 +230,12 @@ export class LibraryValidator {
         }
 
         const tx = await Tx.new()
-            // .attachMintingPolicy({
-            //     type: "Native",
-            //     script: Buffer.from(policy.script.to_bytes()).toString('hex')
-            // })
-            // .mintAssets(mintAssets)
+            .attachMintingPolicy({
+                type: "Native",
+                script: Buffer.from(policy.script.to_bytes()).toString('hex')
+            })
+            .mintAssets(mintAssets)
+            .collectFrom([walletUtxos[3]])
             .collectFrom(utxos, redeemer)
             .attachSpendingValidator(this.spendingValidator)
             .addSigner(walletAddr)
@@ -296,7 +299,7 @@ export class LibraryValidator {
 
         let assets = {
             [asset.policyId + asset.assetName]: BigInt(1),
-            ['lovelace']: BigInt(2000000)
+            ['lovelace']: BigInt(6500000)
         }
 
         const tx = await Tx.new()
