@@ -13,12 +13,14 @@ export default function TestFfmpeg() {
                 // message.innerHTML = `Complete: ${(ratio * 100.0).toFixed(2)}%`;
             },
         });
+        // ffmpeg -loop 1 -i ima.jpg -i audio.wav -c:v libx264 -tune stillimage -c:a aac -b:a 192k -pix_fmt yuv420p -shortest out.mp4
 
         // const joinAudioWithVideo = async (audio: Uint8Array, video: Uint8Array) => {
             await ffmpeg.load();
             ffmpeg.FS('writeFile', 'cs-sound-audio.mp3', await fetchFile('/music.mp3'))//audio)
-            ffmpeg.FS('writeFile', 'cs-sound-video.mp4', await fetchFile('/test.mp4'))
-            await ffmpeg.run('-i', 'cs-sound-video.mp4', '-i', 'cs-sound-audio.mp3', '-shortest', 'output.mp4');
+            ffmpeg.FS('writeFile', 'cs-image.png', await fetchFile('/noise.png'))
+            await ffmpeg.run('-loop', '1', '-i', 'cs-image.png', '-i', 'cs-sound-audio.mp3', '-c:v', 'libx264', '-tune', 'stillimage', '-c:a', 'aac', '-b:a', '192k', '-pix_fmt', 'yuv420p', '-shortest', 'output.mp4');
+            // await ffmpeg.run('-i', 'cs-sound-video.mp4', '-i', 'cs-sound-audio.mp3', '-shortest', 'output.mp4');
             const data = ffmpeg.FS('readFile', 'output.mp4');
             const videoHtml: any = document.getElementById('output-video');
             videoHtml.src = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
