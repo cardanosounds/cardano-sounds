@@ -27,6 +27,8 @@
     "@emotion/styled": "^11.3.0",
     "@emurgo/cardano-serialization-lib-browser": "^10.0.4",
     "@emurgo/cip14-js": "^3.0.1",
+    "@ffmpeg/core": "0.9.0",
+    "@ffmpeg/ffmpeg": "0.9.8",
     "@fontsource/share-tech-mono": "^4.4.2",
     "@prisma/client": "^3.11.1",
     "font-awesome": "^4.7.0",
