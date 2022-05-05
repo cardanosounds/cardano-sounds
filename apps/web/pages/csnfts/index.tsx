@@ -8,7 +8,7 @@ import {
   Button,
 } from "@chakra-ui/react"
 import { useState } from 'react'
-import { SoundListData } from '../../interfaces/interfaces'
+import { SoundListData } from '../../interfaces'
 import Head from "next/head"
 import Layout from "../../components/layout"
 import SoundNFTPreviewSmall from "../../components/SoundNFTPreviewSmall"

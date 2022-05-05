@@ -46,3 +46,40 @@ export interface IncommingTransaction {
     created: string;
     nft_count: string;
 }
+
+
+export type IpfsSrc = String
+export type ArweaveSrc = String
+
+export interface AssetView {
+    assetAsciiName: string
+    assetPolicyId: string
+    assetImgSrc: IpfsSrc | ArweaveSrc
+    quantity: BigInt
+}
+
+export interface AssetInfoBF {
+    asset:                string
+    policy_id:            string
+    asset_name:           string
+    fingerprint:          string
+    quantity:             string
+    initial_mint_tx_hash: string
+    mint_or_burn_count:   number
+    onchain_metadata:     OnchainMetadata
+    metadata:             BFMetadata
+}
+
+export interface BFMetadata {
+    name:        string
+    description: string
+    ticker:      string
+    url:         string
+    logo:        string
+    decimals:    number
+}
+
+export interface OnchainMetadata {
+    name:  string
+    image: string
+}

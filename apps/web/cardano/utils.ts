@@ -1,6 +1,7 @@
 
 import { C } from "lucid-cardano";
 import { NativeScript } from "lucid-cardano/custom_modules/cardano-multiplatform-lib-browser";
+import { AssetInfoBF } from '../interfaces'
 
 const SlotLength = 432000
 const shelleyStart = (isMainnet: boolean): number => isMainnet ? 4924800 : 4924800 + 129600 - SlotLength
@@ -50,4 +51,10 @@ const createLockingPolicyScript = (expirationTime: Date, walletAddress: string, 
     return { policyId: policyId, script: finalScript, lockSlot: lockSlot, paymentKeyHash: keyHashString };
 }
 
-export { estimateDateBySlot, estimateSlotByDate, getEpochBySlot, getSlotInEpochBySlot, createLockingPolicyScript, DATUM_LABEL, SlotLength }
+const getAssetsInfo: (unit: string) => Promise<AssetInfoBF> = async (unit: string) => {
+  return (await (await fetch(`https://cardano-testnet.blockfrost.io/api/v0/assets/${unit}`, { headers: {
+      project_id: 'testnetRvOtxC8BHnZXiBvdeM9b3mLbi8KQPwzA'
+  }})).json() as AssetInfoBF)
+}
+
+export { estimateDateBySlot, estimateSlotByDate, getEpochBySlot, getSlotInEpochBySlot, createLockingPolicyScript, getAssetsInfo, DATUM_LABEL, SlotLength }

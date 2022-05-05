@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { SoundListData } from '../../../../../interfaces/interfaces'
+import { SoundListData } from '../../../../../interfaces'
 import prisma from '../../../../../lib/prisma'
 
 export default async function (req: NextApiRequest, res: NextApiResponse) {

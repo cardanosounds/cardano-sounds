@@ -1,8 +1,20 @@
 import { Button } from "@chakra-ui/react";
+import getContractAssetsHook from "../hooks/getContractAssetsHook";
+import getUserAssetsHook from "../hooks/getUserAssetsHook";
 
 export default function TestFfmpeg() {
+    // const [ userAssetViews, loadUserAssetViews ] = getUserAssetsHook()
+    const [ contractAssetViews, loadContractAssetViews ] = getContractAssetsHook()
+    // const usersAssets 
+
+    // const loadAssets
+
+    const test = () => {
+        console.log('contractAssetViews')
+        console.log(contractAssetViews)
+    }
  
-    const test = async () => {
+    const testFfmpeg = async () => {
         // const message = document.getElementById('message');
         const { createFFmpeg, fetchFile } = await import('@ffmpeg/ffmpeg');
         const ffmpeg = createFFmpeg({
