@@ -29,6 +29,7 @@
     "@emurgo/cip14-js": "^3.0.1",
     "@fontsource/share-tech-mono": "^4.4.2",
     "@prisma/client": "^3.11.1",
+    "easy-peasy": "^5.0.4",
     "font-awesome": "^4.7.0",
     "ipfs-core": "^0.12.2",
     "lucid-cardano": "^0.2.1",

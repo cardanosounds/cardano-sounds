@@ -18,6 +18,8 @@ import {
   DrawerContent,
   DrawerCloseButton,
 } from "@chakra-ui/react"
+import { useStoreActions, useStoreState } from '../store';
+import { WalletProvider } from 'lucid-cardano';
 
 // import { MoonIcon, SunIcon } from '@chakra-ui/icons'
 
@@ -25,8 +27,12 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
     const { colorMode, toggleColorMode } = useColorMode()
     const [sound, soundAbility] = useState<boolean>(true)
     const isDark = colorMode === 'dark'
+
+    const walletStore = useStoreState(state => state.wallet)
+    const setWallet = useStoreActions(action => action.setWallet)
+
     const walletCtx = useContext(WalletContext)
-    const [walletEnabled, walletEnable] = useState<boolean>(false)
+    // const [walletEnabled, walletEnable] = useState<boolean>(false)
     const { isOpen, onOpen, onClose } = useDisclosure()
     const walletModal: {
       isOpen: boolean;
@@ -38,8 +44,9 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
       getDisclosureProps: (props?: any) => any;
     } = useDisclosure()
 
-    const allowWallet = async () => {
-      walletEnable(true)
+    const allowWallet = async (wallet: string) => {
+      const walletStoreObj = {connected: true, name: wallet}
+      setWallet(walletStoreObj)
       window.localStorage.setItem('cswallet', 'connected')
     }
 
@@ -72,59 +79,10 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
     const enableCardano = async (wallet: string = 'nami') => {
       const win: any = window
       if(!win.cardano) return
+      
+      if(!(await window.cardano[wallet].enable())) return
 
-      let baseWalletApi, fullWalletApi
-      switch(wallet){
-        case 'nami':
-          baseWalletApi = win.cardano.nami
-          break
-        case 'ccvault':
-          baseWalletApi = win.cardano.ccvault
-          break
-        case 'flint':
-          baseWalletApi = win.cardano.flint
-          break
-        case 'yoroi':
-          baseWalletApi = win.cardano.yoroi
-          break
-        case 'cardwallet':
-          baseWalletApi = win.cardano.cardwallet
-          break
-        case 'gerowallet':
-          if(!win.cardano.gerowallet){ 
-            console.log("gero not inserted")
-            return 
-          }
-          baseWalletApi = win.cardano.gerowallet
-          break
-      }
-
-      switch(wallet){
-        case 'nami':
-          fullWalletApi = await baseWalletApi.enable()
-          break
-        case 'ccvault':
-          fullWalletApi = await baseWalletApi.enable()
-          break
-        case 'flint':
-          fullWalletApi = await baseWalletApi.enable()
-          break
-        case 'yoroi':
-          fullWalletApi = await baseWalletApi.enable()
-          break
-        case 'cardwallet':
-          fullWalletApi = await baseWalletApi.enable()
-          break
-        case 'gerowallet':
-          await baseWalletApi.enable()
-          fullWalletApi = win.cardano.gerowallet
-          break
-      }
-
-      if(!await baseWalletApi.isEnabled()) return
-
-      walletCtx.update({walletApi: fullWalletApi})
-      allowWallet()
+      allowWallet(wallet)
       playSwitchSound()
       walletModal.onClose()
     }
@@ -245,13 +203,13 @@ export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
                    direction="row"
                    _hover={{cursor: "pointer"}}
                    onClick={walletModal.onOpen}>
-                    { walletEnabled ?
+                    { walletStore.connected ?
                       <div className={mainStyles.ledgreen}></div>
                       :
                       <div className={mainStyles.ledorange}></div>
                     }
                     <MdAccountBalanceWallet />
-                    {ConnectWalletModal(walletModal.isOpen, walletModal.onClose, isDark, walletEnabled, enableCardano)}
+                    {ConnectWalletModal(walletModal.isOpen, walletModal.onClose, isDark, enableCardano)}
                   </Flex>
                   <Flex
                    position="absolute"
