@@ -7,7 +7,6 @@ import useSound from 'use-sound';
 import { MoonIcon, SunIcon} from '@chakra-ui/icons'
 import NextChakraLink from './NextChakraLink'
 import mainStyles from './layout.module.css'
-import WalletContext from '../lib/WalletContext';
 import ConnectWalletModal from './ConnectWalletModal';
 import Logo from './Logo'
 import {
@@ -19,20 +18,13 @@ import {
   DrawerCloseButton,
 } from "@chakra-ui/react"
 import { useStoreActions, useStoreState } from '../store';
-import { WalletProvider } from 'lucid-cardano';
-
-// import { MoonIcon, SunIcon } from '@chakra-ui/icons'
 
 export default function DarkModeSwitchMenu({ home }: { home?: boolean }) {
     const { colorMode, toggleColorMode } = useColorMode()
     const [sound, soundAbility] = useState<boolean>(true)
     const isDark = colorMode === 'dark'
-
     const walletStore = useStoreState(state => state.wallet)
     const setWallet = useStoreActions(action => action.setWallet)
-
-    const walletCtx = useContext(WalletContext)
-    // const [walletEnabled, walletEnable] = useState<boolean>(false)
     const { isOpen, onOpen, onClose } = useDisclosure()
     const walletModal: {
       isOpen: boolean;

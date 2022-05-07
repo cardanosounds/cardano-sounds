@@ -13,7 +13,7 @@ import {
   ModalFooter,
   Heading
 } from "@chakra-ui/react"
-import { useContext, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import MiddleEllipsis from "react-middle-ellipsis";
 import { useStoreState } from "../store"
 import { WalletProvider } from "lucid-cardano"
@@ -47,18 +47,7 @@ export default function ConnectWalletModal(
     loadWalletSession();
   }, [walletStore])
 
-  // const addressToBech32 = async () => {
-  //   // console.log(walletCtx.walletApi)
-  //   if(walletCtx.walletApi) {
-  //       await loader.load()
-  //       console.log("walletCtx.walletApi")
-  //       console.log(walletCtx.walletApi)
-  //       const address = await walletCtx.walletApi.getChangeAddress()
-  //       const addReadable = loader.Cardano.Address.from_bytes(_Buffer.from(address, 'hex')).to_bech32()
-  //       console.log(addReadable)
-  //       setWalletAddress(addReadable)
-  //   }
-  // }
+  
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
