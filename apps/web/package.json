@@ -27,6 +27,7 @@
     "@emotion/styled": "^11.3.0",
     "@fontsource/share-tech-mono": "^4.4.2",
     "@prisma/client": "^3.11.1",
+    "arjs-react": "^0.0.11",
     "font-awesome": "^4.7.0",
     "ipfs-core": "^0.12.2",
     "next": "^12.0.6",
