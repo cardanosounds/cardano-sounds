@@ -1,27 +1,35 @@
-import { Button } from "@chakra-ui/react";
+import { Button, Flex } from "@chakra-ui/react";
 import getContractAssetsHook from "../hooks/getContractAssetsHook";
 import getUserAssetsHook from "../hooks/getUserAssetsHook";
 import filetype from 'magic-bytes.js'
 import all from 'it-all'
 import { concat as uint8ArrayConcat } from 'uint8arrays/concat'
 import * as IPFS from 'ipfs-core'
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Arweave from "arweave";
 
-export default async function TestFfmpeg() {
+export default function TestFfmpeg() {
     // const [ userAssetViews, loadUserAssetViews ] = getUserAssetsHook()
     // const [ contractAssetViews, loadContractAssetViews ] = getContractAssetsHook()
     // const [ipfsNode, setIpfsNode] = useState<IPFS | undefined>()
-    const ipfsNode = await IPFS.create()
+    let ipfsNode = null//await IPFS.create()
+
+    const [uploadData, setUploadData] = useState<Uint8Array>()
+    const { component, upload } = useArweaveConnect()
     // const usersAssets 
 
     // const loadAssets
+
+    useEffect(() => {
+        console.log(uploadData)
+    }, [uploadData])
 
     const test = async () => {
         // console.log('contractAssetViews')
         // console.log(contractAssetViews)
         // console.log('userAssetViews')
         // console.log(userAssetViews)
-        
+        if (!ipfsNode) ipfsNode = await IPFS.create()
         const response = uint8ArrayConcat(await all(ipfsNode.cat('QmbytYGomBm136d3xWm1vuku9givkQS2WxmLxFKTXwXixj')))
         const response2 = uint8ArrayConcat(await all(ipfsNode.cat('QmT79cTHosBWS5mUJ2K8TkFPd9PeZZ7b5a5ZNgmnmewDDh')))
         console.log(response)
@@ -29,7 +37,7 @@ export default async function TestFfmpeg() {
         testFfmpeg(response, response2)
         //QmT79cTHosBWS5mUJ2K8TkFPd9PeZZ7b5a5ZNgmnmewDDh
     }
- 
+
     const testFfmpeg = async (picFile: Uint8Array, soundFile: Uint8Array) => {
         // test()
         const picFT = filetype(picFile)
@@ -39,7 +47,7 @@ export default async function TestFfmpeg() {
         // const message = document.getElementById('message');
         const { createFFmpeg, fetchFile } = await import('@ffmpeg/ffmpeg');
         const ffmpeg = createFFmpeg({
-        //    corePath: 'https://unpkg.com/@ffmpeg/core@0.10.0/dist/ffmpeg-core.js',
+            //    corePath: 'https://unpkg.com/@ffmpeg/core@0.10.0/dist/ffmpeg-core.js',
             log: true,
 
             progress: ({ ratio }) => {
@@ -57,14 +65,69 @@ export default async function TestFfmpeg() {
         const data = ffmpeg.FS('readFile', 'output.mp4');
         const videoHtml: any = document.getElementById('output-video');
         videoHtml.src = URL.createObjectURL(new Blob([data.buffer], { type: 'video/mp4' }));
+        setUploadData(data)
         // }
         // document.getElementById('uploader').addEventListener('change', transcode);
     }
 
     return (
         <>
-            <video id='output-video' controls></video><br/>
+            {component}
+            <video id='output-video' controls></video><br />
             <Button onClick={() => test()}>Click</Button>
+            <Button onClick={() => upload(uploadData)}>Upload</Button>
         </>
     )
+}
+
+function useArweaveConnect() {
+    const arweave = Arweave.init({});
+    const wallet = 'use_wallet';
+
+    const [address, setAddress] = useState("Requesting...");
+
+    const activate = async () => {
+        await window.arweaveWallet.connect(['ACCESS_ADDRESS', 'SIGN_TRANSACTION'], {
+            name: 'Cardano Sounds'
+        });
+        const addr = await window.arweaveWallet.getActiveAddress();
+        setAddress(addr);
+    }
+
+    const upload = async (data: Uint8Array) => {
+        if (address === "Requesting...") return
+        let transaction = await arweave.createTransaction({ data: data }, wallet);
+        transaction.addTag('Content-Type', 'video/mp4');
+
+        await arweave.transactions.sign(transaction, wallet)
+
+        let uploader = await arweave.transactions.getUploader(transaction);
+
+        while (!uploader.isComplete) {
+            await uploader.uploadChunk();
+            console.log(`${uploader.pctComplete}% complete, ${uploader.uploadedChunks}/${uploader.totalChunks}`);
+        }
+        console.log({ uploaded: transaction.id })
+    }
+
+    const component = (
+        <Flex align="center" justify="center" minH="85vh" mt="15vh" m="0">
+            <>
+                <h1>Wallet</h1>
+                {address != "Requesting..." ? (
+                    <div>
+                        <div>Account: {address}</div>
+                        {/* <button onClick={() => wallet.disconnect()}>disconnect</button> */}
+                    </div>
+                ) : (
+                    <div>
+                        Connect:
+                        <button onClick={activate}>ArConnect</button>
+                    </div>
+                )}
+            </>
+        </Flex>
+    )
+
+    return { component, upload }
 }

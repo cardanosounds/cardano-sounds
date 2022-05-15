@@ -31,7 +31,7 @@
     "@ffmpeg/ffmpeg": "^0.9.8",
     "@fontsource/share-tech-mono": "^4.4.2",
     "@prisma/client": "^3.11.1",
-    "arjs-react": "^0.0.11",
+    "arweave": "^1.10.23",
     "font-awesome": "^4.7.0",
     "ipfs-core": "^0.12.2",
     "it-all": "^1.0.6",
