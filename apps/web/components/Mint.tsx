@@ -97,7 +97,6 @@ const Mint = () => {
 
   const makeTx = async () => {
     setLoading(true)
-    // await init()
     const { Lucid, Blockfrost } = await import('lucid-cardano')
 
     await Lucid.initialize(
@@ -105,12 +104,9 @@ const Mint = () => {
       new Blockfrost('https://cardano-testnet.blockfrost.io/api/v0', 'testnetRvOtxC8BHnZXiBvdeM9b3mLbi8KQPwzA')
     )
     await Lucid.selectWallet(walletStore.name as WalletProvider)
-    // let mintPolicy = policy
-    // if (!policy) {
     const walletAddr = Lucid.wallet.address
     const mintPolicy = createLockingPolicyScript(null, walletAddr)
     console.log(mintPolicy)
-    // mintPolicy = await wallet.createLockingPolicyScript(policyLockDate)
     const policyScript: {
       type: string;
       scripts: any[];
@@ -132,7 +128,6 @@ const Mint = () => {
       },
       body: JSON.stringify(policyScript),
     })
-    // }
 
     let metadata = {
       [mintPolicy.policyId]: prepMetadata(inputs.image, filesWithType, inputs)
@@ -196,7 +191,6 @@ const Mint = () => {
     }
     catch (err) {
       console.log(`error: ${JSON.stringify(err)}`)
-      // FailedTransactionToast(toast);
     }
     await TxErrorSubmitToast(toast);
     setLoading(false);
