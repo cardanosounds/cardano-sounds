@@ -35,7 +35,7 @@ const Mint = () => {
   const { colorMode } = useColorMode()
   const isDark = colorMode === 'dark'
   const walletCtx = useContext(WalletContext)
-  const [connected, setConnected] = useState("")
+  const [connected, setConnected] = useState(false)
   const [loading, setLoading] = useState(false)
   const [filesWithType, setFilesWithType] = useState([])
   const [quantityDict, setQuantityDict] = useState({})
@@ -102,15 +102,19 @@ const Mint = () => {
   const clearInputs = () => {
   }
 
-  String.prototype.trimEllip = function (length) {
-    return this.length > length ? this.substring(0, length) + ".." : this;
+  const trimEllip = (string: string) => {
+    return string.length > length ? string.substring(0, length) + ".." : string;
   }
 
-  const uniqBy = (a, key) => {
+  type assetsValue = {
+    name: any;
+    quantity: any;
+  }
+  const uniqBy = (a, key): any => {
     return [
       ...new Map(
-        a.map(x => [key(x), x])
-      ).values()
+        a.map((x: any) => [key(x), x])
+      ).values() 
     ]
   }
 
@@ -142,7 +146,7 @@ const Mint = () => {
     }
     if (policyLockDate) policyScript.scripts.push({ slot: mintPolicy.lockSlot, type: "before" })
     console.log(JSON.stringify(policyScript))
-    fetch(`https://pool.pm/register/policy/${mintPolicy.id}`, {
+    fetch(`https://pool.pm/register/policy/${mintPolicy.policyId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -186,8 +190,6 @@ const Mint = () => {
     let allNfts = nfts.map((nft) => ({ name: nft[Object.keys(nft)[0]].name, quantity: quantityDict[nft[Object.keys(nft)[0]].name] })).concat({ name: inputs.name, quantity: inputs.quantity })
     allNfts = uniqBy(allNfts, it => it.name)
 
-
-
     const tx = await wallet
       .mintTx(
         allNfts,
@@ -200,7 +202,7 @@ const Mint = () => {
         setLoading(false);
       });
 
-      
+
     if (!tx) return;
     const signedTx = await wallet.signTx(tx).catch(() => setLoading(false));
     if (!signedTx) return;
