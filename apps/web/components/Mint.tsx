@@ -299,7 +299,7 @@ const Mint = () => {
               focusBorderColor="blue.700"
               placeholder="Name"
               value={inputs.metadataName}
-              onInput={(e) => {
+              onInput={(e: any) => {
                 const val = e.target.value;
                 const name = val.replace(/[^A-Z0-9]/gi, "");
                 const metadataName = val;
