@@ -2,7 +2,7 @@ import dynamic from "next/dynamic";
 import { Flex } from '@chakra-ui/react';
 import Layout from '../components/layout';
 
-const MintComp = dynamic(() => import("../components/Mint.jsx"),
+const MintComp = dynamic(() => import("../components/Mint"),
   { ssr: false }
 );
 

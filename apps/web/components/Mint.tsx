@@ -21,25 +21,21 @@ import { prepMetadata } from "../lib/mintMetadata"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useContext, useState, useEffect } from "react";
-import WalletJs from "../wallet-js";
-import WalletContext from "../lib/WalletContext";
 import NextChakraLink from "./NextChakraLink";
 import { NotConnectedToast, NftLimitToast, SuccessTransactionToast, PendingTransactionToast, FailedTransactionToast, TxErrorSubmitToast, NoWalletToast } from '../lib/toasts'
 import { createLockingPolicyScript } from "../cardano/utils";
 import { useStoreState } from "../store";
-import { WalletProvider } from "lucid-cardano";
+import { Assets, Tx, WalletProvider } from "lucid-cardano";
 
 let wallet
 const Mint = () => {
   const toast = useToast()
   const { colorMode } = useColorMode()
   const isDark = colorMode === 'dark'
-  const walletCtx = useContext(WalletContext)
   const [connected, setConnected] = useState(false)
   const [loading, setLoading] = useState(false)
   const [filesWithType, setFilesWithType] = useState([])
   const [quantityDict, setQuantityDict] = useState({})
-  const [policy, setPolicy] = useState(null)
   const [nfts, setNfts] = useState([])
   const [policyLockDate, setPolicyLockDate] = useState(null)
   const [policyLock, setPolicyLock] = useState(null)
@@ -64,18 +60,17 @@ const Mint = () => {
     arweaveHash: ""
   })
 
-  const init = async () => {
-    wallet = new WalletJs(
-      "https://cardano-mainnet.blockfrost.io/api/v0",
-      "mainnetGHf1olOJblaj5LD8rcRudajSJGKRU6IL",
-      walletCtx.walletApi
-    )
-    setConnected(window.localStorage.getItem('cswallet') === 'connected')
-  }
+  // const init = async () => {
+  //   wallet = new WalletJs(
+  //     "https://cardano-mainnet.blockfrost.io/api/v0",
+  //     "mainnetGHf1olOJblaj5LD8rcRudajSJGKRU6IL",
+  //     walletCtx.walletApi
+  //   )
+  //   setConnected(window.localStorage.getItem('cswallet') === 'connected')
+  // }
 
   const checkStatus = async (toast, connected) => {
-    connected = walletCtx.walletApi !== null
-    wallet.walletApi = walletCtx.walletApi
+    connected = walletStore.connected
     setConnected(connected)
     return (
       NoWalletToast(toast, window.cardano) &&
@@ -102,14 +97,10 @@ const Mint = () => {
   const clearInputs = () => {
   }
 
-  const trimEllip = (string: string) => {
+  const trimEllip = (string: string, length: number) => {
     return string.length > length ? string.substring(0, length) + ".." : string;
   }
 
-  type assetsValue = {
-    name: any;
-    quantity: any;
-  }
   const uniqBy = (a, key): any => {
     return [
       ...new Map(
@@ -120,7 +111,7 @@ const Mint = () => {
 
   const makeTx = async () => {
     setLoading(true)
-    await init()
+    // await init()
     const { Lucid, Blockfrost } = await import('lucid-cardano')
 
     await Lucid.initialize(
@@ -131,17 +122,19 @@ const Mint = () => {
     // let mintPolicy = policy
     // if (!policy) {
     const walletAddr = Lucid.wallet.address
-    const mintPolicy = createLockingPolicyScript(policyLockDate, walletAddr, false)
+    const mintPolicy = createLockingPolicyScript(null, walletAddr)
+    console.log(mintPolicy)
     // mintPolicy = await wallet.createLockingPolicyScript(policyLockDate)
-    setPolicy(mintPolicy)
-    const policyScript = {
+    const policyScript: {
+      type: string;
+      scripts: any[];
+  } = {
       type: "all",
       scripts: [
         {
           keyHash: mintPolicy.paymentKeyHash,
           type: "sig",
-        },
-        { slot: mintPolicy.lockSlot, type: "before" }
+        }
       ],
     }
     if (policyLockDate) policyScript.scripts.push({ slot: mintPolicy.lockSlot, type: "before" })
@@ -189,25 +182,32 @@ const Mint = () => {
 
     let allNfts = nfts.map((nft) => ({ name: nft[Object.keys(nft)[0]].name, quantity: quantityDict[nft[Object.keys(nft)[0]].name] })).concat({ name: inputs.name, quantity: inputs.quantity })
     allNfts = uniqBy(allNfts, it => it.name)
+    console.log(JSON.stringify(allNfts))
+    let mintAssets: Assets = {}
+    allNfts.forEach(nft => mintAssets[mintPolicy.policyId + Buffer.from(nft.name, 'ascii').toString('hex')] = BigInt(nft.quantity))
+    const tx = await Tx.new()
+            .attachMintingPolicy({
+                type: "Native",
+                script: Buffer.from(mintPolicy.script.to_bytes()).toString('hex')
+            })
+            .mintAssets(mintAssets)
+            .addSigner(walletAddr)
+            .complete();
 
-    const tx = await wallet
-      .mintTx(
-        allNfts,
-        metadata,
-        mintPolicy
-      )
-      .catch((e) => {
-        console.log(e);
-        FailedTransactionToast(toast);
-        setLoading(false);
-      });
-
-
-    if (!tx) return;
-    const signedTx = await wallet.signTx(tx).catch(() => setLoading(false));
-    if (!signedTx) return;
+    // const tx = await wallet
+    //   .mintTx(
+    //     allNfts,
+    //     metadata,
+    //     mintPolicy
+    //   )
+    //   .catch((e) => {
+    //     console.log(e);
+    //     FailedTransactionToast(toast);
+    //     setLoading(false);
+    //   });
     try {
-      const txHash = await wallet.submitTx(signedTx);
+      const signedTx = (await tx.sign()).complete();
+      const txHash = await signedTx.submit();
       if (txHash.toString().length === 64) {
         PendingTransactionToast(toast);
         toast.closeAll();
@@ -219,14 +219,12 @@ const Mint = () => {
     }
     catch (err) {
       console.log(`error: ${JSON.stringify(err)}`)
+      // FailedTransactionToast(toast);
     }
     await TxErrorSubmitToast(toast);
     setLoading(false);
   };
 
-  useEffect(() => {
-    init();
-  }, []);
   return (
     <Box
       width="100%"
@@ -270,7 +268,7 @@ const Mint = () => {
                         <Flex h={24} w={24}>
                           <Image h={24} w={24} src={`https://infura-ipfs.io/ipfs/${nft[Object.keys(nft)[0]].image.replace("ipfs://", "")}`} fallbackSrc="/noise.png" />
                         </Flex>
-                        <Heading fontSize={14} maxW={24} >{nft[Object.keys(nft)[0]].name.trimEllip(11)}</Heading>
+                        <Heading fontSize={14} maxW={24} >{trimEllip(nft[Object.keys(nft)[0]].name, 11)}</Heading>
                       </Flex>
                     </PopoverTrigger>
                     <PopoverContent>

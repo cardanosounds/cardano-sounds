@@ -6,6 +6,7 @@ const TestButton = dynamic(() => import("../components/TestButton"),
   { ssr: false }
 );
 
+
 export default function Mint() {
     
     return (
