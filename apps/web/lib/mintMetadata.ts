@@ -1,4 +1,8 @@
-export const prepMetadata = (imageipfs, filesWithType, inputs) => {
+import { MintMetadataFileInput } from "../interfaces/interfaces"
+
+type MintFileInput = ({ mediaType: any; name: any; src: string | string[]; arweaveId?: undefined; } | { mediaType: any; name: any; arweaveId: string; src: string; })
+
+export const prepMetadata = (imageipfs: string, filesWithType: MintMetadataFileInput[], inputs: { image?: string; name: any; publisher: any; collection: any; summary: any; description: any; metadataName: any; quantity?: string; author?: string; arweaveHash: any }) => {
     console.log(`prepMetadata(${imageipfs}, ${filesWithType})`)
     console.log(filesWithType)
     let returnMeta = {
@@ -21,11 +25,11 @@ export const prepMetadata = (imageipfs, filesWithType, inputs) => {
     return returnMeta
 }
 
-export const getFilesMeta = (filesWithType) => {
+export const getFilesMeta = (filesWithType: any[]) => {
     if (filesWithType.length < 1) {
         return ''
     }
-    return filesWithType.map((file) => (!file.arweaveHash || file.arweaveHash === '' ? (
+    return filesWithType.map((file: { arweaveHash: string; mediaType: any; name: any; ipfsHash: string }) => (!file.arweaveHash || file.arweaveHash === '' ? (
         {
             mediaType: file.mediaType,
             name: file.name,
@@ -47,11 +51,11 @@ export const getFilesMeta = (filesWithType) => {
     ))
 }
 
-export const addPropertyToMeta = (propertyName, propertyValue, metaObject, name) => {
+export const addPropertyToMeta = (propertyName: string, propertyValue: string | string[] | MintFileInput | MintFileInput[], metaObject: { [x: string]: { [x: string]: any };[x: number]: { name: any; image: string; publisher: string[] } }, name: string | number) => {
     console.log("addPropertyToMeta = (propertyName, propertyValue, metaObject)")
     console.log(propertyName, propertyValue, metaObject)
     if (propertyValue !== '' && (!Array.isArray(propertyValue) || propertyValue.length !== 0)) {
-        let newPropVal = propertyValue
+        let newPropVal: string | string[] | MintFileInput | MintFileInput[] = propertyValue
         if (typeof propertyValue === "string") {
             if (propertyValue.length > 64) {
                 newPropVal = propertyValue.split('\n').map(s => {
@@ -67,13 +71,13 @@ export const addPropertyToMeta = (propertyName, propertyValue, metaObject, name)
     return metaObject
 }
 
-const arweaveString = (file) => {
+const arweaveString = (file: { arweaveHash: string }) => {
     if (file.arweaveHash.length > 64) {
-       let splitString = file.arweaveHash.split('\n').map(s => {
+       let splitString = file.arweaveHash.split('\n').map((s: string) => {
             if(s.length > 64) {
                return s.match(/(.|[\r\n]){1,64}/g)
             } else return s
-        }).flat(1).filter((val) => val !== '')
+        }).flat(1).filter((val: string) => val !== '')
 
         if(splitString[0].includes('ar://')) return splitString
 

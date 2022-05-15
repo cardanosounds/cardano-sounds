@@ -15,12 +15,12 @@ import {
   AccordionButton,
   AccordionPanel,
   useColorMode,
-  Popover, PopoverTrigger, PopoverContent, PopoverCloseButton, PopoverHeader, PopoverBody, PopoverArrow, Checkbox
+  Popover, PopoverTrigger, PopoverContent, PopoverCloseButton, PopoverHeader, PopoverBody, PopoverArrow, Checkbox, CloseAllToastsOptions, ToastId, UseToastOptions
 } from "@chakra-ui/react";
 import { prepMetadata } from "../lib/mintMetadata"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useState } from "react";
+import { SetStateAction, Key, ReactChild, ReactFragment, ReactPortal, useState } from "react";
 import NextChakraLink from "./NextChakraLink";
 import { NotConnectedToast, NftLimitToast, SuccessTransactionToast, PendingTransactionToast, TxErrorSubmitToast, NoWalletToast } from '../lib/toasts'
 import { createLockingPolicyScript } from "../cardano/utils";
@@ -62,7 +62,7 @@ const Mint = () => {
     arweaveHash: ""
   })
 
-  const checkStatus = async (toast, connected) => {
+  const checkStatus = async (toast: { (options?: UseToastOptions): string | number; close: (id: ToastId) => void; closeAll: (options?: CloseAllToastsOptions) => void; update(id: ToastId, options: Pick<UseToastOptions, "description" | "title" | "position" | "variant" | "onCloseComplete" | "duration" | "status" | "render" | "isClosable">): void; isActive: (id: ToastId) => boolean; }, connected: boolean | ((prevState: boolean) => boolean)) => {
     connected = walletStore.connected
     setConnected(connected)
     return (
@@ -71,7 +71,7 @@ const Mint = () => {
     )
   }
 
-  const checkNftCount = async (toast, nfts) => {
+  const checkNftCount = async (toast: { (options?: UseToastOptions): string | number; close: (id: ToastId) => void; closeAll: (options?: CloseAllToastsOptions) => void; update(id: ToastId, options: Pick<UseToastOptions, "description" | "title" | "position" | "variant" | "onCloseComplete" | "duration" | "status" | "render" | "isClosable">): void; isActive: (id: ToastId) => boolean; }, nfts: any[]) => {
     return (
       NftLimitToast(toast, nfts)
     )
@@ -91,7 +91,7 @@ const Mint = () => {
     return string.length > length ? string.substring(0, length) + ".." : string;
   }
 
-  const uniqBy = (a, key): any => {
+  const uniqBy = (a: { name: any; quantity: any; }[], key: { (it: any): any; (arg0: any): any; }): any => {
     return [
       ...new Map(
         a.map((x: any) => [key(x), x])
@@ -167,7 +167,7 @@ const Mint = () => {
     if (inputs.author) metadata[mintPolicy.policyId][inputs.name].author = inputs.author;
 
     let allNfts = nfts.map((nft) => ({ name: nft[Object.keys(nft)[0]].name, quantity: quantityDict[nft[Object.keys(nft)[0]].name] })).concat({ name: inputs.name, quantity: inputs.quantity })
-    allNfts = uniqBy(allNfts, it => it.name)
+    allNfts = uniqBy(allNfts, (it: { name: any; }) => it.name)
     console.log(JSON.stringify(allNfts))
     let mintAssets: Assets = {}
     allNfts.forEach(nft => mintAssets[mintPolicy.policyId + Buffer.from(nft.name.replace(/[\W_]/g, ''), 'ascii').toString('hex')] = BigInt(nft.quantity))
@@ -272,7 +272,7 @@ const Mint = () => {
             <Flex flexDirection="row">
               <Text mr={2}>Policy lock</Text>
               <Checkbox
-                onChange={(e) => {
+                onChange={(e: { target: { checked: any; }; }) => {
                   if (!e.target.checked) {
                     setPolicyLockDate(undefined)
                     setPolicyLock(false)
@@ -291,7 +291,7 @@ const Mint = () => {
                 timeInputLabel="Time:"
                 dateFormat="MM/dd/yyyy h:mm aa"
                 bg="#ffffff00"
-                selected={policyLockDate} onChange={(date) => {
+                selected={policyLockDate} onChange={(date: SetStateAction<Date>) => {
                   setPolicyLockDate(date)
                 }} /> : <></>}
             <Box h="3rem" />
@@ -313,7 +313,7 @@ const Mint = () => {
               focusBorderColor="blue.700"
               placeholder="Quantity"
               value={inputs.quantity}
-              onInput={(e) => {
+              onInput={(e: any) => {
                 const val = e.target.value;
                 setInputs((i) => ({ ...i, quantity: val }));
               }}
@@ -324,7 +324,7 @@ const Mint = () => {
               // width="60%"
               placeholder="Image (preview) IPFS hash"
               value={inputs.image}
-              onInput={(e) => {
+              onInput={(e: any) => {
                 const val = e.target.value;
                 setInputs((i) => ({ ...i, image: val }));
               }}
@@ -371,7 +371,7 @@ const Mint = () => {
   );
 };
 
-const OptionalInputs = (isDark, inputs, setInputs) => {
+const OptionalInputs = (isDark: boolean, inputs: { image?: string; name?: string; publisher: any; collection?: string; summary: any; description: any; metadataName?: string; quantity?: string; author: any; arweaveHash: any; }, setInputs: { (value: SetStateAction<{ image: string; name: string; publisher: string; collection: string; summary: string; description: string; metadataName: string; quantity: string; author: string; arweaveHash: string; }>): void; (arg0: { (i: any): any; (i: any): any; (i: any): any; (i: any): any; (i: any): any; }): void; }) => {
   return <Accordion allowToggle>
     <AccordionItem>
       <h2>
@@ -388,47 +388,47 @@ const OptionalInputs = (isDark, inputs, setInputs) => {
           focusBorderColor="blue.700"
           placeholder="Image Arweave hash (optional)"
           value={inputs.arweaveHash}
-          onInput={(e) => {
+          onInput={(e: any) => {
             const val = e.target.value;
-            setInputs((i) => ({ ...i, arweaveHash: val }));
+            setInputs((i: any) => ({ ...i, arweaveHash: val }));
           }} />
         <Box h="4" />
         <Input
           value={inputs.author}
           focusBorderColor="blue.700"
           placeholder="Author (optional)"
-          onInput={(e) => {
+          onInput={(e: any) => {
             const val = e.target.value;
             if (val.length > 64)
               return;
-            setInputs((i) => ({ ...i, author: val }));
+            setInputs((i: any) => ({ ...i, author: val }));
           }} />
         <Box h="4" />
         <Input
           focusBorderColor="blue.700"
           placeholder="Publisher (optional)"
           value={inputs.publisher}
-          onInput={(e) => {
+          onInput={(e: any) => {
             const val = e.target.value;
-            setInputs((i) => ({ ...i, publisher: val }));
+            setInputs((i: any) => ({ ...i, publisher: val }));
           }} />
         <Box h="4" />
         <Input
           focusBorderColor="blue.700"
           placeholder="Summary (optional)"
           value={inputs.summary}
-          onInput={(e) => {
+          onInput={(e: any) => {
             const val = e.target.value;
-            setInputs((i) => ({ ...i, summary: val }));
+            setInputs((i: any) => ({ ...i, summary: val }));
           }} />
         <Box h="4" />
         <Textarea
           focusBorderColor="blue.700"
           placeholder="Description (optional)"
           value={inputs.description}
-          onInput={(e) => {
+          onInput={(e: any) => {
             const val = e.target.value;
-            setInputs((i) => ({ ...i, description: val }));
+            setInputs((i: any) => ({ ...i, description: val }));
           }} />
 
       </AccordionPanel>
@@ -436,7 +436,7 @@ const OptionalInputs = (isDark, inputs, setInputs) => {
   </Accordion>;
 }
 
-const FileInput = (isDark, fileInputs, setFileInputs, setFilesWithType, filesWithType) => {
+const FileInput = (isDark: boolean, fileInputs: MintMetadataFileInput, setFileInputs: { (value: SetStateAction<MintMetadataFileInput>): void; (arg0: { (i: any): any; (i: any): any; (i: any): any; (i: any): any; name?: string; ipfsHash?: string; mediaType?: string; arweaveHash?: string; }): void; }, setFilesWithType: { (value: SetStateAction<MintMetadataFileInput[]>): void; (arg0: any[]): void; }, filesWithType: any[]) => {
   return (
     <Accordion allowToggle>
       <AccordionItem>
@@ -454,18 +454,18 @@ const FileInput = (isDark, fileInputs, setFileInputs, setFilesWithType, filesWit
             value={fileInputs.name}
             focusBorderColor="blue.700"
             placeholder="Name"
-            onInput={(e) => {
+            onInput={(e: any) => {
               const val = e.target.value;
-              setFileInputs((i) => ({ ...i, name: val }));
+              setFileInputs((i: any) => ({ ...i, name: val }));
             }} />
           <Box h="4" />
           <Input
             value={fileInputs.ipfsHash}
             focusBorderColor="blue.700"
             placeholder="IPFS Hash"
-            onInput={(e) => {
+            onInput={(e: any) => {
               const val = e.target.value;
-              setFileInputs((i) => ({ ...i, ipfsHash: val }));
+              setFileInputs((i: any) => ({ ...i, ipfsHash: val }));
             }} />
           <Box h="4" />
           <Input
@@ -473,18 +473,18 @@ const FileInput = (isDark, fileInputs, setFileInputs, setFilesWithType, filesWit
             // width="60%"
             placeholder="Arweave hash (Optional - you don't need ipfs hash if filled)"
             value={fileInputs.arweaveHash}
-            onInput={(e) => {
+            onInput={(e: any) => {
               const val = e.target.value;
-              setFileInputs((i) => ({ ...i, arweaveHash: val }));
+              setFileInputs((i: any) => ({ ...i, arweaveHash: val }));
             }} />
           <Box h="4" />
           <Select
             value={fileInputs.mediaType}
-            onChange={(val) => {
+            onChange={(val: { target: any; }) => {
               const { target } = val;
               if (target.type === 'select-one') {
                 const selectValue = target.selectedOptions[0].value;
-                setFileInputs((i) => ({ ...i, mediaType: selectValue }));
+                setFileInputs((i: any) => ({ ...i, mediaType: selectValue }));
               }
             }}
             placeholder='Select media type:'
@@ -521,7 +521,7 @@ const FileInput = (isDark, fileInputs, setFileInputs, setFilesWithType, filesWit
           }}>
             Add file +
           </Button>
-          {filesWithType.map((fileWithType, index) => (
+          {filesWithType.map((fileWithType: { name: boolean | ReactChild | ReactFragment | ReactPortal; ipfsHash: boolean | ReactChild | ReactFragment | ReactPortal; mediaType: boolean | ReactChild | ReactFragment | ReactPortal; arweaveHash: boolean | ReactChild | ReactFragment | ReactPortal; }, index: Key) => (
             <Flex key={index}>
               <Text p={2}>{fileWithType.name}</Text>
               <Text p={2}>{fileWithType.ipfsHash}</Text>
