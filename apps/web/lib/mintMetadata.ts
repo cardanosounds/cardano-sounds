@@ -50,7 +50,7 @@ export const getFilesMeta = (filesWithType) => {
 export const addPropertyToMeta = (propertyName, propertyValue, metaObject, name) => {
     console.log("addPropertyToMeta = (propertyName, propertyValue, metaObject)")
     console.log(propertyName, propertyValue, metaObject)
-    if (propertyValue !== '' && propertyValue !== []) {
+    if (propertyValue !== '' && (!Array.isArray(propertyValue) || propertyValue.length !== 0)) {
         let newPropVal = propertyValue
         if (typeof propertyValue === "string") {
             if (propertyValue.length > 64) {

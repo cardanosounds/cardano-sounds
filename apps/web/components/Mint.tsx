@@ -26,18 +26,20 @@ import { NotConnectedToast, NftLimitToast, SuccessTransactionToast, PendingTrans
 import { createLockingPolicyScript } from "../cardano/utils";
 import { useStoreState } from "../store";
 import { Assets, Tx, WalletProvider } from "lucid-cardano";
+import { MintMetadataFileInput } from "../interfaces/interfaces";
+
 
 const Mint = () => {
   const toast = useToast()
   const { colorMode } = useColorMode()
   const isDark = colorMode === 'dark'
-  const [connected, setConnected] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [filesWithType, setFilesWithType] = useState([])
+  const [connected, setConnected] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [filesWithType, setFilesWithType] = useState<MintMetadataFileInput[]>([])
   const [quantityDict, setQuantityDict] = useState({})
   const [nfts, setNfts] = useState([])
-  const [policyLockDate, setPolicyLockDate] = useState(null)
-  const [policyLock, setPolicyLock] = useState(null)
+  const [policyLockDate, setPolicyLockDate] = useState<Date>(null)
+  const [policyLock, setPolicyLock] = useState<boolean>(false)
   const walletStore = useStoreState(state => state.wallet)
 
   const [inputs, setInputs] = useState({
@@ -52,7 +54,8 @@ const Mint = () => {
     author: "",
     arweaveHash: ""
   })
-  const [fileInputs, setFileInputs] = useState({
+
+  const [fileInputs, setFileInputs] = useState<MintMetadataFileInput>({
     name: "",
     ipfsHash: "",
     mediaType: "",
@@ -80,7 +83,8 @@ const Mint = () => {
     const quantityDictCopy = JSON.parse(JSON.stringify(quantityDict))
     quantityDictCopy[inputs.name] = inputs.quantity
     setQuantityDict(quantityDictCopy)
-    setNfts([...nfts].concat(metadata))
+    const nftsState = [...nfts].concat(metadata)
+    setNfts(nftsState)
   }
 
   const trimEllip = (string: string, length: number) => {

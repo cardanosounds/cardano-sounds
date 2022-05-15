@@ -46,3 +46,11 @@ export interface IncommingTransaction {
     created: string;
     nft_count: string;
 }
+
+
+export interface MintMetadataFileInput {
+    name: string;
+    ipfsHash: string;
+    mediaType: string;
+    arweaveHash: string;
+  }
