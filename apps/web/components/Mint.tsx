@@ -20,14 +20,13 @@ import {
 import { prepMetadata } from "../lib/mintMetadata"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useContext, useState, useEffect } from "react";
+import { useState } from "react";
 import NextChakraLink from "./NextChakraLink";
-import { NotConnectedToast, NftLimitToast, SuccessTransactionToast, PendingTransactionToast, FailedTransactionToast, TxErrorSubmitToast, NoWalletToast } from '../lib/toasts'
+import { NotConnectedToast, NftLimitToast, SuccessTransactionToast, PendingTransactionToast, TxErrorSubmitToast, NoWalletToast } from '../lib/toasts'
 import { createLockingPolicyScript } from "../cardano/utils";
 import { useStoreState } from "../store";
 import { Assets, Tx, WalletProvider } from "lucid-cardano";
 
-let wallet
 const Mint = () => {
   const toast = useToast()
   const { colorMode } = useColorMode()
@@ -60,15 +59,6 @@ const Mint = () => {
     arweaveHash: ""
   })
 
-  // const init = async () => {
-  //   wallet = new WalletJs(
-  //     "https://cardano-mainnet.blockfrost.io/api/v0",
-  //     "mainnetGHf1olOJblaj5LD8rcRudajSJGKRU6IL",
-  //     walletCtx.walletApi
-  //   )
-  //   setConnected(window.localStorage.getItem('cswallet') === 'connected')
-  // }
-
   const checkStatus = async (toast, connected) => {
     connected = walletStore.connected
     setConnected(connected)
@@ -91,10 +81,6 @@ const Mint = () => {
     quantityDictCopy[inputs.name] = inputs.quantity
     setQuantityDict(quantityDictCopy)
     setNfts([...nfts].concat(metadata))
-    clearInputs()
-  }
-
-  const clearInputs = () => {
   }
 
   const trimEllip = (string: string, length: number) => {
@@ -176,6 +162,7 @@ const Mint = () => {
       if (nft[Object.keys(nft)[0]].author) {
         metadata[mintPolicy.policyId][nft[Object.keys(nft)[0]].name]["author"] = nft[Object.keys(nft)[0]].author
       }
+      metadata[mintPolicy.policyId][nft[Object.keys(nft)[0]].name]["name"] = nft[Object.keys(nft)[0]].name
     })
 
     if (inputs.author) metadata[mintPolicy.policyId][inputs.name].author = inputs.author;
@@ -184,8 +171,9 @@ const Mint = () => {
     allNfts = uniqBy(allNfts, it => it.name)
     console.log(JSON.stringify(allNfts))
     let mintAssets: Assets = {}
-    allNfts.forEach(nft => mintAssets[mintPolicy.policyId + Buffer.from(nft.name, 'ascii').toString('hex')] = BigInt(nft.quantity))
+    allNfts.forEach(nft => mintAssets[mintPolicy.policyId + Buffer.from(nft.name.replace(/[\W_]/g, ''), 'ascii').toString('hex')] = BigInt(nft.quantity))
     const tx = await Tx.new()
+            .attachMetadataWithConversion(721, metadata)
             .attachMintingPolicy({
                 type: "Native",
                 script: Buffer.from(mintPolicy.script.to_bytes()).toString('hex')
@@ -194,17 +182,6 @@ const Mint = () => {
             .addSigner(walletAddr)
             .complete();
 
-    // const tx = await wallet
-    //   .mintTx(
-    //     allNfts,
-    //     metadata,
-    //     mintPolicy
-    //   )
-    //   .catch((e) => {
-    //     console.log(e);
-    //     FailedTransactionToast(toast);
-    //     setLoading(false);
-    //   });
     try {
       const signedTx = (await tx.sign()).complete();
       const txHash = await signedTx.submit();
