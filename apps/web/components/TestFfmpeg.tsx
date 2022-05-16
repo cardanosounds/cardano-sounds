@@ -8,6 +8,7 @@ import * as IPFS from 'ipfs-core'
 import { useEffect, useState } from "react";
 import Arweave from "arweave";
 import MintBtn from "./MintBtn";
+import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg'
 
 export default function TestFfmpeg() {
     // const [ userAssetViews, loadUserAssetViews ] = getUserAssetsHook()
@@ -65,8 +66,8 @@ export default function TestFfmpeg() {
         const soundFT = filetype(soundFile)
         console.log(soundFT)
         // const message = document.getElementById('message');
-        const { createFFmpeg, fetchFile } = await import('@ffmpeg/ffmpeg');
         const ffmpeg = createFFmpeg({
+            corePath: '/lib/ffmpeg-core.js',
             //    corePath: 'https://unpkg.com/@ffmpeg/core@0.10.0/dist/ffmpeg-core.js',
             log: true,
 

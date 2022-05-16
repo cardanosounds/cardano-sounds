@@ -25,8 +25,8 @@ import NextChakraLink from "./NextChakraLink";
 import { NotConnectedToast, NftLimitToast, SuccessTransactionToast, PendingTransactionToast, TxErrorSubmitToast, NoWalletToast } from '../lib/toasts'
 import { createLockingPolicyScript, mintTx } from "../cardano/utils";
 import { useStoreState } from "../store";
-import { Assets, Tx, WalletProvider } from "lucid-cardano";
-import { MintMetadataFileInput, NftMetadataInput } from "../interfaces/interfaces";
+import { Assets, WalletProvider } from "lucid-cardano";
+import { MintMetadataFileInput, NftMetadataInput } from "../interfaces";
 
 
 const Mint = () => {
