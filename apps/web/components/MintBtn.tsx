@@ -15,8 +15,6 @@ import { useStoreState } from "../store";
 import { createLockingPolicyScript, mintTx } from "../cardano/utils";
 import { Assets,  WalletProvider } from "lucid-cardano";
 
-
-
 const MintBtn = (ipfsHash : { ipfsHash : string }) => {
   const toast = useToast()
   const walletStore = useStoreState(state => state.wallet)
