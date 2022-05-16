@@ -23,6 +23,9 @@ export default function Test() {
     //     const data = ffmpeg.FS('readFile', 'test.avi');
     //     setVideoSrc(URL.createObjectURL(new Blob([data.buffer], { type: 'video/x-msvideo' })));
     // };
+
+export default function Mint() {
+    
     return (
         <Layout>
             <Flex align="center" justify="center" minH="85vh" w="100vw">

@@ -83,3 +83,22 @@ export interface OnchainMetadata {
     name:  string
     image: string
 }
+export interface MintMetadataFileInput {
+    name: string;
+    ipfsHash: string;
+    mediaType: string;
+    arweaveHash: string;
+}
+
+export interface NftMetadataInput {
+    image: string;
+    name: string;
+    publisher: string;
+    collection: string;
+    summary: string;
+    description: string;
+    metadataName: string;
+    quantity: string;
+    author: string;
+    arweaveHash: string;
+}

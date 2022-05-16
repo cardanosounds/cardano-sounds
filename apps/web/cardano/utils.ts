@@ -1,5 +1,5 @@
 
-import { C } from "lucid-cardano";
+import { Assets, C, Tx, WalletProvider } from "lucid-cardano";
 import { NativeScript } from "lucid-cardano/custom_modules/cardano-multiplatform-lib-browser";
 import { AssetInfoBF } from '../interfaces'
 
@@ -57,4 +57,54 @@ const getAssetsInfo: (unit: string) => Promise<AssetInfoBF> = async (unit: strin
   }})).json() as AssetInfoBF)
 }
 
-export { estimateDateBySlot, estimateSlotByDate, getEpochBySlot, getSlotInEpochBySlot, createLockingPolicyScript, getAssetsInfo, DATUM_LABEL, SlotLength }
+const mintTx = async (policy : {
+  policyId: string;
+  script: NativeScript;
+  lockSlot: number;
+  paymentKeyHash: string;
+}, metadata: any, mintAssets: Assets, walletName: string) => {
+  const { Lucid, Blockfrost } = await import('lucid-cardano')
+    await Lucid.initialize(
+      'Mainnet',
+      new Blockfrost('https://cardano-mainnet.blockfrost.io/api/v0', 'mainnetGHf1olOJblaj5LD8rcRudajSJGKRU6IL')
+    )
+    await Lucid.selectWallet(walletName as WalletProvider)
+    const walletAddr = Lucid.wallet.address
+    const policyScript: {
+      type: string;
+      scripts: any[];
+    } = {
+      type: "all",
+      scripts: [
+        {
+          keyHash: policy.paymentKeyHash,
+          type: "sig",
+        }
+      ],
+    }
+    if (policy.lockSlot) policyScript.scripts.push({ slot: policy.lockSlot, type: "before" })
+    fetch(`https://pool.pm/register/policy/${policy.policyId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(policyScript),
+    })
+      .then((res) => res.json())
+      .then(console.log);
+    
+    const tx = await Tx.new()
+              .attachMetadataWithConversion(721, metadata)
+              .attachMintingPolicy({
+                  type: "Native",
+                  script: Buffer.from(policy.script.to_bytes()).toString('hex')
+              })
+              .mintAssets(mintAssets)
+              .addSigner(walletAddr)
+              .complete();
+
+    const signedTx = (await tx.sign()).complete();
+    return await signedTx.submit();
+}
+
+export { estimateDateBySlot, estimateSlotByDate, getEpochBySlot, getSlotInEpochBySlot, createLockingPolicyScript, mintTx, getAssetsInfo, DATUM_LABEL, SlotLength }
