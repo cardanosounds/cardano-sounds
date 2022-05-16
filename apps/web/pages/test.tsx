@@ -1,7 +1,6 @@
 import dynamic from "next/dynamic";
 import { Flex } from '@chakra-ui/react';
 import Layout from '../components/layout';
-import { useState } from "react";
 
 const TestButton = dynamic(() => import("../components/TestFfmpeg"),
     { ssr: false }
@@ -24,7 +23,6 @@ export default function Test() {
     //     setVideoSrc(URL.createObjectURL(new Blob([data.buffer], { type: 'video/x-msvideo' })));
     // };
 
-export default function Mint() {
     
     return (
         <Layout>
