@@ -96,8 +96,8 @@ export const SuccessTransactionToast = (toast, txHash) => {
     });
 };
 
-export const NoWalletToast = (toast, injctdCardano) => {
-    if (injctdCardano) return true;
+export const NoWalletToast = (toast) => {
+    if (window.cardano) return true;
     toast({
       position: "bottom-right",
       title: (

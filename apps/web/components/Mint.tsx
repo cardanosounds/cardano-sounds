@@ -23,10 +23,10 @@ import "react-datepicker/dist/react-datepicker.css";
 import { SetStateAction, Key, ReactChild, ReactFragment, ReactPortal, useState } from "react";
 import NextChakraLink from "./NextChakraLink";
 import { NotConnectedToast, NftLimitToast, SuccessTransactionToast, PendingTransactionToast, TxErrorSubmitToast, NoWalletToast } from '../lib/toasts'
-import { createLockingPolicyScript } from "../cardano/utils";
+import { createLockingPolicyScript, mintTx } from "../cardano/utils";
 import { useStoreState } from "../store";
 import { Assets, Tx, WalletProvider } from "lucid-cardano";
-import { MintMetadataFileInput } from "../interfaces/interfaces";
+import { MintMetadataFileInput, NftMetadataInput } from "../interfaces/interfaces";
 
 
 const Mint = () => {
@@ -42,7 +42,7 @@ const Mint = () => {
   const [policyLock, setPolicyLock] = useState<boolean>(false)
   const walletStore = useStoreState(state => state.wallet)
 
-  const [inputs, setInputs] = useState({
+  const [inputs, setInputs] = useState<NftMetadataInput>({
     image: "",
     name: "",
     publisher: '',
@@ -66,7 +66,7 @@ const Mint = () => {
     connected = walletStore.connected
     setConnected(connected)
     return (
-      NoWalletToast(toast, window.cardano) &&
+      NoWalletToast(toast) &&
       (await NotConnectedToast(toast, connected)) //&&
     )
   }
@@ -111,79 +111,26 @@ const Mint = () => {
       await Lucid.selectWallet(walletStore.name as WalletProvider)
       const walletAddr = Lucid.wallet.address
       const mintPolicy = createLockingPolicyScript(null, walletAddr)
-      console.log(mintPolicy)
-      const policyScript: {
-        type: string;
-        scripts: any[];
-    } = {
-        type: "all",
-        scripts: [
-          {
-            keyHash: mintPolicy.paymentKeyHash,
-            type: "sig",
-          }
-        ],
-      }
-      if (policyLockDate) policyScript.scripts.push({ slot: mintPolicy.lockSlot, type: "before" })
-      console.log(JSON.stringify(policyScript))
-      fetch(`https://pool.pm/register/policy/${mintPolicy.policyId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(policyScript),
-      })
-
+      
       let metadata = {
         [mintPolicy.policyId]: prepMetadata(inputs.image, filesWithType, inputs)
       }
 
-      nfts.forEach((nft) => {
-        console.log("nft")
-        console.log(nft)
-        metadata[mintPolicy.policyId][nft[Object.keys(nft)[0]].name] = {
+      metadata = fillUpMetaData(nfts, metadata, mintPolicy, inputs);
+
+      let allNfts = nfts.map((nft) => ({ 
           name: nft[Object.keys(nft)[0]].name,
-          image: nft[Object.keys(nft)[0]].image,
-          publisher: nft[Object.keys(nft)[0]].publisher,
-        }
-
-        if (nft[Object.keys(nft)[0]].files) {
-          metadata[mintPolicy.policyId][nft[Object.keys(nft)[0]].name]["files"] = nft[Object.keys(nft)[0]].files
-        }
-        if (nft[Object.keys(nft)[0]].description) {
-          metadata[mintPolicy.policyId][nft[Object.keys(nft)[0]].name]["description"] = nft[Object.keys(nft)[0]].description
-        }
-        if (nft[Object.keys(nft)[0]].summary) {
-          metadata[mintPolicy.policyId][nft[Object.keys(nft)[0]].name]["summary"] = nft[Object.keys(nft)[0]].summary
-        }
-        if (nft[Object.keys(nft)[0]].arweaveHash) {
-          metadata[mintPolicy.policyId][nft[Object.keys(nft)[0]].name]["arweaveHash"] = nft[Object.keys(nft)[0]].arweaveHash
-        }
-        if (nft[Object.keys(nft)[0]].author) {
-          metadata[mintPolicy.policyId][nft[Object.keys(nft)[0]].name]["author"] = nft[Object.keys(nft)[0]].author
-        }
-        metadata[mintPolicy.policyId][nft[Object.keys(nft)[0]].name]["name"] = nft[Object.keys(nft)[0]].name
-      })
-
-      if (inputs.author) metadata[mintPolicy.policyId][inputs.name].author = inputs.author;
-
-      let allNfts = nfts.map((nft) => ({ name: nft[Object.keys(nft)[0]].name, quantity: quantityDict[nft[Object.keys(nft)[0]].name] })).concat({ name: inputs.name, quantity: inputs.quantity })
+          quantity: quantityDict[nft[Object.keys(nft)[0]].name]
+        })
+      ).concat({ name: inputs.name, quantity: inputs.quantity })
+      
       allNfts = uniqBy(allNfts, (it: { name: any; }) => it.name)
       console.log(JSON.stringify(allNfts))
       let mintAssets: Assets = {}
       allNfts.forEach(nft => mintAssets[mintPolicy.policyId + Buffer.from(nft.name.replace(/[\W_]/g, ''), 'ascii').toString('hex')] = BigInt(nft.quantity))
-      const tx = await Tx.new()
-              .attachMetadataWithConversion(721, metadata)
-              .attachMintingPolicy({
-                  type: "Native",
-                  script: Buffer.from(mintPolicy.script.to_bytes()).toString('hex')
-              })
-              .mintAssets(mintAssets)
-              .addSigner(walletAddr)
-              .complete();
 
-      const signedTx = (await tx.sign()).complete();
-      const txHash = await signedTx.submit();
+      const txHash = await mintTx(mintPolicy, metadata, mintAssets, walletStore.name)
+
       if (txHash.toString().length === 64) {
         PendingTransactionToast(toast);
         toast.closeAll();
@@ -539,3 +486,36 @@ const FileInput = (isDark: boolean, fileInputs: MintMetadataFileInput, setFileIn
 }
 
 export default Mint;
+
+
+function fillUpMetaData(nfts: any[], metadata: any, mintPolicy, inputs: NftMetadataInput) {
+  nfts.forEach((nft) => {
+    metadata[mintPolicy.policyId][nft[Object.keys(nft)[0]].name] = {
+      name: nft[Object.keys(nft)[0]].name,
+      image: nft[Object.keys(nft)[0]].image,
+      publisher: nft[Object.keys(nft)[0]].publisher,
+    };
+
+    if (nft[Object.keys(nft)[0]].files) {
+      metadata[mintPolicy.policyId][nft[Object.keys(nft)[0]].name]["files"] = nft[Object.keys(nft)[0]].files;
+    }
+    if (nft[Object.keys(nft)[0]].description) {
+      metadata[mintPolicy.policyId][nft[Object.keys(nft)[0]].name]["description"] = nft[Object.keys(nft)[0]].description;
+    }
+    if (nft[Object.keys(nft)[0]].summary) {
+      metadata[mintPolicy.policyId][nft[Object.keys(nft)[0]].name]["summary"] = nft[Object.keys(nft)[0]].summary;
+    }
+    if (nft[Object.keys(nft)[0]].arweaveHash) {
+      metadata[mintPolicy.policyId][nft[Object.keys(nft)[0]].name]["arweaveHash"] = nft[Object.keys(nft)[0]].arweaveHash;
+    }
+    if (nft[Object.keys(nft)[0]].author) {
+      metadata[mintPolicy.policyId][nft[Object.keys(nft)[0]].name]["author"] = nft[Object.keys(nft)[0]].author;
+    }
+    metadata[mintPolicy.policyId][nft[Object.keys(nft)[0]].name]["name"] = nft[Object.keys(nft)[0]].name;
+  });
+
+  if (inputs.author)
+    metadata[mintPolicy.policyId][inputs.name].author = inputs.author;
+
+  return metadata
+}
