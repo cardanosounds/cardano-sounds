@@ -43,8 +43,8 @@ const MintBtn = (ipfsHash : { ipfsHash : string }) => {
     try{
       const { Lucid, Blockfrost } = await import('lucid-cardano')
       await Lucid.initialize(
-        'Testnet',
-        new Blockfrost('https://cardano-testnet.blockfrost.io/api/v0', 'testnetRvOtxC8BHnZXiBvdeM9b3mLbi8KQPwzA')
+        'Mainnet',
+        new Blockfrost('https://cardano-mainnet.blockfrost.io/api/v0', 'mainnetGHf1olOJblaj5LD8rcRudajSJGKRU6IL')
       )
       await Lucid.selectWallet(walletStore.name as WalletProvider)
       const walletAddr = Lucid.wallet.address
