@@ -221,7 +221,7 @@ export default function P5sequencer() {
 			<Text textAlign={"center"} mx="8vw" mt={12}>This is only simple demo. More tools to create sounds, combine them with your existing media, or mint directly are being developed and will be added. <br/> If transaction submit fails, try using a wallet with less Native tokens. </Text>
 			{canMint === true ? 
 			<>	
-				<MintBtn ipfsHash={ipfsHash}/>
+				<MintBtn ipfsHash={ipfsHash} arweaveHash={null}/>
 			</> 
 			: <></> }
         </Flex>

@@ -7,6 +7,7 @@ import { concat as uint8ArrayConcat } from 'uint8arrays/concat'
 import * as IPFS from 'ipfs-core'
 import { useEffect, useState } from "react";
 import Arweave from "arweave";
+import MintBtn from "./MintBtn";
 
 export default function TestFfmpeg() {
     // const [ userAssetViews, loadUserAssetViews ] = getUserAssetsHook()
@@ -15,7 +16,10 @@ export default function TestFfmpeg() {
     let ipfsNode = null//await IPFS.create()
 
     const [uploadData, setUploadData] = useState<Uint8Array>()
-    const { component, upload } = useArweaveConnect()
+    const [minting, setMinting] = useState<boolean>(false)
+    const [arweaveHash, setArweaveHash] = useState<string>()
+    const [mimeType, setMimeType] = useState<string>()
+    const { component, upload, arweave } = useArweaveConnect()
     // const usersAssets 
 
     // const loadAssets
@@ -30,12 +34,28 @@ export default function TestFfmpeg() {
         // console.log('userAssetViews')
         // console.log(userAssetViews)
         if (!ipfsNode) ipfsNode = await IPFS.create()
-        const response = uint8ArrayConcat(await all(ipfsNode.cat('QmbytYGomBm136d3xWm1vuku9givkQS2WxmLxFKTXwXixj')))
-        const response2 = uint8ArrayConcat(await all(ipfsNode.cat('QmT79cTHosBWS5mUJ2K8TkFPd9PeZZ7b5a5ZNgmnmewDDh')))
+        const response = await ipfsData('QmbytYGomBm136d3xWm1vuku9givkQS2WxmLxFKTXwXixj')
+        const response2 = await ipfsData('QmT79cTHosBWS5mUJ2K8TkFPd9PeZZ7b5a5ZNgmnmewDDh')
         console.log(response)
         console.log(response2)
         testFfmpeg(response, response2)
         //QmT79cTHosBWS5mUJ2K8TkFPd9PeZZ7b5a5ZNgmnmewDDh
+    }
+
+    const handleUpload = async () => {
+        const arTxId = await upload(uploadData)
+        setArweaveHash(arTxId)
+        setMimeType('video/mp4')
+        setMinting(true)
+    }
+
+    const arData = async (id: string) => {
+        return await arweave.transactions.getData(id.replace('ar://', ''), {decode: true})
+    }
+
+    const ipfsData = async (id: string) => {
+        if (!ipfsNode) ipfsNode = await IPFS.create()
+        return uint8ArrayConcat(await all(ipfsNode.cat(id.replace('ipfs://', ''))))
     }
 
     const testFfmpeg = async (picFile: Uint8Array, soundFile: Uint8Array) => {
@@ -75,7 +95,8 @@ export default function TestFfmpeg() {
             {component}
             <video id='output-video' controls></video><br />
             <Button onClick={() => test()}>Click</Button>
-            <Button onClick={() => upload(uploadData)}>Upload</Button>
+            <Button onClick={handleUpload}>Upload</Button>
+            {minting ? <MintBtn arweaveHash={arweaveHash} ipfsHash={null} mimeType={mimeType}/> : <></>}
         </>
     )
 }
@@ -108,6 +129,7 @@ function useArweaveConnect() {
             console.log(`${uploader.pctComplete}% complete, ${uploader.uploadedChunks}/${uploader.totalChunks}`);
         }
         console.log({ uploaded: transaction.id })
+        return transaction.id
     }
 
     const component = (
@@ -129,5 +151,5 @@ function useArweaveConnect() {
         </Flex>
     )
 
-    return { component, upload }
+    return { component, upload, arweave }
 }

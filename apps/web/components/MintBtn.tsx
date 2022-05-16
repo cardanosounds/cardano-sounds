@@ -15,10 +15,10 @@ import { useStoreState } from "../store";
 import { createLockingPolicyScript, mintTx } from "../cardano/utils";
 import { Assets,  WalletProvider } from "lucid-cardano";
 
-const MintBtn = (ipfsHash : { ipfsHash : string }) => {
+const MintBtn = (data : { ipfsHash : string | null, arweaveHash: string | null, mimeType?: string }) => {
   const toast = useToast()
+  const mimeType = data.mimeType ? data.mimeType : 'audio/WAV'
   const walletStore = useStoreState(state => state.wallet)
-
   const [connected, setConnected] = useState(false)
   const [loading, setLoading] = useState(false)
   const [inputs, setInputs] = useState({
@@ -49,7 +49,11 @@ const MintBtn = (ipfsHash : { ipfsHash : string }) => {
       await Lucid.selectWallet(walletStore.name as WalletProvider)
       const walletAddr = Lucid.wallet.address
       const policy = createLockingPolicyScript(null, walletAddr)
-      
+      const fileSrc = 
+        data.ipfsHash 
+          ? `ipfs://${data.ipfsHash.replace('ipfs://', '')}`
+          : `ar://${data.arweaveHash.replace('ar://', '')}`
+
       const metadata = {
         [policy.policyId]: {
           [inputs.name]: {
@@ -58,9 +62,9 @@ const MintBtn = (ipfsHash : { ipfsHash : string }) => {
             publisher: "CardanoSounds.com",
             files: [
               {
-                mediaType: "audio/WAV",
+                mediaType: mimeType,
                 name: inputs.metadataName,
-                src: `ipfs://${ipfsHash.ipfsHash}`
+                src: fileSrc
               }
             ]
           },
