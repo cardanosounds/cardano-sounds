@@ -1,4 +1,4 @@
-import { MintMetadataFileInput } from "../interfaces/interfaces"
+import { MintMetadataFileInput } from "../interfaces"
 
 type MintFileInput = ({ mediaType: any; name: any; src: string | string[]; arweaveId?: undefined; } | { mediaType: any; name: any; arweaveId: string; src: string; })
 
