@@ -1,5 +1,9 @@
 import { PlutusData, C, Lucid, Blockfrost, Tx, SpendingValidator } from 'lucid-cardano'
 import { createLockingPolicyScript, DATUM_LABEL, Policy } from "../utils";
+import Gun from 'gun'
+import type { IGunInstance } from 'gun'
+import data from '../../prisma/nft_metadata';
+
 export const fromHex = (hex) => Buffer.from(hex, "hex");
 export const toHex = (bytes) => Buffer.from(bytes).toString("hex");
 
@@ -100,7 +104,7 @@ export class LibraryRedeemer {
         );
     }
     asPlutusDataHexString = () => {
-        return  toHex(this.toPlutusData().to_bytes())
+        return toHex(this.toPlutusData().to_bytes())
     }
 }
 
@@ -110,6 +114,7 @@ export type Asset = {
 }
 
 export class LibraryValidator {
+
     validatorAddress: string
     spendingValidator: SpendingValidator
 
@@ -126,6 +131,7 @@ export class LibraryValidator {
         asset: Asset,
         adaPrice: number
     ) => {
+
         asset.assetName = Buffer.from(asset.assetName, 'ascii').toString('hex')
         await Lucid.initialize(
             'Testnet',
@@ -136,7 +142,7 @@ export class LibraryValidator {
 
         if (!walletAddr) return
         const policy: Policy = createLockingPolicyScript(null, walletAddr)//address: string, expirationTime: Date, protocolParameters: ProtocolParameters
-       
+
         const lockTokenMint = {
             assetName: 'CSlock' + Buffer.from(asset.assetName, 'hex').toString('ascii'),
             quantity: '1',
@@ -144,12 +150,22 @@ export class LibraryValidator {
             policyScript: policy.script,
             address: walletAddr
         }
+
+        const fullName = policy.policyId + '.' + asset.assetName
+        const gun = Gun(['https://gun-server-1.glitch.me'])
+        const node = gun
+            .get("CardaSounds")
+            .get("testnet")
+            .get("assets")
+
+        const assetNode = gun.get(fullName)
+
         const datum = new LibraryDatum({
             lockTokenPolicy: lockTokenMint.policyId,
             lockTokenName: Buffer.from(lockTokenMint.assetName, 'ascii').toString('hex'),
             lovelacePrice: BigInt(adaPrice * 1000000)
         }).asPlutusDataHexString()
-        
+
         let assets = {}
         assets[asset.policyId + asset.assetName] = BigInt(1)
         assets['lovelace'] = BigInt(2500000)
@@ -158,18 +174,27 @@ export class LibraryValidator {
         mintAssets[lockTokenMint.policyId + Buffer.from(lockTokenMint.assetName, 'ascii').toString('hex')] = BigInt(1)
 
         const tx = await Tx.new()
-                .attachMetadataWithConversion(DATUM_LABEL, { 0: "0x" + datum })
-                .attachMintingPolicy({
-                    type: "Native",
-                    script: Buffer.from(policy.script.to_bytes()).toString('hex')
-                })
-                .mintAssets(mintAssets)
-                .payToContract(this.validatorAddress, datum, assets)
-                .complete();
+            .attachMetadataWithConversion(DATUM_LABEL, { 0: "0x" + datum })
+            .attachMintingPolicy({
+                type: "Native",
+                script: Buffer.from(policy.script.to_bytes()).toString('hex')
+            })
+            .mintAssets(mintAssets)
+            .payToContract(this.validatorAddress, datum, assets)
+            .complete();
 
         const signedTx = (await tx.sign()).complete();
 
         const txHash = await signedTx.submit();
+
+        assetNode.put({
+            txhash: txHash,
+            policyId: policy.policyId,
+            policyScript: policy.script,
+            address: walletAddr,
+            status: "locked"
+        })
+        node.set(assetNode)
 
         console.log({ submittedTxHash: txHash })
     }
@@ -203,20 +228,37 @@ export class LibraryValidator {
             policyScript: policy.script,
             address: walletAddr
         }
+        const fullName = policy.policyId + '.' + asset.assetName
+        const gun = Gun(['https://gun-server-1.glitch.me'])
+        const node = gun
+            .get("CardaSounds")
+            .get("testnet")
+            .get("assets")
 
+        const assetNode = gun.get(fullName)
+        var isBusy = false
+
+        assetNode.on((data) => {
+            console.log(data)
+            if (data.status === "busy") {
+                console.log("this NFT is busy")
+                isBusy = true
+                // return
+            }
+        })
         const datum = new LibraryDatum({
             lockTokenPolicy: lockTokenBurn.policyId,
             lockTokenName: Buffer.from(lockTokenBurn.assetName, 'ascii').toString('hex'),
             lovelacePrice: BigInt(adaPrice * 1000000)
         }).asPlutusDataHexString()
 
-        const redeemer = new LibraryRedeemer(LibraryAction.Unlock).asPlutusDataHexString()       
+        const redeemer = new LibraryRedeemer(LibraryAction.Unlock).asPlutusDataHexString()
         // let walletUtxos = await Lucid.utxosAt(walletAddr)
         // console.log('walletUtxos')
         // console.log(walletUtxos)
         let utxos = await Lucid.utxosAt(this.validatorAddress)//, asset.policyId + asset.assetName)
-        console.log({utxos: utxos})
-        if(!utxos)
+        console.log({ utxos: utxos })
+        if (!utxos)
             throw "no validator utxos with an asset"
         utxos = [utxos[3]]
         utxos = utxos.map((utxo) => {
@@ -229,22 +271,33 @@ export class LibraryValidator {
             [lockTokenBurn.policyId + Buffer.from(lockTokenBurn.assetName, 'ascii').toString('hex')]: BigInt(-1)
         }
 
-        const tx = await Tx.new()
-            .attachMintingPolicy({
-                type: "Native",
-                script: Buffer.from(policy.script.to_bytes()).toString('hex')
+        if (!isBusy) {
+
+            const tx = await Tx.new()
+                .attachMintingPolicy({
+                    type: "Native",
+                    script: Buffer.from(policy.script.to_bytes()).toString('hex')
+                })
+                .mintAssets(mintAssets)
+                .collectFrom(utxos, redeemer)
+                .attachSpendingValidator(this.spendingValidator)
+                .addSigner(walletAddr)
+                .complete();
+
+            const signedTx = (await tx.sign()).complete();
+
+            const txHash = await signedTx.submit();
+            assetNode.put({
+                txhash: txHash,
+                policyId: policy.policyId,
+                policyScript: policy.script,
+                address: walletAddr,
+                status: "busy"
             })
-            .mintAssets(mintAssets)
-            .collectFrom(utxos, redeemer)
-            .attachSpendingValidator(this.spendingValidator)
-            .addSigner(walletAddr)
-            .complete();
+            node.set(assetNode)
+            console.log({ submittedTxHash: txHash })
+        }
 
-        const signedTx = (await tx.sign()).complete();
-
-        const txHash = await signedTx.submit();
-
-        console.log({ submittedTxHash: txHash })
     }
 
     use = async (
@@ -277,6 +330,25 @@ export class LibraryValidator {
             address: walletAddr
         }
 
+        const fullName = policy.policyId + '.' + asset.assetName
+        const gun = Gun(['https://gun-server-1.glitch.me'])
+        const node = gun
+            .get("CardaSounds")
+            .get("testnet")
+            .get("assets")
+
+        const assetNode = gun.get(fullName)
+        var isBusy = false
+
+        assetNode.on((data) => {
+            console.log(data)
+            if (data.status === "busy") {
+                console.log("this NFT is busy")
+                isBusy = true
+                // return
+            }
+        })
+
         const datum = new LibraryDatum({
             lockTokenPolicy: lockTokenBurn.policyId,
             lockTokenName: Buffer.from(lockTokenBurn.assetName, 'ascii').toString('hex'),
@@ -286,8 +358,8 @@ export class LibraryValidator {
         const redeemer = new LibraryRedeemer(LibraryAction.Use).asPlutusDataHexString()
 
         let utxos = await Lucid.utxosAt(this.validatorAddress)///, asset.policyId + asset.assetName)
-        console.log({utxos: utxos})
-        if(!utxos) {
+        console.log({ utxos: utxos })
+        if (!utxos) {
             throw "no validator utxos with an asset"
         }
         utxos = [utxos[2]].map((utxo) => {
@@ -300,18 +372,27 @@ export class LibraryValidator {
             [asset.policyId + asset.assetName]: BigInt(1),
             ['lovelace']: BigInt(6500000)
         }
+        if (!isBusy) {
 
-        const tx = await Tx.new()
-            .collectFrom(utxos, redeemer)
-            .attachSpendingValidator(this.spendingValidator)
-            .payToContract(this.validatorAddress, datum, assets)
-            .addSigner(walletAddr)
-            .complete();
+            const tx = await Tx.new()
+                .collectFrom(utxos, redeemer)
+                .attachSpendingValidator(this.spendingValidator)
+                .payToContract(this.validatorAddress, datum, assets)
+                .addSigner(walletAddr)
+                .complete();
 
-        const signedTx = (await tx.sign()).complete();
+            const signedTx = (await tx.sign()).complete();
 
-        const txHash = await signedTx.submit();
-
-        console.log({ submittedTxHash: txHash })
+            const txHash = await signedTx.submit();
+            assetNode.put({
+                txhash: txHash,
+                policyId: policy.policyId,
+                policyScript: policy.script,
+                address: walletAddr,
+                status: "busy"
+            })
+            node.set(assetNode)
+            console.log({ submittedTxHash: txHash })
+        }
     }
 }
