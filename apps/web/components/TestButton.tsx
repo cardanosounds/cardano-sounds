@@ -9,7 +9,7 @@ export default function TestButton() {
             validator,
             validatorAddressTestnet
         )
-        plutusValidator.lock({assetName: "csnft19", policyId: "74f43bdf645aaeb25f39c6392cdb771ff4eb4da0c017cc183c490b8f"}, 2)
+        plutusValidator.lock({assetName: "985001", policyId: "06201e3bc4613cee82dfba9370b5e0470a1cb0c0c00715b8911b6a18"}, 2)
       
     }
 
